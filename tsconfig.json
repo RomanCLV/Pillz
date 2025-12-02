@@ -17,13 +17,14 @@
 
     "baseUrl": ".",
     "paths": {
-      "@components/*": ["components/*"],
-      "@themedComponents/*": ["components/themedComponents/*"],
-      "@constants/*": ["constants/*"],
-      "@screens/*": ["screens/*"],
-      "@hooks/*": ["hooks/*"],
-      "@utils/*": ["utils/*"],
       "@assets/*": ["assets/*"],
+      "@components/*": ["components/*"],
+      "@context/*": ["context/*"],
+      "@constants/*": ["constants/*"],
+      "@hooks/*": ["hooks/*"],
+      "@themedComponents/*": ["components/themedComponents/*"],
+      "@utils/*": ["utils/*"],
+      "@screens/*": ["screens/*"],
     }
   },
   "include": ["./", "typings/**/*.d.ts"]
