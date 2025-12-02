@@ -1,25 +1,15 @@
+// app/_layout.tsx
 import React from "react";
-import { Stack } from "expo-router";
+import { Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { ThemeProvider, useAppTheme } from "../context/ThemeContext";
-import { Colors } from "../constants/colors";
 
-const LayoutContent = () => {
+const RootLayoutContent = () => {
   const { theme } = useAppTheme();
-  const isDarkBackground = theme.isDark; 
-
   return (
     <>
-      <StatusBar style={isDarkBackground ? "light" : "dark"} /> 
-      <Stack
-        screenOptions={{
-          headerStyle: { backgroundColor: theme.background.primary },
-          headerTintColor: Colors.brand.primary,
-        }}
-      >
-        <Stack.Screen name="index" options={{ title: "Home" }} />
-        <Stack.Screen name="settings" options={{ title: "Theme" }} />
-      </Stack>
+      <StatusBar style={theme.isDark ? "light" : "dark"} />
+      <Slot /> 
     </>
   );
 };
@@ -27,7 +17,7 @@ const LayoutContent = () => {
 export default function RootLayout() {
   return (
     <ThemeProvider>
-      <LayoutContent />
+      <RootLayoutContent />
     </ThemeProvider>
   );
 }
