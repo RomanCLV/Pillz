@@ -22,7 +22,8 @@
       "@constants/*": ["constants/*"],
       "@screens/*": ["screens/*"],
       "@hooks/*": ["hooks/*"],
-      "@utils/*": ["utils/*"]
+      "@utils/*": ["utils/*"],
+      "@assets/*": ["assets/*"],
     }
   },
   "include": ["./", "typings/**/*.d.ts"]

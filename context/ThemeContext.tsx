@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Constants from "expo-constants";
 
 import { Theme, Themes } from "../constants/colors";
 import { useColorSchemeSafe } from "../hooks/useColorSchemeSafe";
@@ -24,12 +25,27 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Charger la préférence stockée au démarrage
   useEffect(() => {
     (async () => {
-      const stored = await AsyncStorage.getItem("theme-preference");
-      if (stored === "light" || stored === "dark" || stored === "system") {
-        setPreferenceState(stored);
+      const uiStyle = Constants.expoConfig?.userInterfaceStyle;
+      let theme: string | null = null;
+
+      if (uiStyle === "light" || uiStyle === "dark") {
+        // 1. app.json impose le thème
+        theme = uiStyle;
+      } 
+      else {
+        // 2. automatic -> regarder la préférence utilisateur
+        theme = await AsyncStorage.getItem("theme-preference");
+        if (!theme) 
+          theme = "system";
       }
+
+      // 3. Validation et fallback
+      if (theme !== "light" && theme !== "dark" && theme !== "system") 
+        theme = "system";
+
+      setPreferenceState(theme as ThemePreference);
       setIsReady(true);
-    })();
+      })();
   }, []);
 
   const setPreference = async (value: ThemePreference) => {
