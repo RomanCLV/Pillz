@@ -18,6 +18,7 @@ const LayoutContent = () => {
         }}
       >
         <Stack.Screen name="index" options={{ title: "Home" }} />
+        <Stack.Screen name="settings" options={{ title: "Theme" }} />
       </Stack>
     </>
   );
