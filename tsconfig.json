@@ -13,7 +13,17 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
 
-    "jsx": "react-native"
+    "jsx": "react-native",
+
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["components/*"],
+      "@themedComponents/*": ["components/themedComponents/*"],
+      "@constants/*": ["constants/*"],
+      "@screens/*": ["screens/*"],
+      "@hooks/*": ["hooks/*"],
+      "@utils/*": ["utils/*"]
+    }
   },
   "include": ["./", "typings/**/*.d.ts"]
 }
