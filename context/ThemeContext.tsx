@@ -5,7 +5,9 @@ import Constants from "expo-constants";
 import { Theme, Themes } from "../constants/colors";
 import { useColorSchemeSafe } from "../hooks/useColorSchemeSafe";
 
-export type ThemePreference = "system" | "light" | "dark";
+const STORAGE_KEY = "theme-preference";
+
+export type ThemePreference =  "system" | "light" | "dark";
 
 interface ThemeContextValue {
   theme: Theme;
@@ -34,7 +36,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       } 
       else {
         // 2. automatic -> regarder la préférence utilisateur
-        theme = await AsyncStorage.getItem("theme-preference");
+        theme = await AsyncStorage.getItem(STORAGE_KEY);
         if (!theme) 
           theme = "system";
       }
@@ -51,7 +53,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const setPreference = async (value: ThemePreference) => {
     if (value === preference) return;
     setPreferenceState(value);
-    await AsyncStorage.setItem("theme-preference", value);
+    await AsyncStorage.setItem(STORAGE_KEY, value);
   };
 
   return isReady ? (

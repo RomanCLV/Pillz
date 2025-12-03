@@ -21,6 +21,7 @@
       "@components/*": ["components/*"],
       "@context/*": ["context/*"],
       "@constants/*": ["constants/*"],
+      "@i18n/*": ["i18n/*"],
       "@hooks/*": ["hooks/*"],
       "@themedComponents/*": ["components/themedComponents/*"],
       "@utils/*": ["utils/*"],
