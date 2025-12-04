@@ -23,22 +23,20 @@ export type LanguageSet = {
     welcome: string,
   },
   pills: {
-    home: {
-      welcome: string,
-      edit: string,
-    },
-    edit: {
-      welcome: string
-    },
+    welcome: string,
+    edit: string,
   },
-  followUp: {
+  pills_edit: {
+    welcome: string
+  },
+  history: {
     welcome: string,
   },
   settings: {
     title: string,
-    notification: {
+    notifications: {
       title: string,
-      pushNotification: string
+      pushNotifications: string
     },
     preferences: {
       title: string,

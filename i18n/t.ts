@@ -1,8 +1,6 @@
 import { translations } from "@i18n/index";
 import { useCurrentLanguage } from "@hooks/useCurrentLanguage";
 
-// -- v1
-
 export const t = (path: string, vars: Record<string, string | number> = {}) => {
   const lang = useCurrentLanguage();
   const parts = path.split(".");

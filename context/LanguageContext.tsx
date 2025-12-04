@@ -19,6 +19,7 @@ const getDeviceLanguage = (): LanguageCode => {
 
 export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
   const [language, setLanguageState] = useState<LanguageCode>(getDeviceLanguage());
+  const [isReady, setIsReady] = useState(false);
 
   // --- Load saved language ---
   useEffect(() => {
@@ -26,7 +27,8 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
       const saved = await AsyncStorage.getItem(STORAGE_KEY);
       if (saved && LANGUAGE_CODES.includes(saved as LanguageCode)) {
         setLanguage(saved as LanguageCode);
-      } 
+      }
+      setIsReady(true);
     })();
   }, []);
 
@@ -37,15 +39,16 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
     await AsyncStorage.setItem(STORAGE_KEY, lang);
   };
 
-  return (
+  return isReady ? (
     <LanguageContext.Provider value={{ language, setLanguage }}>
       {children}
     </LanguageContext.Provider>
-  );
+  ) : null;
 };
 
 export const useLanguage = () => {
   const ctx = useContext(LanguageContext);
-  if (!ctx) throw new Error("useLanguage must be used inside LanguageProvider");
+  if (!ctx) 
+    throw new Error("useLanguage must be used inside LanguageProvider");
   return ctx;
 };

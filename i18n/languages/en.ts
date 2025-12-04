@@ -14,28 +14,27 @@ const en: LanguageSet = {
 
   home: {
     welcome: "Welcome",
-  },
+    },
 
-  pills: {
-    home: {
+    pills: {
       welcome: "Your medication",
       edit: "Edit",
     },
-    edit: {
+
+    pills_edit: {
       welcome: "Edit medication",
     },
-  },
 
-  followUp: {
+  history: {
     welcome: "Follow-up",
   },
 
   settings: {
     title: "Settings",
 
-    notification: {
+    notifications: {
       title: "Notifications",
-      pushNotification: "Push notifications",
+      pushNotifications: "Push notifications",
     },
 
     preferences: {
@@ -45,7 +44,7 @@ const en: LanguageSet = {
     },
 
     help: {
-      title: "Help",
+      title: "Help & Support",
       contactUs: "Contact us",
     },
 
@@ -64,7 +63,7 @@ const en: LanguageSet = {
 
   settings_language: {
     title: "Choose a language",
-    description: "Select the display language of the app.",
+    description: "The selected language will be applied to the entire application.",
     fr: "French",
     en: "English",
     es: "Spanish",

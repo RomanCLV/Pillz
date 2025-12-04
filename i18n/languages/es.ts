@@ -17,25 +17,24 @@ const es: LanguageSet = {
   },
 
   pills: {
-    home: {
-      welcome: "Tus medicamentos",
-      edit: "Editar",
-    },
-    edit: {
-      welcome: "Editar medicamento",
-    },
+    welcome: "Tus medicamentos",
+    edit: "Editar",
   },
 
-  followUp: {
+  pills_edit: {
+    welcome: "Editar medicamento",
+  },
+
+  history: {
     welcome: "Seguimiento",
   },
 
   settings: {
     title: "Ajustes",
 
-    notification: {
+    notifications: {
       title: "Notificaciones",
-      pushNotification: "Notificaciones push",
+      pushNotifications: "Notificaciones push",
     },
 
     preferences: {
@@ -45,7 +44,7 @@ const es: LanguageSet = {
     },
 
     help: {
-      title: "Ayuda",
+      title: "Ayuda y soporte",
       contactUs: "Contáctanos",
     },
 
@@ -64,7 +63,7 @@ const es: LanguageSet = {
 
   settings_language: {
     title: "Elegir idioma",
-    description: "Selecciona el idioma de la aplicación.",
+    description: "El idioma seleccionado se aplicará a toda la aplicación.",
     fr: "Francés",
     en: "Inglés",
     es: "Español",

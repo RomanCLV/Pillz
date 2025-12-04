@@ -27,9 +27,7 @@ const SettingsSection: React.FC<SettingsSectionProps> = ({ title, children }) =>
 
 const styles = StyleSheet.create({
   section: {
-    marginTop: 20,
     borderRadius: 12,
-    marginHorizontal: 16,
     overflow: "hidden",
   },
   sectionHeader: {

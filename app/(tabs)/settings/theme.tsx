@@ -1,37 +1,40 @@
 // app/(tabs)/settings/theme.tsx
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import SafeTopAreaThemedView from "@components/themedComponents/SafeTopAreaThemedView";
 import ThemedText from "@themedComponents/ThemedText";
 import SettingsHeader from "@components/settings/SettingsHeader";
 import SelectionList, { SelectionOption } from "@components/settings/SelectionList";
 import { useAppTheme, ThemePreference } from "@context/ThemeContext";
+import { t } from "@i18n/t";
+import Spacer from "@components/Spacer";
 
-const THEME_OPTIONS: SelectionOption<ThemePreference>[] = [
-  { value: "system", label: "Système", icon: "phone-portrait-outline" },
-  { value: "light", label: "Clair", icon: "sunny-outline" },
-  { value: "dark", label: "Sombre", icon: "moon-outline" },
-];
 
 export default function ThemeSettingsScreen() {
   const { preference, setPreference, theme } = useAppTheme();
 
+  const THEME_OPTIONS: SelectionOption<ThemePreference>[] = [
+    { value: "system", label: t("settings_theme.system"), icon: "phone-portrait-outline" },
+    { value: "light", label: t("settings_theme.light"), icon: "sunny-outline" },
+    { value: "dark", label: t("settings_theme.dark"), icon: "moon-outline" },
+  ];
+
   const getDescription = () => {
     switch (preference) {
       case "system":
-        return "Le thème s'adaptera automatiquement aux paramètres de votre appareil.";
+        return t("settings_theme.systemDescription");
       case "light":
-        return "L'application utilisera toujours le thème clair.";
+        return t("settings_theme.lightDescription");
       case "dark":
-        return "L'application utilisera toujours le thème sombre.";
+        return t("settings_theme.darkDescription");
     }
   };
 
   return (
     <SafeTopAreaThemedView style={{ flex: 1 }}>
       <View style={[styles.container, { backgroundColor: theme.background.primary }]}>
-        <SettingsHeader title="Thème" />
+        <SettingsHeader title={t("settings_theme.title")} />
+        <Spacer height={24}/>
 
         <SelectionList
           options={THEME_OPTIONS}

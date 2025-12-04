@@ -6,15 +6,16 @@ import ThemedText from "@themedComponents/ThemedText";
 import Spacer from "@components/Spacer";
 import ThemedButton from "@components/themedComponents/ThemedButton";
 import {GlobalStyles} from "@constants/global-styles";
+import { t } from "@i18n/t";
 
 export default function index () {
   const router = useRouter();
   return (
     <SafeTopAreaThemedView style={[GlobalStyles.container, {justifyContent: "center", alignItems: "center"}]}>
-      <ThemedText>This is the pills edit page.</ThemedText>
+      <ThemedText>{t("pills_edit.welcome")}</ThemedText>
       <Spacer />
       <ThemedButton onPress={() => router.back() }>
-        Retour
+        {t("navigation.back")}
       </ThemedButton>
     </SafeTopAreaThemedView>
   );

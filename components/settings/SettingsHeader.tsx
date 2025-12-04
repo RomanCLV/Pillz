@@ -1,6 +1,6 @@
 // components/settings/SettingsHeader.tsx
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ViewStyle } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import ThemedText from "@themedComponents/ThemedText";
@@ -10,17 +10,19 @@ import { useTheme } from "@hooks/useTheme";
 type SettingsHeaderProps = {
   title: string;
   showBack?: boolean;
+  style?: ViewStyle;
 };
 
 const SettingsHeader: React.FC<SettingsHeaderProps> = ({ 
   title, 
-  showBack = true 
+  showBack = true,
+  style
 }) => {
   const router = useRouter();
   const theme = useTheme();
 
   return (
-    <View style={styles.header}>
+    <View style={[styles.header, !showBack && {paddingVertical: 7}, style]}>
       {showBack ? (
         <ThemedButton
           variant="ghost"
@@ -46,7 +48,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 24,
   },
   backButton: {
     width: 40,
