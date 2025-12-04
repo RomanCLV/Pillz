@@ -2,26 +2,29 @@
 import React, { useState } from "react";
 import { StyleSheet, ScrollView, View, Linking } from "react-native";
 import { useRouter } from "expo-router";
+import { useLanguage } from "@context/LanguageContext";
+import { useSettings } from "@context/SettingsContext";
+import { useAppTheme } from "@context/ThemeContext";
 import SafeTopAreaThemedView from "@components/themedComponents/SafeTopAreaThemedView";
 import SettingsSection from "@components/settings/SettingsSection";
 import SettingsItem from "@components/settings/SettingsItem";
 import SettingsHeader from "@components/settings/SettingsHeader";
+import Spacer from "@components/Spacer";
 import ThemedText from "@themedComponents/ThemedText";
-import { useTheme } from "@hooks/useTheme";
 import { Ionicons } from "@expo/vector-icons";
 import { t } from "@i18n/t";
-import Spacer from "@components/Spacer";
 
 export default function SettingsScreen() {
   const router = useRouter();
-  const theme = useTheme();
-  const [notifications, setNotifications] = useState(true);
+  const {theme, preference} = useAppTheme();
+  const {language} = useLanguage();
+  const { settings, update, loaded } = useSettings(); 
 
   const handleContactPress = () => {
     Linking.openURL("mailto:roman.clavier.2001@gmail.com");
   };
 
-  return (
+  return loaded ? (
     <SafeTopAreaThemedView style={{ flex: 1 }}>
       <ScrollView style={[styles.container, { backgroundColor: theme.background.primary }]}>
         <SettingsHeader title={t("settings.title")} showBack={false}/>
@@ -33,8 +36,8 @@ export default function SettingsScreen() {
             icon={({color, size}) => <Ionicons name="notifications-outline" color={color} size={size} />}
             label={t("settings.notifications.pushNotifications")}
             rightElement="switch"
-            switchValue={notifications}
-            onSwitchChange={setNotifications}
+            switchValue={settings?.pushNotifications}
+            onSwitchChange={(v) => update("pushNotifications", v)}
           />
         </SettingsSection>
         <Spacer height={20}/>
@@ -45,14 +48,14 @@ export default function SettingsScreen() {
             icon={({color, size}) => <Ionicons name="contrast-outline" color={color} size={size} />}
             label={t("settings.preferences.theme")}
             rightElement="value"
-            value={t("settings_theme.system")} // a rendre dynamique
+            value={t(`settings_theme.${preference}`)}
             onPress={() => router.push("settings/theme")}
           />
           <SettingsItem
             icon={({color, size}) => <Ionicons name="language-outline" color={color} size={size} />}
             label={t("settings.preferences.language")}
             rightElement="value"
-            value={t("settings_language.fr")} // a rendre dynamique
+            value={t(`settings_language.${language}`)}
             onPress={() => router.push("settings/language")}
           />
         </SettingsSection>
@@ -76,7 +79,7 @@ export default function SettingsScreen() {
         </View>
       </ScrollView>
     </SafeTopAreaThemedView>
-  );
+  ) : null;
 }
 
 const styles = StyleSheet.create({
