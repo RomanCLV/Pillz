@@ -1,5 +1,5 @@
 // app/(tabs)/settings/index.tsx
-import React, { useState } from "react";
+import React from "react";
 import { StyleSheet, ScrollView, View, Linking } from "react-native";
 import { useRouter } from "expo-router";
 import { useLanguage } from "@context/LanguageContext";
@@ -16,7 +16,7 @@ import { t } from "@i18n/t";
 
 export default function SettingsScreen() {
   const router = useRouter();
-  const {theme, preference} = useAppTheme();
+  const {theme, themePreference} = useAppTheme();
   const {language} = useLanguage();
   const { settings, update, loaded } = useSettings(); 
 
@@ -48,7 +48,7 @@ export default function SettingsScreen() {
             icon={({color, size}) => <Ionicons name="contrast-outline" color={color} size={size} />}
             label={t("settings.preferences.theme")}
             rightElement="value"
-            value={t(`settings_theme.${preference}`)}
+            value={t(`settings_theme.${themePreference}`)}
             onPress={() => router.push("settings/theme")}
           />
           <SettingsItem

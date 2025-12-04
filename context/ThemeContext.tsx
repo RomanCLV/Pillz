@@ -11,7 +11,7 @@ export type ThemePreference =  "system" | "light" | "dark";
 
 interface ThemeContextValue {
   theme: Theme;
-  preference: ThemePreference;
+  themePreference: ThemePreference;
   setPreference: (value: ThemePreference) => void;
 }
 
@@ -57,7 +57,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   return isReady ? (
-    <ThemeContext.Provider value={{ theme, preference, setPreference }}>
+    <ThemeContext.Provider value={{ theme, themePreference: preference, setPreference }}>
       {children}
     </ThemeContext.Provider>
   ) : null;

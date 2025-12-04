@@ -2,16 +2,15 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import SafeTopAreaThemedView from "@components/themedComponents/SafeTopAreaThemedView";
-import ThemedText from "@themedComponents/ThemedText";
 import SettingsHeader from "@components/settings/SettingsHeader";
 import SelectionList, { SelectionOption } from "@components/settings/SelectionList";
+import Spacer from "@components/Spacer";
+import ThemedText from "@themedComponents/ThemedText";
 import { useAppTheme, ThemePreference } from "@context/ThemeContext";
 import { t } from "@i18n/t";
-import Spacer from "@components/Spacer";
-
 
 export default function ThemeSettingsScreen() {
-  const { preference, setPreference, theme } = useAppTheme();
+  const { theme, themePreference, setPreference } = useAppTheme();
 
   const THEME_OPTIONS: SelectionOption<ThemePreference>[] = [
     { value: "system", label: t("settings_theme.system"), icon: "phone-portrait-outline" },
@@ -20,7 +19,7 @@ export default function ThemeSettingsScreen() {
   ];
 
   const getDescription = () => {
-    switch (preference) {
+    switch (themePreference) {
       case "system":
         return t("settings_theme.systemDescription");
       case "light":
@@ -38,7 +37,7 @@ export default function ThemeSettingsScreen() {
 
         <SelectionList
           options={THEME_OPTIONS}
-          selectedValue={preference}
+          selectedValue={themePreference}
           onSelect={setPreference}
           showSelectedIcon={false}
         />
