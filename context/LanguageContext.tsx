@@ -14,7 +14,7 @@ const LanguageContext = createContext<LanguageContextType | null>(null);
 
 const getDeviceLanguage = (): LanguageCode => {
   const locale = Localization.getLocales()?.[0]?.languageCode?.toLowerCase();
-  return (locale && LANGUAGE_CODES.includes(locale as LanguageCode)) ? (locale as LanguageCode) : "en"; // fallback
+  return (locale && LANGUAGE_CODES.includes(locale as LanguageCode)) ? (locale as LanguageCode) : "fr"; // fallback
 };
 
 export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {

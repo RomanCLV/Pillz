@@ -69,6 +69,37 @@ const fr: LanguageSet = {
     es: "Espagnol",
     de: "Allemand",
     it: "Italien",
+  },
+
+  pill: {
+    // Unités
+    unit: {
+      mg: "mg",
+      ml: "ml",
+      tablespoon: "c. à soupe",
+      teaspoon: "c. à café",
+      pill: "cachet",
+      sachet: "sachet",
+    },
+    // Usage
+    usage: {
+      mg: { one: "{n} mg", other: "{n} mg" },
+      ml: { one: "{n} ml", other: "{n} ml" },
+      tablespoon: { one: "{n} c. à soupe", other: "{n} c. à soupe" },
+      teaspoon: { one: "{n} c. à café", other: "{n} c. à café" },
+      pill: { one: "{n} cachet", other: "{n} cachets" },
+      sachet: { one: "{n} sachet", other: "{n} sachets" },
+    },
+    
+    // Labels
+    schedules: "Horaires de prise",
+    stock: "Stock",
+    minInterval: "Intervalle min",
+    until: "Jusqu'au",
+    // Page liste
+    title: "Mes médicaments",
+    noPills: "Aucun médicament enregistré",
+    addPill: "Ajouter un médicament",
   }
 };
 

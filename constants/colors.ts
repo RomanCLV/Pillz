@@ -8,9 +8,9 @@ export const Colors = {
     accent: "#FF9500",
     accentLight: "#FFDBB2",
     error: "#FF3B30",
-    errorLight: "#FFB7B2",
+    errorLight: "#fd857cff",
   },
-  // Échelle de gris : 0 (blanc) → 950 (presque noir)
+  // Échelle de gris : 0 (blanc) -> 950 (presque noir)
   gray: {
     0: "#FFFFFF",      // Blanc pur
     50: "#F2F0EF",     // Off-white

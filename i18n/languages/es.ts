@@ -1,6 +1,6 @@
 import { LanguageSet } from "../types";
 
-const es: LanguageSet = {
+const es/*: LanguageSet*/ = {
   tabBar: {
     daily: "Diario",
     pills: "Medicación",

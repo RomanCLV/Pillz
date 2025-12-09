@@ -1,12 +1,13 @@
-export const LANGUAGE_CODES = ["fr", "en", "es", "de", "it"] as const;
+//export const LANGUAGE_CODES = ["fr", "en", "es", "de", "it"] as const;
+export const LANGUAGE_CODES = ["fr"] as const;
 export type LanguageCode = typeof LANGUAGE_CODES[number];
 
 export const LANGUAGE_FLAGS: Record<LanguageCode, string> = {
   fr: "🇫🇷",
-  en: "🇬🇧",
-  es: "🇪🇸",
-  de: "🇩🇪",
-  it: "🇮🇹",
+  //en: "🇬🇧",
+  //es: "🇪🇸",
+  //de: "🇩🇪",
+  //it: "🇮🇹",
 } as const;
 
 export type LanguageSet = {
@@ -66,5 +67,34 @@ export type LanguageSet = {
     es: string,
     de: string,
     it: string,
+  },
+  pill: {
+    // Unités
+    unit: {
+      mg: string,
+      ml: string,
+      tablespoon: string,
+      teaspoon: string,
+      pill: string,
+      sachet: string,
+    },
+    // Usage
+    usage: {
+      mg: { one: string, other: string },
+      ml: { one: string, other: string },
+      tablespoon: { one: string, other: string },
+      teaspoon: { one: string, other: string },
+      pill: { one: string, other: string },
+      sachet: { one: string, other: string },
+    },
+    // Labels
+    schedules: string,
+    stock: string,
+    minInterval: string,
+    until: string,
+    // Page liste
+    title: string,
+    noPills: string,
+    addPill: string,
   }
 };
