@@ -12,8 +12,8 @@ import { PillCard } from "@components/pills/PillCard";
 // Données de test
 const MOCK_PILLS: Pill[] = [
   {
-    id: '1',
-    name: 'Doliprane',
+    id: "1",
+    name: "Doliprane",
     dosage: 1000,
     unit: DosageUnit.MG,
     schedules: [
@@ -22,7 +22,7 @@ const MOCK_PILLS: Pill[] = [
       { hour: 20, minute: 0 },
     ],
     treatmentDuration: {
-      startDate: new Date('2024-12-01'),
+      startDate: new Date("2024-12-01"),
       endDate: null, // Pas de limite
     },
     minHoursBetweenIntakes: 4,
@@ -30,24 +30,24 @@ const MOCK_PILLS: Pill[] = [
     reminderThreshold: 5,
   },
   {
-    id: '2',
-    name: 'Vitamine D',
+    id: "2",
+    name: "Vitamine D",
     dosage: 1,
     unit: DosageUnit.PILL,
     schedules: [
       { hour: 9, minute: 0 },
     ],
     treatmentDuration: {
-      startDate: new Date('2024-11-15'),
-      endDate: new Date('2025-02-15'),
+      startDate: new Date("2024-11-15"),
+      endDate: new Date("2025-02-15"),
     },
     minHoursBetweenIntakes: 24,
     stockQuantity: 18,
     reminderThreshold: 10,
   },
   {
-    id: '3',
-    name: 'Sirop contre la toux',
+    id: "3",
+    name: "Sirop contre la toux",
     dosage: 1,
     unit: DosageUnit.TABLESPOON,
     schedules: [
@@ -56,16 +56,16 @@ const MOCK_PILLS: Pill[] = [
       { hour: 19, minute: 30 },
     ],
     treatmentDuration: {
-      startDate: new Date('2024-12-05'),
-      endDate: new Date('2024-12-12'),
+      startDate: new Date("2024-12-05"),
+      endDate: new Date("2024-12-12"),
     },
     minHoursBetweenIntakes: 6,
     stockQuantity: 3,
     reminderThreshold: 5,
   },
   {
-    id: '4',
-    name: 'Probiotiques',
+    id: "4",
+    name: "Probiotiques",
     dosage: 2,
     unit: DosageUnit.SACHET,
     schedules: [
@@ -73,7 +73,7 @@ const MOCK_PILLS: Pill[] = [
       { hour: 20, minute: 30 },
     ],
     treatmentDuration: {
-      startDate: new Date('2024-12-01'),
+      startDate: new Date("2024-12-01"),
       endDate: null,
     },
     minHoursBetweenIntakes: 12,
@@ -81,8 +81,8 @@ const MOCK_PILLS: Pill[] = [
     reminderThreshold: 8,
   },
   {
-    id: '5',
-    name: 'Phytoxil',
+    id: "5",
+    name: "Phytoxil",
     dosage: 10,
     unit: DosageUnit.ML,
     schedules: [
@@ -91,7 +91,7 @@ const MOCK_PILLS: Pill[] = [
       { hour: 20, minute: 30 },
     ],
     treatmentDuration: {
-      startDate: new Date('2024-12-01'),
+      startDate: new Date("2024-12-01"),
       endDate: null,
     },
     minHoursBetweenIntakes: 3,
@@ -104,7 +104,7 @@ export default function index () {
   const router = useRouter();
 
   const handleAddPill = () => {
-    router.push('/pills/edit');
+    router.push("/pills/edit");
   };
 
   const handlePillPress = (pillId: string) => {
@@ -115,12 +115,12 @@ export default function index () {
     <SafeTopAreaThemedView style={styles.container}>
       {/* En-tête */}
       <View style={styles.header}>
-        <ThemedText style={styles.title}>{t('pill.title')}</ThemedText>
+        <ThemedText style={styles.title}>{t("pills.title")}</ThemedText>
         <ThemedButton
           onPress={handleAddPill}
           style={styles.addButton}
         >
-          {t('pill.addPill')}
+          {t("pills.addPill")}
         </ThemedButton>
       </View>
 
@@ -133,7 +133,7 @@ export default function index () {
         {MOCK_PILLS.length === 0 ? (
           <View style={styles.emptyState}>
             <ThemedText style={styles.emptyText}>
-              {t('pill.noPills')}
+              {t("pills.noPills")}
             </ThemedText>
           </View>
         ) : (
@@ -160,10 +160,10 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   addButton: {
-    alignSelf: 'flex-start',
+    alignSelf: "center",
   },
   scrollView: {
     flex: 1,
@@ -174,13 +174,13 @@ const styles = StyleSheet.create({
   },
   emptyState: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 60,
   },
   emptyText: {
     fontSize: 16,
     opacity: 0.5,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });

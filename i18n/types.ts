@@ -24,8 +24,9 @@ export type LanguageSet = {
     welcome: string,
   },
   pills: {
-    welcome: string,
-    edit: string,
+    title: string,
+    noPills: string,
+    addPill: string,
   },
   pills_edit: {
     welcome: string
@@ -92,9 +93,5 @@ export type LanguageSet = {
     stock: string,
     minInterval: string,
     until: string,
-    // Page liste
-    title: string,
-    noPills: string,
-    addPill: string,
   }
 };

@@ -17,8 +17,9 @@ const fr: LanguageSet = {
   },
 
   pills: {
-    welcome: "Vos médicaments",
-    edit: "Modifier",
+    title: "Mes médicaments",
+    noPills: "Aucun médicament enregistré",
+    addPill: "Ajouter un médicament",
   },
 
   pills_edit: {
@@ -96,10 +97,6 @@ const fr: LanguageSet = {
     stock: "Stock",
     minInterval: "Intervalle min",
     until: "Jusqu'au",
-    // Page liste
-    title: "Mes médicaments",
-    noPills: "Aucun médicament enregistré",
-    addPill: "Ajouter un médicament",
   }
 };
 

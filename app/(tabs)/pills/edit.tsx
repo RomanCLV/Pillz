@@ -1,5 +1,5 @@
 import React from "react";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 
 import SafeTopAreaThemedView from "@components/themedComponents/SafeTopAreaThemedView";
 import ThemedText from "@themedComponents/ThemedText";
@@ -10,9 +10,11 @@ import { t } from "@i18n/t";
 
 export default function index () {
   const router = useRouter();
+  const {id} = useLocalSearchParams();
+
   return (
     <SafeTopAreaThemedView style={[GlobalStyles.container, {justifyContent: "center", alignItems: "center"}]}>
-      <ThemedText>{t("pills_edit.welcome")}</ThemedText>
+      <ThemedText>{id ?? "New"}</ThemedText>
       <Spacer />
       <ThemedButton onPress={() => router.back() }>
         {t("navigation.back")}
