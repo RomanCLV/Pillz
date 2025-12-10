@@ -41,7 +41,7 @@ export function PillCard({ pill, onPress }: PillCardProps) {
             </ThemedText>
             <View style={styles.schedulesContainer}>
               {pill.schedules.map((schedule, index) => (
-                <ScheduleChip key={index} schedule={schedule} variant="primary" />
+                <ScheduleChip key={index} schedule={schedule} variant="primary" intensity="light"  />
               ))}
             </View>
           </View>

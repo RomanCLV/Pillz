@@ -3,7 +3,6 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 
 import SafeTopAreaThemedView from "@components/themedComponents/SafeTopAreaThemedView";
-import SettingsHeader from "@components/settings/SettingsHeader";
 import SelectionList from "@components/settings/SelectionList";
 import ThemedText from "@themedComponents/ThemedText";
 import { useTheme } from "@hooks/useTheme";
@@ -11,6 +10,7 @@ import { useLanguage } from "@context/LanguageContext";
 import { LANGUAGE_CODES, LANGUAGE_FLAGS } from "@i18n/types";
 import { t } from "@i18n/t";
 import Spacer from "@components/Spacer";
+import BackHeader from "@components/headers/BackHeader";
 
 export default function LanguageSettingsScreen() {
   const theme = useTheme();
@@ -29,7 +29,7 @@ export default function LanguageSettingsScreen() {
   return (
     <SafeTopAreaThemedView style={{ flex: 1 }}>
       <View style={[styles.container, { backgroundColor: theme.background.primary }]}>
-        <SettingsHeader title={t("settings_language.title")} />
+        <BackHeader title={t("settings_language.title")} />
         <Spacer height={24}/>
         
         <SelectionList

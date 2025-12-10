@@ -8,6 +8,9 @@ import ThemedText from "@themedComponents/ThemedText";
 import { t } from "@i18n/t";
 import { DosageUnit, Pill } from "types/pill";
 import { PillCard } from "@components/pills/PillCard";
+import TitlePage from "@components/TitlePage";
+import AddIcon from "@icons/add.svg"
+import { useTheme } from "@hooks/useTheme";
 
 // Données de test
 const MOCK_PILLS: Pill[] = [
@@ -26,6 +29,7 @@ const MOCK_PILLS: Pill[] = [
       endDate: null, // Pas de limite
     },
     minHoursBetweenIntakes: 4,
+    intakeWindowMinutes: 60,
     stockQuantity: 24,
     reminderThreshold: 5,
   },
@@ -42,6 +46,7 @@ const MOCK_PILLS: Pill[] = [
       endDate: new Date("2025-02-15"),
     },
     minHoursBetweenIntakes: 24,
+    intakeWindowMinutes: 60,
     stockQuantity: 18,
     reminderThreshold: 10,
   },
@@ -60,6 +65,7 @@ const MOCK_PILLS: Pill[] = [
       endDate: new Date("2024-12-12"),
     },
     minHoursBetweenIntakes: 6,
+    intakeWindowMinutes: 60,
     stockQuantity: 3,
     reminderThreshold: 5,
   },
@@ -77,6 +83,7 @@ const MOCK_PILLS: Pill[] = [
       endDate: null,
     },
     minHoursBetweenIntakes: 12,
+    intakeWindowMinutes: 60,
     stockQuantity: 30,
     reminderThreshold: 8,
   },
@@ -95,6 +102,7 @@ const MOCK_PILLS: Pill[] = [
       endDate: null,
     },
     minHoursBetweenIntakes: 3,
+    intakeWindowMinutes: 60,
     stockQuantity: 30,
     reminderThreshold: 0,
   },
@@ -102,6 +110,7 @@ const MOCK_PILLS: Pill[] = [
 
 export default function index () {
   const router = useRouter();
+  const theme = useTheme();
 
   const handleAddPill = () => {
     router.push("/pills/edit");
@@ -115,13 +124,7 @@ export default function index () {
     <SafeTopAreaThemedView style={styles.container}>
       {/* En-tête */}
       <View style={styles.header}>
-        <ThemedText style={styles.title}>{t("pills.title")}</ThemedText>
-        <ThemedButton
-          onPress={handleAddPill}
-          style={styles.addButton}
-        >
-          {t("pills.addPill")}
-        </ThemedButton>
+        <TitlePage title={t("pills.title")} />
       </View>
 
       {/* Liste des médicaments */}
@@ -145,6 +148,13 @@ export default function index () {
             />
           ))
         )}
+        <ThemedButton
+          onPress={handleAddPill}
+          style={styles.addButton}
+          icon={<AddIcon width={24} height={24} color={theme.text.onBrand} />}
+        >
+          {t("pills.addPill")}
+        </ThemedButton>
       </ScrollView>
     </SafeTopAreaThemedView>
   );
@@ -158,12 +168,8 @@ const styles = StyleSheet.create({
     padding: 16,
     gap: 12,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-  },
   addButton: {
-    alignSelf: "center",
+    marginTop: 8,
   },
   scrollView: {
     flex: 1,

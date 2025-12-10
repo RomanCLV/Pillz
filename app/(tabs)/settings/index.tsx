@@ -8,11 +8,11 @@ import { useAppTheme } from "@context/ThemeContext";
 import SafeTopAreaThemedView from "@components/themedComponents/SafeTopAreaThemedView";
 import SettingsSection from "@components/settings/SettingsSection";
 import SettingsItem from "@components/settings/SettingsItem";
-import SettingsHeader from "@components/settings/SettingsHeader";
 import Spacer from "@components/Spacer";
 import ThemedText from "@themedComponents/ThemedText";
 import { Ionicons } from "@expo/vector-icons";
 import { t } from "@i18n/t";
+import TitlePage from "@components/TitlePage";
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -27,7 +27,7 @@ export default function SettingsScreen() {
   return loaded ? (
     <SafeTopAreaThemedView style={{ flex: 1 }}>
       <ScrollView style={[styles.container, { backgroundColor: theme.background.primary }]}>
-        <SettingsHeader title={t("settings.title")} showBack={false}/>
+        <TitlePage title={t("settings.title")} />
         <Spacer height={24}/>
 
         {/* Section Notifications */}

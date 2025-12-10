@@ -1,162 +1,137 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
-import ThemedText from "@components/themedComponents/ThemedText";
 import { useTheme } from "@hooks/useTheme";
-import CloseIcon from "@icons/close.svg"
 
 type ColorVariant = "primary" | "secondary" | "accent" | "error" | "highlight";
 type IntensityVariant = "light" | "solid";
 
-interface ChipProps {
-  children: React.ReactNode;
+interface ChipIconProps {
+  icon: (props: { color: string; size: number }) => React.ReactNode;
   variant?: ColorVariant;
   intensity?: IntensityVariant;
+  size?: number;
   style?: ViewStyle;
   onPress?: () => void;
-  onClose?: () => void;
 }
 
-export function Chip({ 
-  children, 
-  variant = "primary", 
+export function ChipIcon({
+  icon,
+  variant = "primary",
   intensity = "light",
+  size = 40,
   style,
   onPress,
-  onClose,
-}: ChipProps) {
+}: ChipIconProps) {
   const theme = useTheme();
 
   const getColors = () => {
-    // Intensité "solid" : couleur pleine avec texte blanc
+    // Intensité "solid" : couleur pleine avec icône blanche
     if (intensity === "solid") {
       switch (variant) {
         case "primary":
           return {
             background: theme.brand.primary,
-            text: theme.text.onBrand,
+            icon: theme.text.onBrand,
           };
         case "secondary":
           return {
             background: theme.brand.secondary,
-            text: theme.text.onBrand,
+            icon: theme.text.onBrand,
           };
         case "accent":
           return {
             background: theme.brand.accent,
-            text: theme.text.onBrand,
+            icon: theme.text.onBrand,
           };
         case "error":
           return {
             background: theme.brand.error,
-            text: theme.text.onBrand,
+            icon: theme.text.onBrand,
           };
         case "highlight":
           return {
             background: theme.background.highlight,
-            text: theme.text.primary,
+            icon: theme.text.primary,
           };
         default:
           return {
             background: theme.brand.primary,
-            text: theme.text.onBrand,
+            icon: theme.text.onBrand,
           };
       }
     }
 
-    // Intensité "light" : couleur transparente avec texte coloré
+    // Intensité "light" : couleur transparente avec icône colorée
     switch (variant) {
       case "primary":
         return {
           background: theme.brand.primary + "15",
-          text: theme.brand.primary,
+          icon: theme.brand.primary,
         };
       case "secondary":
         return {
           background: theme.brand.secondary + "15",
-          text: theme.brand.secondary,
+          icon: theme.brand.secondary,
         };
       case "accent":
         return {
           background: theme.brand.accent + "15",
-          text: theme.brand.accent,
+          icon: theme.brand.accent,
         };
       case "error":
         return {
           background: theme.brand.error + "15",
-          text: theme.brand.error,
+          icon: theme.brand.error,
         };
       case "highlight":
         return {
-          background: theme.isDark 
-            ? theme.background.highlight + "40" 
+          background: theme.isDark
+            ? theme.background.highlight + "40"
             : theme.background.highlight + "60",
-          text: theme.text.secondary,
+          icon: theme.text.secondary,
         };
       default:
         return {
           background: theme.brand.primary + "15",
-          text: theme.brand.primary,
+          icon: theme.brand.primary,
         };
     }
   };
 
   const colors = getColors();
+  const iconSize = size * 0.5; // L"icône fait 50% de la taille du cercle
 
   const chipContent = (
     <View
       style={[
         styles.chip,
-        { backgroundColor: colors.background },
+        {
+          backgroundColor: colors.background,
+          width: size,
+          height: size,
+          borderRadius: size / 2, // Cercle parfait
+        },
         style,
       ]}
     >
-      {typeof children === 'string' || typeof children === 'number' ? (
-        <ThemedText style={[styles.text, { color: colors.text }]}>
-          {children}
-        </ThemedText>
-      ) : (
-        <View style={styles.content}>
-          {children}
-        </View>
-      )}
-      {onClose && (
-        <TouchableOpacity
-          onPress={onClose}
-          style={styles.closeButton}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <CloseIcon width={16} height={16} color={colors.text} />
-        </TouchableOpacity>
-      )}
+      {icon({ color: colors.icon, size: iconSize })}
     </View>
   );
 
-  return onPress ?
-    <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
-      {chipContent}
-    </TouchableOpacity>
-    :
-    chipContent;
+  if (onPress) {
+    return (
+      <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+        {chipContent}
+      </TouchableOpacity>
+    );
+  }
+
+  return chipContent;
 }
 
 const styles = StyleSheet.create({
   chip: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
-  },
-  text: {
-    fontSize: 14,
-    fontWeight: "600",
-  },
-  content: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  closeButton: {
-    marginLeft: 4,
   },
 });

@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   ViewStyle,
   TextStyle,
+  View
 } from "react-native";
 import { useTheme } from "../../hooks/useTheme";
 
@@ -20,6 +21,7 @@ type ThemedButtonProps = TouchableOpacityProps & {
   alignment?: TextAlignment;
   loading?: boolean;
   children: React.ReactNode;
+  icon?: React.ReactNode;
 };
 
 const ThemedButton: React.FC<ThemedButtonProps> = ({
@@ -29,6 +31,7 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
   loading = false,
   disabled = false,
   style,
+  icon,
   children,
   ...props
 }) => {
@@ -191,22 +194,22 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
       ]}
       activeOpacity={0.7}
     >
-      {loading ? (
-        <ActivityIndicator
-          color={variantStyles.text.color}
-          size={size === "small" ? "small" : "small"}
-        />
-      ) : (
+      {loading ?  <ActivityIndicator 
+        color={variantStyles.text.color}
+        size={size === "small" ? "small" : "small"} />
+      : 
+      <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
+        {icon}
         <Text
           style={[
-            //styles.text,
             variantStyles.text,
             sizeStyles.text,
           ]}
         >
           {children}
         </Text>
-      )}
+      </View>
+      }
     </TouchableOpacity>
   );
 };
@@ -215,13 +218,9 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 8,
     alignItems: "center",
-    //justifyContent: "center",
     flexDirection: "row",
   },
-  //text: {
-  //  fontWeight: "600",
-  //  textAlign: "center",
-  //},
+
   disabled: {
     opacity: 0.6,
   },

@@ -2,12 +2,12 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import SafeTopAreaThemedView from "@components/themedComponents/SafeTopAreaThemedView";
-import SettingsHeader from "@components/settings/SettingsHeader";
 import SelectionList, { SelectionOption } from "@components/settings/SelectionList";
 import Spacer from "@components/Spacer";
 import ThemedText from "@themedComponents/ThemedText";
 import { useAppTheme, ThemePreference } from "@context/ThemeContext";
 import { t } from "@i18n/t";
+import BackHeader from "@components/headers/BackHeader";
 
 export default function ThemeSettingsScreen() {
   const { theme, themePreference, setPreference } = useAppTheme();
@@ -32,7 +32,7 @@ export default function ThemeSettingsScreen() {
   return (
     <SafeTopAreaThemedView style={{ flex: 1 }}>
       <View style={[styles.container, { backgroundColor: theme.background.primary }]}>
-        <SettingsHeader title={t("settings_theme.title")} />
+        <BackHeader title={t("settings_theme.title")} />
         <Spacer height={24}/>
 
         <SelectionList
