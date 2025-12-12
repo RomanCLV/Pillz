@@ -8,6 +8,7 @@ import {
   Easing,
   Modal,
   Dimensions,
+  ViewStyle,
 } from "react-native";
 import { useTheme } from "@hooks/useTheme";
 import ThemedButton from "@components/themedComponents/ThemedButton";
@@ -27,6 +28,8 @@ interface BottomSheetModalProps {
   height?: number;
   header?: BottomSheetHeaderProps;
   children: React.ReactNode;
+  headerStyle?: ViewStyle;
+  contentStyle?: ViewStyle;
 }
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -37,6 +40,8 @@ export default function BottomSheetModal({
   height = SCREEN_HEIGHT * 0.35,
   header,
   children,
+  headerStyle,
+  contentStyle,
 }: BottomSheetModalProps) {
   const theme = useTheme();
   const translateY = useRef(new Animated.Value(height)).current;
@@ -52,7 +57,8 @@ export default function BottomSheetModal({
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }).start();
-    } else {
+    } 
+    else {
       Animated.timing(translateY, {
         toValue: height,
         duration: 250,
@@ -96,6 +102,7 @@ export default function BottomSheetModal({
               style={[
                 styles.header,
                 { borderBottomColor: theme.border.light },
+                headerStyle,
               ]}
             >
               <View style={{ position: "absolute", width: "100%", alignItems: "center" }}>
@@ -122,7 +129,7 @@ export default function BottomSheetModal({
           )}
 
           {/* Content */}
-          <View style={styles.content}>{children}</View>
+          <View style={[styles.content, contentStyle]}>{children}</View>
         </Animated.View>
       </View>
     </Modal>
@@ -163,5 +170,6 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     justifyContent: "center",
+    alignItems: "center"
   },
 });

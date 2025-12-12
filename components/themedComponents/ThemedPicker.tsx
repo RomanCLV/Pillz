@@ -25,6 +25,8 @@ interface ThemedPickerProps {
   onValueChange: (value: any) => void;
   placeholder?: string;
   style?: ViewStyle;
+  headerStyle?: ViewStyle;
+  contentStyle?: ViewStyle;
 }
 
 export default function ThemedPicker({
@@ -33,6 +35,8 @@ export default function ThemedPicker({
   onValueChange,
   placeholder = "Sélectionner",
   style,
+  headerStyle,
+  contentStyle,
 }: ThemedPickerProps) {
   const theme = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
@@ -80,6 +84,8 @@ export default function ThemedPicker({
             setModalVisible(false);
           },
         }}
+        headerStyle={headerStyle}
+        contentStyle={contentStyle}
       >
         <Picker
           data={items}

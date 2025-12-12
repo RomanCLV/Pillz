@@ -28,6 +28,7 @@ import {
 } from "types/pill";
 import HeaderButton from "@components/headers/HeaderButton";
 import { capitalizeFirstLetter } from "@utils/capitalizeFirstLetter";
+import ThemedDatePicker from "@components/themedComponents/ThemedDatePicker";
 
 export default function EditPillScreen() {
   const router = useRouter();
@@ -115,6 +116,10 @@ export default function EditPillScreen() {
       schedules: formData.schedules.filter((_, i) => i !== index),
     });
   };
+
+  const today = new Date();
+  const maxDate = new Date();
+  maxDate.setFullYear(today.getFullYear() + 1);
 
   return (
     <SafeTopAreaThemedView style={styles.container}>
@@ -244,9 +249,21 @@ export default function EditPillScreen() {
             </View>
 
             {hasEndDate && (
-              <ThemedText style={[styles.dateText, { color: theme.text.secondary }]}>
-                Jusqu"au: {formData.treatmentDuration.endDate?.toLocaleDateString()}
-              </ThemedText>
+              <ThemedDatePicker
+                value={formData.treatmentDuration.endDate}
+                onChange={(date) => 
+                  setFormData({
+                    ...formData,
+                    treatmentDuration: {
+                      ...formData.treatmentDuration,
+                      endDate: date,
+                    },
+                  })
+                }
+                placeholder="Choisir une date"
+                minDate={today}
+                //maxDate={maxDate}
+              />
             )}
           </FormField>
 
