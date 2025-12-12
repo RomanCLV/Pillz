@@ -37,17 +37,7 @@ const SettingsItem: React.FC<SettingsItemProps> = ({
         </ThemedText>
       </View>
 
-      {rightElement === "switch" && (
-        <View
-          style={{
-            height: 23,               // Hauteur utile du switch sans ombre
-            justifyContent: "center", // centre le switch
-            overflow: "visible",      // permet à l'ombre d'exister sans affecter la hauteur
-          }}
-        >
-          <ThemedSwitch value={switchValue} onValueChange={onSwitchChange} />
-        </View>
-      )}
+      {rightElement === "switch" && <ThemedSwitch value={switchValue} onValueChange={onSwitchChange} /> }
 
       {rightElement === "value" && (
         <View style={styles.settingRight}>

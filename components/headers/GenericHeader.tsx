@@ -6,8 +6,6 @@ interface GenericHeaderProps {
   title: string;
   leftButton?: React.ReactNode;
   rightButton?: React.ReactNode;
-  onLeftPress?: () => void;
-  onRightPress?: () => void;
   style?: ViewStyle;
 }
 
@@ -15,8 +13,6 @@ export default function GenericHeader({
   title,
   leftButton,
   rightButton,
-  onLeftPress,
-  onRightPress,
   style,
 }: GenericHeaderProps) {
 
@@ -24,11 +20,7 @@ export default function GenericHeader({
     <View style={[styles.header, style]}>
       {/* Icône gauche */}
       <View style={styles.iconContainer}>
-        {leftButton && onLeftPress ? (
-          <TouchableOpacity onPress={onLeftPress} activeOpacity={0.7}>
-            {leftButton}
-          </TouchableOpacity>
-        ) : leftButton ? leftButton : <View style={styles.placeholder} />}
+        { leftButton ? leftButton : <View style={styles.placeholder} />}
       </View>
 
       {/* Titre */}
@@ -36,11 +28,7 @@ export default function GenericHeader({
 
       {/* Icône droite */}
       <View style={styles.iconContainer}>
-        {rightButton && onRightPress ? (
-          <TouchableOpacity onPress={onRightPress} activeOpacity={0.7}>
-            {rightButton}
-          </TouchableOpacity>
-        ) : rightButton ? rightButton : <View style={styles.placeholder} />}
+        { rightButton ? rightButton : <View style={styles.placeholder} />}
       </View>
     </View>
   );

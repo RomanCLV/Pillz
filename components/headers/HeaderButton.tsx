@@ -4,20 +4,20 @@ import { useRouter } from "expo-router"
 import ThemedButton from "@components/themedComponents/ThemedButton"
 
 type HeaderButtonProps = {
-    icon: React.ReactNode,
-    style?: ViewStyle
+    icon: React.ReactNode;
+    style?: ViewStyle;
+    onPress?: () => void;
 }
 
 const HeaderButton: React.FC<HeaderButtonProps> = ({
     icon,
     style,
+    onPress,
 }) => {
-  const router = useRouter()
-
   return <ThemedButton
     variant="ghost"
     size="small"
-    onPress={() => router.back()}
+    onPress={onPress}
     style={[styles.backButton, style]}
   >
     {icon}

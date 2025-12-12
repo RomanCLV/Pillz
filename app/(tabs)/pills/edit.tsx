@@ -53,6 +53,15 @@ export default function EditPillScreen() {
     value: unit,
   }));
 
+  let hoursBetweenIntakesItems = [];
+  for (let i = 0; i < 23; i++)
+  {
+    hoursBetweenIntakesItems.push({
+      label: formatIntakeWindow((i+1) * 60),
+      value: i+1
+    });
+  }
+
   const intakeWindowItems: PickerItem[] = INTAKE_WINDOW_OPTIONS.map((minutes) => ({
     label: formatIntakeWindow(minutes),
     value: minutes,
@@ -60,6 +69,9 @@ export default function EditPillScreen() {
 
   const handleSave = () => {
     // Validation
+    console.log("handleSave");
+    console.log(formData);
+    
     if (!formData.name.trim()) {
       Alert.alert("Erreur", "Veuillez entrer un nom de médicament");
       return;
@@ -102,11 +114,83 @@ export default function EditPillScreen() {
   };
 
   const handleAddSchedule = () => {
-    // TODO: Ouvrir un modal/picker pour ajouter un horaire
-    const newSchedule: PillSchedule = { hour: 8, minute: 0 };
+    const schedules = formData.schedules;
+    
+    // Si aucun horaire existant, créer le premier à 8h00
+    if (schedules.length === 0) {
+      const newSchedule: PillSchedule = { hour: 8, minute: 0 };
+      setFormData({
+        ...formData,
+        schedules: [newSchedule],
+      });
+      return;
+    }
+
+    // Trier les horaires existants
+    const sortedSchedules = [...schedules].sort((a, b) => {
+      const timeA = a.hour * 60 + a.minute;
+      const timeB = b.hour * 60 + b.minute;
+      return timeA - timeB;
+    });
+
+    // Prendre le dernier horaire
+    const lastSchedule = sortedSchedules[sortedSchedules.length - 1];
+    const lastTimeInMinutes = lastSchedule.hour * 60 + lastSchedule.minute;
+    
+    // Ajouter minHoursBetweenIntakes
+    const minGapMinutes = formData.minHoursBetweenIntakes * 60;
+    let newTimeInMinutes = lastTimeInMinutes + minGapMinutes;
+    
+    // Si ça dépasse minuit
+    if (newTimeInMinutes >= 24 * 60) {
+      // Boucler sur 24h : 24h00 devient 00h00
+      newTimeInMinutes = newTimeInMinutes % (24 * 60);
+      
+      // Vérifier s'il y a assez de place avant le premier horaire
+      const firstSchedule = sortedSchedules[0];
+      const firstTimeInMinutes = firstSchedule.hour * 60 + firstSchedule.minute;
+      
+      // Calculer l'écart entre le nouvel horaire et le premier
+      const gapToFirst = firstTimeInMinutes - newTimeInMinutes;
+      
+      // Si l'écart est insuffisant, on ne peut pas ajouter
+      if (gapToFirst < minGapMinutes) {
+        Alert.alert(
+          "Impossible d'ajouter",
+          `Impossible d'ajouter un nouvel horaire. L'intervalle minimal de ${formData.minHoursBetweenIntakes}h n'est pas respecté.`
+        );
+        return;
+      }
+    }
+    
+    const newHour = Math.floor(newTimeInMinutes / 60);
+    const newMinute = newTimeInMinutes % 60;
+    
+    const newSchedule: PillSchedule = { hour: newHour, minute: newMinute };
+    
+    // Vérifier les doublons
+    const isDuplicate = formData.schedules.some(
+      (s) => s.hour === newSchedule.hour && s.minute === newSchedule.minute
+    );
+    
+    if (isDuplicate) {
+      Alert.alert(
+        "Horaire existant",
+        "Cet horaire existe déjà."
+      );
+      return;
+    }
+    
+    const finalSchedules = [...formData.schedules, newSchedule];
+    const finalSortedSchedules = finalSchedules.sort((a, b) => {
+      const timeA = a.hour * 60 + a.minute;
+      const timeB = b.hour * 60 + b.minute;
+      return timeA - timeB;
+    });
+    
     setFormData({
       ...formData,
-      schedules: [...formData.schedules, newSchedule],
+      schedules: finalSortedSchedules,
     });
   };
 
@@ -115,6 +199,56 @@ export default function EditPillScreen() {
       ...formData,
       schedules: formData.schedules.filter((_, i) => i !== index),
     });
+  };
+
+  const handleEditSchedule = (index: number) => {
+    console.log("edit:", index);
+  };
+
+  const handleMinHoursBetweenIntakes = (value: number) => {
+    if (formData.minHoursBetweenIntakes !== value) {
+      let newData = { ...formData, minHoursBetweenIntakes: value };
+      
+      // Trier les horaires d'abord
+      newData.schedules = [...newData.schedules].sort((a, b) => {
+        const timeA = a.hour * 60 + a.minute;
+        const timeB = b.hour * 60 + b.minute;
+        return timeA - timeB;
+      });
+      
+      for (let i = 1; i < newData.schedules.length; i++) {
+        const previousSchedule = newData.schedules[i - 1];
+        const currentSchedule = newData.schedules[i];
+        
+        const previousTimeMinutes = previousSchedule.hour * 60 + previousSchedule.minute;
+        const currentTimeMinutes = currentSchedule.hour * 60 + currentSchedule.minute;
+        const timeDiff = currentTimeMinutes - previousTimeMinutes;
+        
+        if (timeDiff < value * 60) { // Comparer en minutes (value est en heures)
+          // Décaler l'horaire actuel
+          const newTimeMinutes = previousTimeMinutes + (value * 60);
+          
+          // Gérer le dépassement de 24h
+          if (newTimeMinutes >= 24 * 60) {
+            // Supprimer les horaires qui dépassent
+            newData.schedules = newData.schedules.slice(0, i);
+            break;
+          } 
+          else {
+            newData.schedules[i].hour = Math.floor(newTimeMinutes / 60);
+            newData.schedules[i].minute = newTimeMinutes % 60;
+          }
+        }
+      }
+      
+      const finalSortedSchedules = newData.schedules.sort((a, b) => {
+        const timeA = a.hour * 60 + a.minute;
+        const timeB = b.hour * 60 + b.minute;
+        return timeA - timeB;
+      });
+      newData.schedules = finalSortedSchedules;
+      setFormData(newData);
+    }
   };
 
   const today = new Date();
@@ -128,10 +262,8 @@ export default function EditPillScreen() {
         {/* Header */}
         <GenericHeader
           title={isEditing ? "Modifier le médicament" : "Nouveau médicament"}
-          leftButton={<HeaderButton icon={<CloseIcon width={24} height={24} color={theme.text.primary} />} />}
-          rightButton={<HeaderButton icon={<Ionicons name="checkmark" size={24} color={theme.brand.primary} />} />}
-          onLeftPress={() => router.back()}
-          onRightPress={handleSave}
+          leftButton={<HeaderButton icon={<CloseIcon width={24} height={24} color={theme.text.primary} onPress={router.back} />} />}
+          rightButton={<HeaderButton icon={<Ionicons name="checkmark" size={24} color={theme.brand.primary} onPress={handleSave} />} />}
         />
 
         <ScrollView
@@ -197,6 +329,7 @@ export default function EditPillScreen() {
                   schedule={schedule}
                   variant="primary"
                   intensity="light"
+                  onPress={() => handleEditSchedule(index)}
                   onClose={() => handleRemoveSchedule(index)}
                 />
               ))}
@@ -224,7 +357,19 @@ export default function EditPillScreen() {
             />
           </FormField>
 
-          {/* Ligne 5: Durée du traitement */}
+          {/* Ligne 5: Temps entre deux prises */}
+          <FormField
+            label="Durée minimale entre deux prises"
+            icon={({ color, size }) => <Ionicons name="time-outline" size={size} color={color} />}
+          >
+            <ThemedPicker
+              items={hoursBetweenIntakesItems}
+              selectedValue={formData.minHoursBetweenIntakes}
+              onValueChange={handleMinHoursBetweenIntakes}
+            />
+          </FormField>
+
+          {/* Ligne 6: Durée du traitement */}
           <FormField
             label="Durée du traitement"
             icon={({ color, size }) => <Ionicons name="calendar" size={size} color={color} />}
@@ -267,7 +412,7 @@ export default function EditPillScreen() {
             )}
           </FormField>
 
-          {/* Ligne 6: Gestion du stock (2 colonnes) */}
+          {/* Ligne 7: Gestion du stock (2 colonnes) */}
           <View style={styles.row}>
             <FormField
               label="Quantité en stock"
@@ -339,6 +484,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 16,
+    paddingBottom: 0,
   },
   scrollView: {
     flex: 1,
