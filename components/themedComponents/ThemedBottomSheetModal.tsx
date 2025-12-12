@@ -43,6 +43,9 @@ export default function BottomSheetModal({
 
   useEffect(() => {
     if (visible) {
+      // Reset position before animating in
+      translateY.setValue(height);
+
       Animated.timing(translateY, {
         toValue: 0,
         duration: 300,
@@ -130,7 +133,7 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: "rgba(0,0,0,0.35)",
+    backgroundColor: "rgba(0, 0, 0, 0.35)",
   },
   overlayTouchable: {
     flex: 1,

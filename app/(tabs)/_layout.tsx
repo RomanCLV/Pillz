@@ -21,7 +21,8 @@ export default function TabsLayout() {
         tabBarActiveTintColor: theme.brand.secondary,
         tabBarStyle: { 
           backgroundColor: theme.background.secondary,
-          borderTopWidth: 0,
+          borderTopWidth: 1,
+          borderColor: theme.border.light + "10",
         },
         headerShown: false,
         tabBarShowLabel: true,
