@@ -1,14 +1,16 @@
 import React from "react"
-import { StyleSheet } from "react-native"
+import { StyleSheet, ViewStyle } from "react-native"
 import { useRouter } from "expo-router"
 import ThemedButton from "@components/themedComponents/ThemedButton"
 
 type HeaderButtonProps = {
-    icon: React.ReactNode
+    icon: React.ReactNode,
+    style?: ViewStyle
 }
 
 const HeaderButton: React.FC<HeaderButtonProps> = ({
-    icon
+    icon,
+    style,
 }) => {
   const router = useRouter()
 
@@ -16,11 +18,10 @@ const HeaderButton: React.FC<HeaderButtonProps> = ({
     variant="ghost"
     size="small"
     onPress={() => router.back()}
-    style={styles.backButton}
+    style={[styles.backButton, style]}
   >
     {icon}
   </ThemedButton>
-  
 }
 
 export default HeaderButton;

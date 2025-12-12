@@ -1,8 +1,8 @@
 import React from "react";
-import { Chip } from "@components/Chip";
+import Chip from "@components/Chip";
 import { formatSchedule, PillSchedule } from "types/pill";
 
-type ColorVariant = "primary" | "secondary" | "accent";
+type ColorVariant = "primary" | "secondary" | "accent" | "highlight";
 type IntensityVariant = "light" | "solid";
 
 interface ScheduleChipProps {
@@ -13,7 +13,7 @@ interface ScheduleChipProps {
   onClose?: () => void;
 }
 
-export function ScheduleChip({ 
+export default function ScheduleChip({ 
   schedule, 
   variant = "primary",
   intensity = "light",

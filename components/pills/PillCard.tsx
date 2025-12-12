@@ -6,9 +6,9 @@ import ThemedCard from "@components/themedComponents/ThemedCard";
 import { useTheme } from "@hooks/useTheme";
 import { t } from "@i18n/t";
 import { Pill } from "types/pill";
-import { ScheduleChip } from "./ScheduleChip";
-import { Chip } from "@components/Chip";
-import { InfoRow } from "@components/InfoRow";
+import ScheduleChip from "./ScheduleChip";
+import Chip from "@components/Chip";
+import InfoRow from "@components/InfoRow";
 
 interface PillCardProps {
   pill: Pill;

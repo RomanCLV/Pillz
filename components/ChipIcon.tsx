@@ -14,7 +14,7 @@ interface ChipIconProps {
   onPress?: () => void;
 }
 
-export function ChipIcon({
+export default function ChipIcon({
   icon,
   variant = "primary",
   intensity = "light",

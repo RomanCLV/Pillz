@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
-import ThemedText from "@components/themedComponents/ThemedText";
 import { useTheme } from "@hooks/useTheme";
+import ThemedText from "@components/themedComponents/ThemedText";
 import CloseIcon from "@icons/close.svg"
 
 type ColorVariant = "primary" | "secondary" | "accent" | "error" | "highlight";
@@ -16,7 +16,7 @@ interface ChipProps {
   onClose?: () => void;
 }
 
-export function Chip({ 
+export default function Chip({ 
   children, 
   variant = "primary", 
   intensity = "light",

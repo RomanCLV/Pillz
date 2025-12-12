@@ -7,10 +7,10 @@ interface FormFieldProps {
   label: string;
   icon?: (props: { color: string; size: number }) => React.ReactNode;
   children: React.ReactNode;
-  style?: ViewStyle;
+  style?: ViewStyle | [ViewStyle];
 }
 
-export function FormField({ label, icon, children, style }: FormFieldProps) {
+export default function FormField({ label, icon, children, style }: FormFieldProps) {
   const theme = useTheme();
 
   return (

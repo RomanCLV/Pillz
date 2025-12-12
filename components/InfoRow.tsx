@@ -17,7 +17,7 @@ interface InfoRowProps {
   valueStyle?: TextStyle;
 }
 
-export function InfoRow({
+export default function InfoRow({
   label,
   value,
   style,

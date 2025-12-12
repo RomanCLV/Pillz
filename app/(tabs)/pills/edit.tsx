@@ -1,20 +1,22 @@
 import React, { useState } from "react";
-import { StyleSheet, ScrollView, View, TextInput, Alert } from "react-native";
+import { StyleSheet, ScrollView, View, Alert } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { Picker } from "@react-native-picker/picker";
-import { useTheme } from "@hooks/useTheme";
 import SafeTopAreaThemedView from "@components/themedComponents/SafeTopAreaThemedView";
 import ThemedButton from "@components/themedComponents/ThemedButton";
 import ThemedSwitch from "@components/themedComponents/ThemedSwitch";
 import ThemedText from "@components/themedComponents/ThemedText";
-import ThemedView from "@components/themedComponents/ThemedView";
+import ThemedTextInput from "@components/themedComponents/ThemedTextInput";
+import ThemedPicker, { PickerItem } from "@components/themedComponents/ThemedPicker";
 import GenericHeader from "@components/headers/GenericHeader";
-import HeaderButton from "@components/headers/HeaderButton";
-import { Chip } from "@components/Chip";
-import { FormField } from "@components/FormField";
-import { ScheduleChip } from "@components/pills/ScheduleChip";
-import Spacer from "@components/Spacer";
+import FormField from "@components/FormField";
+import ChipIcon from "@components/ChipIcon";
+import ScheduleChip from "@components/pills/ScheduleChip";
+import { useTheme } from "@hooks/useTheme";
+import { t } from "@i18n/t";
+import AddIcon from "@assets/icons/add.svg";
+import CloseIcon from "@assets/icons/close.svg";
+import TrashIcon from "@assets/icons/trash.svg";
 import { 
   Pill, 
   DosageUnit, 
@@ -24,11 +26,8 @@ import {
   INTAKE_WINDOW_OPTIONS,
   formatIntakeWindow,
 } from "types/pill";
-import { t } from "@i18n/t";
-import AddIcon from "@icons/add.svg"
-import CloseIcon from "@icons/close.svg"
-import TrashIcon from "@icons/trash.svg"
-import { ChipIcon } from "@components/ChipIcon";
+import HeaderButton from "@components/headers/HeaderButton";
+import { capitalizeFirstLetter } from "@utils/capitalizeFirstLetter";
 
 export default function EditPillScreen() {
   const router = useRouter();
@@ -36,11 +35,27 @@ export default function EditPillScreen() {
   const params = useLocalSearchParams();
   const isEditing = !!params.id;
 
+  const getUnitLabel = (unit: DosageUnit): string => {
+    const label = t(`pill.unit.${unit}`);
+    return (unit !== DosageUnit.MG && unit !== DosageUnit.ML) ? capitalizeFirstLetter(label) : label;
+  };
+
   // État du formulaire
   const [formData, setFormData] = useState<Omit<Pill, "id">>(createDefaultPill());
   const [hasEndDate, setHasEndDate] = useState(false);
 
   const units = Object.values(DosageUnit);
+
+  // Préparer les items pour les pickers
+  const unitItems: PickerItem[] = units.map((unit) => ({
+    label: getUnitLabel(unit),
+    value: unit,
+  }));
+
+  const intakeWindowItems: PickerItem[] = INTAKE_WINDOW_OPTIONS.map((minutes) => ({
+    label: formatIntakeWindow(minutes),
+    value: minutes,
+  }));
 
   const handleSave = () => {
     // Validation
@@ -101,13 +116,10 @@ export default function EditPillScreen() {
     });
   };
 
-  const getUnitLabel = (unit: DosageUnit): string => {
-    return t(`pill.unit.${unit}`);
-  };
-
   return (
-    <SafeTopAreaThemedView style={{ flex: 1 }}>
-      <ThemedView style={[styles.container, { backgroundColor: theme.background.primary }]}>
+    <SafeTopAreaThemedView style={styles.container}>
+      <View style={styles.content}>
+
         {/* Header */}
         <GenericHeader
           title={isEditing ? "Modifier le médicament" : "Nouveau médicament"}
@@ -116,10 +128,10 @@ export default function EditPillScreen() {
           onLeftPress={() => router.back()}
           onRightPress={handleSave}
         />
-        <Spacer height={24}/>
 
         <ScrollView
           style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
           {/* Ligne 1: Nom */}
@@ -127,19 +139,10 @@ export default function EditPillScreen() {
             label="Nom du médicament"
             icon={({ color, size }) => <Ionicons name="medical" size={size} color={color} />}
           >
-            <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: theme.background.surface,
-                  color: theme.text.primary,
-                  borderColor: theme.border.light,
-                },
-              ]}
+            <ThemedTextInput
               value={formData.name}
               onChangeText={(text) => setFormData({ ...formData, name: text })}
               placeholder="Ex: Doliprane"
-              placeholderTextColor={theme.text.tertiary}
             />
           </FormField>
 
@@ -150,48 +153,30 @@ export default function EditPillScreen() {
               style={styles.column}
               icon={({ color, size }) => <MaterialCommunityIcons name="pill-multiple" size={size} color={color} />}
             >
-              <TextInput
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: theme.background.surface,
-                    color: theme.text.primary,
-                    borderColor: theme.border.light,
-                  },
-                ]}
-                value={formData.dosage.toString()}
+              <ThemedTextInput
+                value={formData.dosage === 0 ? "" : formData.dosage.toString()}
                 onChangeText={(text) => {
-                  const num = parseFloat(text) || 0;
-                  if (num >= 0) {
-                    setFormData({ ...formData, dosage: num });
+                  if (text === "") {
+                    setFormData({ ...formData, dosage: 0 });
+                  } else {
+                    const num = parseFloat(text);
+                    if (!isNaN(num) && num >= 0) {
+                      setFormData({ ...formData, dosage: num });
+                    }
                   }
                 }}
+                type="number"
                 keyboardType="numeric"
                 placeholder="1"
-                placeholderTextColor={theme.text.tertiary}
               />
             </FormField>
 
             <FormField label="Unité" style={styles.column}>
-              <View
-                style={[
-                  styles.pickerContainer,
-                  {
-                    backgroundColor: theme.background.surface,
-                    borderColor: theme.border.light,
-                  },
-                ]}
-              >
-                <Picker
-                  selectedValue={formData.unit}
-                  onValueChange={(value) => setFormData({ ...formData, unit: value })}
-                  style={[styles.picker, { color: theme.text.primary }]}
-                >
-                  {units.map((unit) => (
-                    <Picker.Item key={unit} label={getUnitLabel(unit)} value={unit} />
-                  ))}
-                </Picker>
-              </View>
+              <ThemedPicker
+                items={unitItems}
+                selectedValue={formData.unit}
+                onValueChange={(value) => setFormData({ ...formData, unit: value })}
+              />
             </FormField>
           </View>
 
@@ -207,12 +192,15 @@ export default function EditPillScreen() {
                   schedule={schedule}
                   variant="primary"
                   intensity="light"
-                  onPress={() => console.log("Press schedule:", index) }
                   onClose={() => handleRemoveSchedule(index)}
                 />
               ))}
-              <ChipIcon variant="primary" intensity="light" onPress={handleAddSchedule} size={30}
-                icon={({size, color}) => <AddIcon width={size} height={size} color={color}/>}
+              <ChipIcon
+                icon={({ color, size }) => <AddIcon width={size} height={size} color={color} />}
+                variant="primary"
+                intensity="light"
+                size={30}
+                onPress={handleAddSchedule}
               />
             </View>
           </FormField>
@@ -222,31 +210,13 @@ export default function EditPillScreen() {
             label="Durée pour prendre le médicament"
             icon={({ color, size }) => <Ionicons name="hourglass" size={size} color={color} />}
           >
-            <View
-              style={[
-                styles.pickerContainer,
-                {
-                  backgroundColor: theme.background.surface,
-                  borderColor: theme.border.light,
-                },
-              ]}
-            >
-              <Picker
-                selectedValue={formData.intakeWindowMinutes}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, intakeWindowMinutes: value })
-                }
-                style={[styles.picker, { color: theme.text.primary }]}
-              >
-                {INTAKE_WINDOW_OPTIONS.map((minutes) => (
-                  <Picker.Item
-                    key={minutes}
-                    label={formatIntakeWindow(minutes)}
-                    value={minutes}
-                  />
-                ))}
-              </Picker>
-            </View>
+            <ThemedPicker
+              items={intakeWindowItems}
+              selectedValue={formData.intakeWindowMinutes}
+              onValueChange={(value) =>
+                setFormData({ ...formData, intakeWindowMinutes: value })
+              }
+            />
           </FormField>
 
           {/* Ligne 5: Durée du traitement */}
@@ -287,25 +257,21 @@ export default function EditPillScreen() {
               style={styles.column}
               icon={({ color, size }) => <Ionicons name="cube" size={size} color={color} />}
             >
-              <TextInput
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: theme.background.surface,
-                    color: theme.text.primary,
-                    borderColor: theme.border.light,
-                  },
-                ]}
-                value={formData.stockQuantity.toString()}
+              <ThemedTextInput
+                value={formData.stockQuantity === 0 ? "" : formData.stockQuantity.toString()}
                 onChangeText={(text) => {
-                  const num = parseInt(text) || 0;
-                  if (num >= 0) {
-                    setFormData({ ...formData, stockQuantity: num });
+                  if (text === "") {
+                    setFormData({ ...formData, stockQuantity: 0 });
+                  } else {
+                    const num = parseInt(text);
+                    if (!isNaN(num) && num >= 0) {
+                      setFormData({ ...formData, stockQuantity: num });
+                    }
                   }
                 }}
+                type="number"
                 keyboardType="numeric"
                 placeholder="0"
-                placeholderTextColor={theme.text.tertiary}
               />
             </FormField>
 
@@ -314,25 +280,21 @@ export default function EditPillScreen() {
               style={styles.column}
               icon={({ color, size }) => <Ionicons name="alert-circle" size={size} color={color} />}
             >
-              <TextInput
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: theme.background.surface,
-                    color: theme.text.primary,
-                    borderColor: theme.border.light,
-                  },
-                ]}
-                value={formData.reminderThreshold.toString()}
+              <ThemedTextInput
+                value={formData.reminderThreshold === 0 ? "" : formData.reminderThreshold.toString()}
                 onChangeText={(text) => {
-                  const num = parseInt(text) || 0;
-                  if (num >= 0) {
-                    setFormData({ ...formData, reminderThreshold: num });
+                  if (text === "") {
+                    setFormData({ ...formData, reminderThreshold: 0 });
+                  } else {
+                    const num = parseInt(text);
+                    if (!isNaN(num) && num >= 0) {
+                      setFormData({ ...formData, reminderThreshold: num });
+                    }
                   }
                 }}
+                type="number"
                 keyboardType="numeric"
                 placeholder="5"
-                placeholderTextColor={theme.text.tertiary}
               />
             </FormField>
           </View>
@@ -340,15 +302,15 @@ export default function EditPillScreen() {
           {/* Bouton supprimer (mode édition uniquement) */}
           {isEditing && (
             <ThemedButton
-              onPress={handleDelete}
-              style={[styles.deleteButton, { backgroundColor: theme.brand.error }]}
-              icon={<TrashIcon width={24} height={24} color={theme.text.onBrand} />}
-            >
-              Supprimer ce médicament
-            </ThemedButton>
+                onPress={handleDelete}
+                style={[styles.deleteButton, { backgroundColor: theme.brand.error }]}
+                icon={<TrashIcon width={24} height={24} color={theme.text.onBrand} />}
+              >
+                Supprimer ce médicament
+              </ThemedButton>
           )}
         </ScrollView>
-      </ThemedView>
+      </View>
     </SafeTopAreaThemedView>
   );
 }
@@ -356,17 +318,16 @@ export default function EditPillScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  content: {
+    flex: 1,
     padding: 16,
   },
   scrollView: {
     flex: 1,
   },
-  input: {
-    borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    fontSize: 16,
+  scrollContent: {
+    paddingTop: 16,
   },
   row: {
     flexDirection: "row",
@@ -374,14 +335,6 @@ const styles = StyleSheet.create({
   },
   column: {
     flex: 1,
-  },
-  pickerContainer: {
-    borderWidth: 1,
-    borderRadius: 12,
-    overflow: "hidden",
-  },
-  picker: {
-    height: 50,
   },
   chipsContainer: {
     flexDirection: "row",
