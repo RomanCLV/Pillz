@@ -7,7 +7,7 @@ import ThemedButton from "@components/themedComponents/ThemedButton";
 import ThemedSwitch from "@components/themedComponents/ThemedSwitch";
 import ThemedText from "@components/themedComponents/ThemedText";
 import ThemedTextInput from "@components/themedComponents/ThemedTextInput";
-import ThemedPicker, { PickerItem } from "@components/themedComponents/ThemedPicker";
+import ThemedWheelPicker, { PickerItem } from "@components/themedComponents/ThemedWheelPicker";
 import GenericHeader from "@components/headers/GenericHeader";
 import FormField from "@components/FormField";
 import ChipIcon from "@components/ChipIcon";
@@ -53,14 +53,10 @@ export default function EditPillScreen() {
     value: unit,
   }));
 
-  let hoursBetweenIntakesItems = [];
-  for (let i = 0; i < 23; i++)
-  {
-    hoursBetweenIntakesItems.push({
-      label: formatIntakeWindow((i+1) * 60),
-      value: i+1
-    });
-  }
+  const hoursBetweenIntakesItems = Array.from({ length: 24 }, (_, h) => ({
+    label: formatIntakeWindow((h+1) * 60),
+    value: h+1,
+  }));
 
   const intakeWindowItems: PickerItem[] = INTAKE_WINDOW_OPTIONS.map((minutes) => ({
     label: formatIntakeWindow(minutes),
@@ -201,8 +197,10 @@ export default function EditPillScreen() {
     });
   };
 
-  const handleEditSchedule = (index: number) => {
-    console.log("edit:", index);
+  const handleScheduleChanged = (index: number, schedule: PillSchedule) => {
+    let newState = {...formData};
+    newState.schedules[index] = schedule;
+    setFormData(newState);
   };
 
   const handleMinHoursBetweenIntakes = (value: number) => {
@@ -251,9 +249,25 @@ export default function EditPillScreen() {
     }
   };
 
+  function findMinSchedule(index: number): PillSchedule | undefined {
+    if (index == 0)
+      return undefined;
+
+    const prev = formData.schedules[index - 1];
+    return { hour: prev.hour + formData.minHoursBetweenIntakes, minute: prev.minute };
+  };
+
+  function findMaxSchedule(index: number): PillSchedule | undefined {
+    if (index == formData.schedules.length - 1)
+      return undefined;
+
+    const next = formData.schedules[index + 1];
+    return { hour: next.hour - formData.minHoursBetweenIntakes, minute: next.minute };
+  };
+
   const today = new Date();
-  const maxDate = new Date();
-  maxDate.setFullYear(today.getFullYear() + 1);
+  //const maxDate = new Date();
+  //maxDate.setFullYear(today.getFullYear() + 1);
 
   return (
     <SafeTopAreaThemedView style={styles.container}>
@@ -309,7 +323,7 @@ export default function EditPillScreen() {
             </FormField>
 
             <FormField label="Unité" style={styles.column}>
-              <ThemedPicker
+              <ThemedWheelPicker
                 items={unitItems}
                 selectedValue={formData.unit}
                 onValueChange={(value) => setFormData({ ...formData, unit: value })}
@@ -329,7 +343,10 @@ export default function EditPillScreen() {
                   schedule={schedule}
                   variant="primary"
                   intensity="light"
-                  onPress={() => handleEditSchedule(index)}
+                  isEditable={true}
+                  minSchedule={findMinSchedule(index)}
+                  maxSchedule={findMaxSchedule(index)}
+                  onChange={(schedule) => handleScheduleChanged(index, schedule)}
                   onClose={() => handleRemoveSchedule(index)}
                 />
               ))}
@@ -348,7 +365,7 @@ export default function EditPillScreen() {
             label="Durée pour prendre le médicament"
             icon={({ color, size }) => <Ionicons name="hourglass" size={size} color={color} />}
           >
-            <ThemedPicker
+            <ThemedWheelPicker
               items={intakeWindowItems}
               selectedValue={formData.intakeWindowMinutes}
               onValueChange={(value) =>
@@ -362,7 +379,7 @@ export default function EditPillScreen() {
             label="Durée minimale entre deux prises"
             icon={({ color, size }) => <Ionicons name="time-outline" size={size} color={color} />}
           >
-            <ThemedPicker
+            <ThemedWheelPicker
               items={hoursBetweenIntakesItems}
               selectedValue={formData.minHoursBetweenIntakes}
               onValueChange={handleMinHoursBetweenIntakes}

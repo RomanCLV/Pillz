@@ -10,7 +10,7 @@ import ThemedText from "@components/themedComponents/ThemedText";
 import BottomSheetModal from "@components/themedComponents/ThemedBottomSheetModal";
 import { useTheme } from "@hooks/useTheme";
 
-import Picker from "@quidone/react-native-wheel-picker";
+import WheelPicker from "@quidone/react-native-wheel-picker";
 import { capitalizeFirstLetter } from "@utils/capitalizeFirstLetter";
 import { FontAwesome } from "@expo/vector-icons";
 
@@ -87,7 +87,7 @@ export default function ThemedPicker({
         headerStyle={headerStyle}
         contentStyle={contentStyle}
       >
-        <Picker
+        <WheelPicker
           data={items}
           value={tempValue}
           onValueChanged={({item}: any) => setTempValue(item.value)}

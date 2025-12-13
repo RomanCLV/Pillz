@@ -189,7 +189,7 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
         variantStyles.container,
         sizeStyles.container,
         alignmentStyle,
-        (disabled || loading) && styles.disabled,
+        (disabled || loading) && [styles.disabled, (variant === "ghost" && {backgroundColor: "transparent"})],
         style,
       ]}
       activeOpacity={0.7}

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import { TouchableOpacity, StyleSheet, ViewStyle } from "react-native";
-import BottomSheetModal from "@components/themedComponents/ThemedBottomSheetModal";
+import ThemedBottomSheetModal from "@themedComponents/ThemedBottomSheetModal";
 import ThemedText from "./ThemedText";
 import { DatePicker } from "@quidone/react-native-wheel-picker";
 import { useTheme } from "@hooks/useTheme";
@@ -22,16 +22,25 @@ const fromOnlyDateFormat = (s: string): Date => {
 };
 
 // Comparer seulement les dates (année/mois/jour) sans l'heure
-const isSameDay = (date1: Date, date2: Date): boolean => {
-  return toOnlyDateFormat(date1) === toOnlyDateFormat(date2);
-};
-
 const isBeforeDay = (date1: Date, date2: Date): boolean => {
   return toOnlyDateFormat(date1) < toOnlyDateFormat(date2);
 };
 
 const isAfterDay = (date1: Date, date2: Date): boolean => {
   return toOnlyDateFormat(date1) > toOnlyDateFormat(date2);
+};
+
+const isDateValid = (
+  date: string,
+  minDate?: Date,
+  maxDate?: Date
+): boolean => {
+  const d = fromOnlyDateFormat(date);
+
+  if (minDate && isBeforeDay(d, minDate)) return false;
+  if (maxDate && isAfterDay(d, maxDate)) return false;
+
+  return true;
 };
 
 export interface ThemedDatePickerProps {
@@ -55,26 +64,40 @@ export default function ThemedDatePicker({
   headerStyle,
   contentStyle,
 }: ThemedDatePickerProps) {
+  // ---------- Hooks ----------
   const theme = useTheme();
   const language = useCurrentLanguage();
   const locale = language ?? "en-US";
 
   const [visible, setVisible] = useState(false);
-  const [tempDate, setTempDate] = useState(
-    value ? toOnlyDateFormat(value) : toOnlyDateFormat(new Date())
-  );
 
-  // Initialiser tempDate quand le modal s'ouvre
-  const handleOpen = () => {
-    const initialDate = value ? toOnlyDateFormat(value) : toOnlyDateFormat(new Date());
-    setTempDate(initialDate);
+  // État temporaire du modal (YYYY-MM-DD)
+  const [tempDate, setTempDate] = useState<string>(toOnlyDateFormat(value ?? new Date()));
+
+  // ---------- Derived state ----------
+  const canConfirm = useMemo(() => isDateValid(tempDate, minDate, maxDate), [tempDate, minDate, maxDate]);
+
+  // ---------- Handlers ----------
+  const openModal = () => {
+    const initial = toOnlyDateFormat(value ?? new Date());
+    setTempDate(initial);
     setVisible(true);
+  };
+
+  const closeModal = () => {
+    setVisible(false);
+  };
+
+  const confirm = () => {
+    if (!canConfirm) return;
+    onChange(fromOnlyDateFormat(tempDate));
+    setVisible(false);
   };
 
   return (
     <>
       <TouchableOpacity
-        onPress={handleOpen}
+        onPress={openModal}
         style={[
           styles.selector,
           {
@@ -96,43 +119,30 @@ export default function ThemedDatePicker({
         <FontAwesome name="angle-down" color={theme.text.tertiary} size={20} />
       </TouchableOpacity>
 
-      <BottomSheetModal
+      <ThemedBottomSheetModal
         visible={visible}
         onClose={() => setVisible(false)}
         height={300}
         header={{
           title: "Sélectionner une date",
-          onCancel: () => {
-            setVisible(false);
-          },
-          onConfirm: () => {
-            const d = fromOnlyDateFormat(tempDate);
-            onChange(d);
-            setVisible(false);
-          },
+          canConfirm: canConfirm,
+          onCancel: closeModal,
+          onConfirm: confirm,
         }}
         headerStyle={headerStyle}
         contentStyle={contentStyle}
       >
         <DatePicker
           date={tempDate}
-          onDateChanged={({ date }) => {
-            const d = fromOnlyDateFormat(date);
-
-            // Vérification dynamique avec comparaison correcte
-            if (minDate && isBeforeDay(d, minDate)) return;
-            if (maxDate && isAfterDay(d, maxDate)) return;
-
-            setTempDate(date);
-          }}
+          onDateChanged={({ date }) => setTempDate(date)}
           locale={locale}
-          minDate={minDate ? toOnlyDateFormat(minDate) : undefined}
-          maxDate={maxDate ? toOnlyDateFormat(maxDate) : undefined}
+          //minDate={minDate ? toOnlyDateFormat(minDate) : undefined}
+          //maxDate={maxDate ? toOnlyDateFormat(maxDate) : undefined}
           itemHeight={48}
           visibleItemCount={5}
           itemTextStyle={{ color: theme.text.primary, fontSize: 18 }}
         />
-      </BottomSheetModal>
+      </ThemedBottomSheetModal>
     </>
   );
 }

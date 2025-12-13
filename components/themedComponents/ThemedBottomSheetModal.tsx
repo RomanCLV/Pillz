@@ -1,4 +1,4 @@
-// components/ui/BottomSheetModal.tsx
+// components/themedComponents/ThemedBottomSheetModal.tsx
 import React, { useEffect, useRef } from "react";
 import {
   View,
@@ -14,19 +14,20 @@ import { useTheme } from "@hooks/useTheme";
 import ThemedButton from "@components/themedComponents/ThemedButton";
 import ThemedText from "@components/themedComponents/ThemedText";
 
-interface BottomSheetHeaderProps {
+interface ThemedBottomSheetHeaderProps {
   title?: string;
   cancelText?: string;
   confirmText?: string;
   onCancel?: () => void;
   onConfirm?: () => void;
+  canConfirm?: boolean;
 }
 
-interface BottomSheetModalProps {
+interface ThemedBottomSheetModalProps {
   visible: boolean;
   onClose: () => void;
   height?: number;
-  header?: BottomSheetHeaderProps;
+  header?: ThemedBottomSheetHeaderProps;
   children: React.ReactNode;
   headerStyle?: ViewStyle;
   contentStyle?: ViewStyle;
@@ -34,7 +35,7 @@ interface BottomSheetModalProps {
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
-export default function BottomSheetModal({
+export default function ThemedBottomSheetModal({
   visible,
   onClose,
   height = SCREEN_HEIGHT * 0.35,
@@ -42,9 +43,10 @@ export default function BottomSheetModal({
   children,
   headerStyle,
   contentStyle,
-}: BottomSheetModalProps) {
+}: ThemedBottomSheetModalProps) {
   const theme = useTheme();
   const translateY = useRef(new Animated.Value(height)).current;
+  const canConfirm = header?.canConfirm ?? true;
 
   useEffect(() => {
     if (visible) {
@@ -116,9 +118,16 @@ export default function BottomSheetModal({
                   {header.cancelText ?? "Annuler"}
                 </ThemedButton>
 
-                <ThemedButton variant="ghost" onPress={header.onConfirm}>
+                <ThemedButton
+                  variant="ghost"
+                  onPress={canConfirm ? header.onConfirm : undefined}
+                  disabled={!canConfirm}
+                >
                   <ThemedText
-                    style={{ color: theme.brand.primary, fontWeight: "600" }}
+                    style={{
+                      color: canConfirm ? theme.brand.primary : theme.text.tertiary,
+                      fontWeight: "600",
+                    }}
                   >
                     {header.confirmText ?? "OK"}
                   </ThemedText>
