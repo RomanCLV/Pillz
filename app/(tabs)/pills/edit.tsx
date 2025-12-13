@@ -413,53 +413,75 @@ export default function EditPillScreen() {
           </FormField>
 
           {/* Ligne 7: Gestion du stock (2 colonnes) */}
-          <View style={styles.row}>
-            <FormField
-              label="Quantité en stock"
-              style={styles.column}
-              icon={({ color, size }) => <Ionicons name="cube" size={size} color={color} />}
-            >
-              <ThemedTextInput
-                value={formData.stockQuantity === 0 ? "" : formData.stockQuantity.toString()}
-                onChangeText={(text) => {
-                  if (text === "") {
-                    setFormData({ ...formData, stockQuantity: 0 });
-                  } else {
-                    const num = parseInt(text);
-                    if (!isNaN(num) && num >= 0) {
-                      setFormData({ ...formData, stockQuantity: num });
-                    }
-                  }
+          <FormField
+            label="Gestion du stock"
+            icon={({ color, size }) => <Ionicons name="cube" size={size} color={color} />}
+          >
+            <View style={styles.switchRow}>
+              <ThemedText style={{ color: theme.text.secondary }}>
+                Activer la gestion du stock
+              </ThemedText>
+              <ThemedSwitch
+                value={formData.stockGesture}
+                onValueChange={(value) => {
+                  setFormData({
+                    ...formData,
+                    stockGesture: value,
+                  });
                 }}
-                type="number"
-                keyboardType="numeric"
-                placeholder="0"
               />
-            </FormField>
+            </View>
 
-            <FormField
-              label="Seuil d'alerte"
-              style={styles.column}
-              icon={({ color, size }) => <Ionicons name="alert-circle" size={size} color={color} />}
-            >
-              <ThemedTextInput
-                value={formData.reminderThreshold === 0 ? "" : formData.reminderThreshold.toString()}
-                onChangeText={(text) => {
-                  if (text === "") {
-                    setFormData({ ...formData, reminderThreshold: 0 });
-                  } else {
-                    const num = parseInt(text);
-                    if (!isNaN(num) && num >= 0) {
-                      setFormData({ ...formData, reminderThreshold: num });
-                    }
-                  }
-                }}
-                type="number"
-                keyboardType="numeric"
-                placeholder="5"
-              />
-            </FormField>
-          </View>
+            {formData.stockGesture && (
+              <View style={styles.row}>
+                <FormField
+                  label="Quantité en stock"
+                  style={styles.column}
+                  icon={({ color, size }) => <Ionicons name="cube-outline" size={size} color={color} />}
+                >
+                  <ThemedTextInput
+                    value={formData.stockQuantity === 0 ? "" : formData.stockQuantity.toString()}
+                    onChangeText={(text) => {
+                      if (text === "") {
+                        setFormData({ ...formData, stockQuantity: 0 });
+                      } else {
+                        const num = parseInt(text);
+                        if (!isNaN(num) && num >= 0) {
+                          setFormData({ ...formData, stockQuantity: num });
+                        }
+                      }
+                    }}
+                    type="number"
+                    keyboardType="numeric"
+                    placeholder="0"
+                  />
+                </FormField>
+
+                <FormField
+                  label="Seuil d'alerte"
+                  style={styles.column}
+                  icon={({ color, size }) => <Ionicons name="alert-circle" size={size} color={color} />}
+                >
+                  <ThemedTextInput
+                    value={formData.reminderThreshold === 0 ? "" : formData.reminderThreshold.toString()}
+                    onChangeText={(text) => {
+                      if (text === "") {
+                        setFormData({ ...formData, reminderThreshold: 0 });
+                      } else {
+                        const num = parseInt(text);
+                        if (!isNaN(num) && num >= 0) {
+                          setFormData({ ...formData, reminderThreshold: num });
+                        }
+                      }
+                    }}
+                    type="number"
+                    keyboardType="numeric"
+                    placeholder="5"
+                  />
+                </FormField>
+              </View>
+            )}
+          </FormField>
 
           {/* Bouton supprimer (mode édition uniquement) */}
           {isEditing && (

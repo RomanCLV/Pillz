@@ -38,6 +38,7 @@ export interface Pill {
   treatmentDuration: TreatmentDuration;
   minHoursBetweenIntakes: number; // Durée minimale entre deux prises (en heures)
   intakeWindowMinutes: number; // Fenêtre de temps pour prendre le médicament (en minutes)
+  stockGesture: boolean;
   stockQuantity: number; // Quantité en stock
   reminderThreshold: number; // Seuil pour rappel de réapprovisionnement
 }
@@ -106,6 +107,7 @@ export function createDefaultPill(): Omit<Pill, 'id'> {
     },
     minHoursBetweenIntakes: 4,
     intakeWindowMinutes: 60,
+    stockGesture: false,
     stockQuantity: 0,
     reminderThreshold: 5,
   };
