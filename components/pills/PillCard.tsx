@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, TouchableOpacity, Pressable } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import { useTheme } from "@hooks/useTheme";
 import ScheduleChip from "./ScheduleChip";

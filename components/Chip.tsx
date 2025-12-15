@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
+import React, { useRef } from "react";
+import { StyleSheet, View, ViewStyle, Pressable, Animated } from "react-native";
 import { useTheme } from "@hooks/useTheme";
 import ThemedText from "@components/themedComponents/ThemedText";
 import CloseIcon from "@icons/close.svg"
@@ -14,6 +14,10 @@ interface ChipProps {
   style?: ViewStyle;
   onPress?: () => void;
   onClose?: () => void;
+  animateScale?: boolean;
+  animateOpacity?: boolean;
+  pressedScale?: number;
+  pressedOpacity?: number;
 }
 
 export default function Chip({ 
@@ -23,8 +27,15 @@ export default function Chip({
   style,
   onPress,
   onClose,
+  animateScale = true,
+  animateOpacity = true,
+  pressedScale = 0.97,
+  pressedOpacity = 0.85,
+  
 }: ChipProps) {
   const theme = useTheme();
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const opacityAnim = useRef(new Animated.Value(1)).current;
 
   const getColors = () => {
     // Intensité "solid" : couleur pleine avec texte blanc
@@ -102,41 +113,88 @@ export default function Chip({
 
   const colors = getColors();
 
-  const chipContent = (
-    <View
+  const handlePressIn = () => {
+    if (!onPress) return;
+
+    Animated.parallel([
+      animateScale &&
+        Animated.spring(scaleAnim, {
+          toValue: pressedScale,
+          useNativeDriver: true,
+          speed: 50,
+          bounciness: 4,
+        }),
+      animateOpacity &&
+        Animated.timing(opacityAnim, {
+          toValue: pressedOpacity,
+          duration: 100,
+          useNativeDriver: true,
+        }),
+    ].filter(Boolean) as Animated.CompositeAnimation[]).start();
+  };
+
+  const handlePressOut = () => {
+    if (!onPress) return;
+
+    Animated.parallel([
+      animateScale &&
+        Animated.spring(scaleAnim, {
+          toValue: 1,
+          useNativeDriver: true,
+          speed: 50,
+          bounciness: 4,
+        }),
+      animateOpacity &&
+        Animated.timing(opacityAnim, {
+          toValue: 1,
+          duration: 100,
+          useNativeDriver: true,
+        }),
+    ].filter(Boolean) as Animated.CompositeAnimation[]).start();
+  };
+
+  const content = (
+    <Animated.View
       style={[
         styles.chip,
         { backgroundColor: colors.background },
         style,
+        {
+          transform: animateScale ? [{ scale: scaleAnim }] : undefined,
+          opacity: animateOpacity ? opacityAnim : undefined,
+        },
       ]}
     >
-      {typeof children === 'string' || typeof children === 'number' ? (
-        <ThemedText style={[styles.text, { color: colors.text }]}>
-          {children}
-        </ThemedText>
-      ) : (
-        <View style={styles.content}>
-          {children}
-        </View>
-      )}
-      {onClose && (
-        <TouchableOpacity
-          onPress={onClose}
-          style={styles.closeButton}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <CloseIcon width={16} height={16} color={colors.text} />
-        </TouchableOpacity>
-      )}
-    </View>
+      <View style={styles.content}>
+        {typeof children === "string" || typeof children === "number" ? (
+          <ThemedText style={[styles.text, { color: colors.text }]}>
+            {children}
+          </ThemedText>
+        ) : (
+          children
+        )}
+
+        {onClose && (
+          <Pressable
+            onPress={onClose}
+            hitSlop={8}
+            style={({ pressed }) => ({
+              opacity: pressed ? 0.7 : 1,
+              transform: [{ scale: pressed ? 0.85 : 1 }],
+            })}
+          >
+            <CloseIcon width={16} height={16} color={colors.text} />
+          </Pressable>
+        )}
+      </View>
+    </Animated.View>
   );
 
-  return onPress ?
-    <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
-      {chipContent}
-    </TouchableOpacity>
-    :
-    chipContent;
+  return onPress ? 
+    <Pressable onPress={onPress} onPressIn={handlePressIn} onPressOut={handlePressOut}>
+      {content}
+    </Pressable>
+    : content;
 }
 
 const styles = StyleSheet.create({
@@ -155,8 +213,5 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-  },
-  closeButton: {
-    marginLeft: 4,
   },
 });
