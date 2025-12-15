@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     paddingTop: 0,
+    gap: 16,
   },
   emptyState: {
     flex: 1,
