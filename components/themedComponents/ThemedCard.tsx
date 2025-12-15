@@ -14,7 +14,7 @@ type ThemedCardProps = ViewProps & {
   animateOpacity?: boolean;
   /** Valeur du scale en état pressé (défaut: 0.97) */
   pressedScale?: number;
-  /** Valeur de l'opacité en état pressé (défaut: 0.7) */
+  /** Valeur de l'opacité en état pressé (défaut: 0.85) */
   pressedOpacity?: number;
 };
 

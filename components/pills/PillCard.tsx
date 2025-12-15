@@ -28,7 +28,7 @@ export function PillCard({ pill, onPress }: PillCardProps) {
     <ThemedCard 
       pressable={!!onPress} 
       onPress={onPress}
-      pressedScale={0.99}
+      pressedOpacity={0.8}
     >
       {/* En-tête avec nom et dosage */}
       <View style={styles.header}>
