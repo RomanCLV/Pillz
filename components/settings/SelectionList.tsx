@@ -32,19 +32,13 @@ function SelectionList<T = string>({
     <View style={styles.container}>
       {options.map((option) => {
         const isSelected = selectedValue === option.value;
-
         return (
           <ThemedButton
             key={String(option.value)}
             variant={isSelected ? "primary" : "ghost"}
             alignment="left"
             onPress={() => onSelect(option.value)}
-            style={[
-              styles.optionButton,
-              !isSelected && {
-                backgroundColor: theme.background.card,
-              },
-            ]}
+            buttonStyle={[styles.optionButton, !isSelected ? { backgroundColor: theme.background.card } : undefined]}
           >
             <View style={styles.optionContent}>
               {option.leftContent ? (

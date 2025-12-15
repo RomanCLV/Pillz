@@ -1,27 +1,40 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
-  TouchableOpacity,
-  TouchableOpacityProps,
+  Pressable,
+  PressableProps,
   Text,
   StyleSheet,
   ActivityIndicator,
   ViewStyle,
   TextStyle,
-  View
+  View,
+  Animated,
+  StyleProp
 } from "react-native";
-import { useTheme } from "../../hooks/useTheme";
+import { useTheme } from "@hooks/useTheme";
 
 type ButtonVariant = "primary" | "secondary" | "accent" | "outline" | "ghost" | "error";
 type ButtonSize = "small" | "medium" | "large";
 type TextAlignment = "center" | "left" | "right";
 
-type ThemedButtonProps = TouchableOpacityProps & {
+type ThemedButtonProps = Omit<PressableProps, "children" | "style"> & {
   variant?: ButtonVariant;
   size?: ButtonSize;
   alignment?: TextAlignment;
   loading?: boolean;
   children: React.ReactNode;
   icon?: React.ReactNode;
+  /** Active l'animation de scale au press (défaut: true) */
+  animateScale?: boolean;
+  /** Active l'animation d'opacité au press (défaut: true) */
+  animateOpacity?: boolean;
+  /** Valeur du scale en état pressé (défaut: 0.95) */
+  pressedScale?: number;
+  /** Valeur de l'opacité en état pressé (défaut: 0.85) */
+  pressedOpacity?: number;
+
+  containerStyle?: StyleProp<ViewStyle>; // layout (flex, margin, width)
+  buttonStyle?: StyleProp<ViewStyle>;    // visuel (background, border)
 };
 
 const ThemedButton: React.FC<ThemedButtonProps> = ({
@@ -30,12 +43,19 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
   alignment = "center",
   loading = false,
   disabled = false,
-  style,
+  containerStyle,
+  buttonStyle,
   icon,
   children,
+  animateScale = true,
+  animateOpacity = true,
+  pressedScale = 0.97,
+  pressedOpacity = 0.85,
   ...props
 }) => {
   const theme = useTheme();
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const opacityAnim = useRef(new Animated.Value(1)).current;
 
   // Styles selon la variante
   const getVariantStyles = (): { container: ViewStyle; text: TextStyle } => {
@@ -164,15 +184,77 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
   };
 
   // Styles selon l'alignement du texte
-  const getAlignmentStyle = (): ViewStyle  => {
+  const getAlignmentStyle = (): ViewStyle => {
     switch (alignment) {
       case "left":
-        return  { justifyContent: "flex-start" } ;
+        return { justifyContent: "flex-start" };
       case "right":
-        return  { justifyContent: "flex-end" } ;
+        return { justifyContent: "flex-end" };
       case "center":
       default:
-        return  { justifyContent: "center" } ;
+        return { justifyContent: "center" };
+    }
+  };
+
+  const handlePressIn = () => {
+    if (disabled || loading) return;
+
+    const animations = [];
+    
+    if (animateScale) {
+      animations.push(
+        Animated.spring(scaleAnim, {
+          toValue: pressedScale,
+          useNativeDriver: true,
+          speed: 50,
+          bounciness: 4,
+        })
+      );
+    }
+    
+    if (animateOpacity) {
+      animations.push(
+        Animated.timing(opacityAnim, {
+          toValue: pressedOpacity,
+          duration: 100,
+          useNativeDriver: true,
+        })
+      );
+    }
+
+    if (animations.length > 0) {
+      Animated.parallel(animations).start();
+    }
+  };
+
+  const handlePressOut = () => {
+    if (disabled || loading) return;
+
+    const animations = [];
+    
+    if (animateScale) {
+      animations.push(
+        Animated.spring(scaleAnim, {
+          toValue: 1,
+          useNativeDriver: true,
+          speed: 50,
+          bounciness: 4,
+        })
+      );
+    }
+    
+    if (animateOpacity) {
+      animations.push(
+        Animated.timing(opacityAnim, {
+          toValue: 1,
+          duration: 100,
+          useNativeDriver: true,
+        })
+      );
+    }
+
+    if (animations.length > 0) {
+      Animated.parallel(animations).start();
     }
   };
 
@@ -181,49 +263,58 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
   const alignmentStyle = getAlignmentStyle();
 
   return (
-    <TouchableOpacity
+    <Pressable
       {...props}
       disabled={disabled || loading}
-      style={[
-        styles.container,
-        variantStyles.container,
-        sizeStyles.container,
-        alignmentStyle,
-        (disabled || loading) && [styles.disabled, (variant === "ghost" && {backgroundColor: "transparent"})],
-        style,
-      ]}
-      activeOpacity={0.7}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      style={containerStyle}
     >
-      {loading ?  <ActivityIndicator 
-        color={variantStyles.text.color}
-        size={size === "small" ? "small" : "small"} />
-      : 
-      <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
-        {icon}
-        <Text
-          style={[
-            variantStyles.text,
-            sizeStyles.text,
-          ]}
-        >
-          {children}
-        </Text>
-      </View>
-      }
-    </TouchableOpacity>
+      <Animated.View
+        style={[
+          styles.button,
+          variantStyles.container,
+          sizeStyles.container,
+          (disabled || loading) && [styles.disabled, (variant === "ghost" && styles.disabledGhost)],
+          buttonStyle,
+          {
+            transform: animateScale ? [{ scale: scaleAnim }] : undefined,
+            opacity: animateOpacity ? opacityAnim : undefined,
+          },
+        ]}
+      >
+        <View style={[styles.content, alignmentStyle]}>
+          {loading ? (
+            <ActivityIndicator color={variantStyles.text.color} size="small" />
+          ) : (
+            <>
+              {icon}
+              <Text style={[variantStyles.text, sizeStyles.text]}>
+                {children}
+              </Text>
+            </>
+          )}
+        </View>
+      </Animated.View>
+    </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  button: {
     borderRadius: 8,
-    alignItems: "center",
-    flexDirection: "row",
   },
-
+  content: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
   disabled: {
     opacity: 0.6,
   },
+  disabledGhost: {
+    backgroundColor: "transparent"
+  }
 });
 
 export default ThemedButton;

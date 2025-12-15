@@ -582,7 +582,8 @@ export default function EditPillScreen() {
           {isEditing && (
             <ThemedButton
                 onPress={handleDelete}
-                style={[styles.deleteButton, { backgroundColor: theme.brand.error }]}
+                containerStyle={styles.deleteButton}
+                variant="error"
                 icon={<TrashIcon width={24} height={24} color={theme.text.onBrand} />}
               >
                 Supprimer ce médicament

@@ -74,7 +74,7 @@ export default function ThemedModal({
               <ThemedButton
                 variant="ghost"
                 onPress={onClose}
-                style={[styles.button, { backgroundColor: theme.background.secondary }]}
+                containerStyle={[styles.button, { backgroundColor: theme.background.secondary }]}
               >
                 {cancelText}
               </ThemedButton>
@@ -82,7 +82,7 @@ export default function ThemedModal({
             <ThemedButton
               variant={getButtonVariant()}
               onPress={handleConfirm}
-              style={styles.button}
+              containerStyle={styles.button}
             >
               {confirmText}
             </ThemedButton>

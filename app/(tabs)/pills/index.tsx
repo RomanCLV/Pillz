@@ -57,7 +57,7 @@ export default function index () {
         )}
         <ThemedButton
           onPress={handleAddPill}
-          style={styles.addButton}
+          containerStyle={styles.addButton}
           icon={<AddIcon width={24} height={24} color={theme.text.onBrand} />}
         >
           {t("pills.addPill")}
