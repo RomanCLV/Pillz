@@ -26,7 +26,6 @@
       "@hooks/*": ["hooks/*"],
       "@themedComponents/*": ["components/themedComponents/*"],
       "@utils/*": ["utils/*"],
-      "@types/*": ["types/*"],
     }
   },
   "include": ["./", "typings/**/*.d.ts"]

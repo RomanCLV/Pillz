@@ -2,121 +2,27 @@ import React from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 
-import SafeTopAreaThemedView from "@components/themedComponents/SafeTopAreaThemedView";
-import ThemedButton from "@components/themedComponents/ThemedButton";
-import ThemedText from "@themedComponents/ThemedText";
-import { t } from "@i18n/t";
-import { DosageUnit, Pill } from "types/pill";
+import { useTheme } from "@hooks/useTheme";
+import { usePills } from "@hooks/usePills";
 import { PillCard } from "@components/pills/PillCard";
 import TitlePage from "@components/TitlePage";
+import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
+import ThemedButton from "@themedComponents/ThemedButton";
+import ThemedText from "@themedComponents/ThemedText";
+import { t } from "@i18n/t";
 import AddIcon from "@icons/add.svg"
-import { useTheme } from "@hooks/useTheme";
-
-// Données de test
-const MOCK_PILLS: Pill[] = [
-  {
-    id: "1",
-    name: "Doliprane",
-    dosage: 1000,
-    unit: DosageUnit.MG,
-    schedules: [
-      { hour: 8, minute: 0 },
-      { hour: 14, minute: 0 },
-      { hour: 20, minute: 0 },
-    ],
-    treatmentDuration: {
-      startDate: new Date("2024-12-01"),
-      endDate: null, // Pas de limite
-    },
-    minHoursBetweenIntakes: 4,
-    intakeWindowMinutes: 60,
-    stockQuantity: 24,
-    reminderThreshold: 5,
-  },
-  {
-    id: "2",
-    name: "Vitamine D",
-    dosage: 1,
-    unit: DosageUnit.PILL,
-    schedules: [
-      { hour: 9, minute: 0 },
-    ],
-    treatmentDuration: {
-      startDate: new Date("2024-11-15"),
-      endDate: new Date("2025-02-15"),
-    },
-    minHoursBetweenIntakes: 24,
-    intakeWindowMinutes: 60,
-    stockQuantity: 18,
-    reminderThreshold: 10,
-  },
-  {
-    id: "3",
-    name: "Sirop contre la toux",
-    dosage: 1,
-    unit: DosageUnit.TABLESPOON,
-    schedules: [
-      { hour: 7, minute: 30 },
-      { hour: 13, minute: 30 },
-      { hour: 19, minute: 30 },
-    ],
-    treatmentDuration: {
-      startDate: new Date("2024-12-05"),
-      endDate: new Date("2024-12-12"),
-    },
-    minHoursBetweenIntakes: 6,
-    intakeWindowMinutes: 60,
-    stockQuantity: 3,
-    reminderThreshold: 5,
-  },
-  {
-    id: "4",
-    name: "Probiotiques",
-    dosage: 2,
-    unit: DosageUnit.SACHET,
-    schedules: [
-      { hour: 8, minute: 30 },
-      { hour: 20, minute: 30 },
-    ],
-    treatmentDuration: {
-      startDate: new Date("2024-12-01"),
-      endDate: null,
-    },
-    minHoursBetweenIntakes: 12,
-    intakeWindowMinutes: 60,
-    stockQuantity: 30,
-    reminderThreshold: 8,
-  },
-  {
-    id: "5",
-    name: "Phytoxil",
-    dosage: 10,
-    unit: DosageUnit.ML,
-    schedules: [
-      { hour: 8, minute: 30 },
-      { hour: 12, minute: 30 },
-      { hour: 20, minute: 30 },
-    ],
-    treatmentDuration: {
-      startDate: new Date("2024-12-01"),
-      endDate: null,
-    },
-    minHoursBetweenIntakes: 3,
-    intakeWindowMinutes: 60,
-    stockQuantity: 30,
-    reminderThreshold: 0,
-  },
-];
+import NoPillsIcon from "@assets/icons/no-pills.svg"
 
 export default function index () {
   const router = useRouter();
   const theme = useTheme();
+  const { pills } = usePills();
 
   const handleAddPill = () => {
     router.push("/pills/edit");
   };
 
-  const handlePillPress = (pillId: string) => {
+  const handlePillPress = (pillId: number) => {
     router.push(`/pills/edit?id=${pillId}`);
   };
 
@@ -130,21 +36,22 @@ export default function index () {
       {/* Liste des médicaments */}
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent]}
         showsVerticalScrollIndicator={false}
       >
-        {MOCK_PILLS.length === 0 ? (
+        {pills.length === 0 ? (
           <View style={styles.emptyState}>
+            <NoPillsIcon width={128} height={128} color={theme.text.tertiary} opacity={0.5} />
             <ThemedText style={styles.emptyText}>
               {t("pills.noPills")}
             </ThemedText>
           </View>
         ) : (
-          MOCK_PILLS.map((pill) => (
+          pills.map((pill, index) => (
             <PillCard
-              key={pill.id}
+              key={index}
               pill={pill}
-              onPress={() => handlePillPress(pill.id)}
+              onPress={() => handlePillPress(index)}
             />
           ))
         )}
@@ -175,6 +82,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
+    flex: 1,
     padding: 16,
     paddingTop: 0,
   },

@@ -2,21 +2,23 @@ import React, { useState } from "react";
 import { StyleSheet, ScrollView, View, Alert } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import SafeTopAreaThemedView from "@components/themedComponents/SafeTopAreaThemedView";
-import ThemedButton from "@components/themedComponents/ThemedButton";
-import ThemedSwitch from "@components/themedComponents/ThemedSwitch";
-import ThemedText from "@components/themedComponents/ThemedText";
-import ThemedTextInput from "@components/themedComponents/ThemedTextInput";
-import ThemedWheelPicker, { PickerItem } from "@components/themedComponents/ThemedWheelPicker";
+
+import { useTheme } from "@hooks/useTheme";
+import { usePills } from "@hooks/usePills";
+import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
+import ThemedButton from "@themedComponents/ThemedButton";
+import ThemedDatePicker from "@themedComponents/ThemedDatePicker";
+import ThemedSwitch from "@themedComponents/ThemedSwitch";
+import ThemedText from "@themedComponents/ThemedText";
+import ThemedTextInput from "@themedComponents/ThemedTextInput";
+import ThemedWheelPicker, { PickerItem } from "@themedComponents/ThemedWheelPicker";
+import ThemedModal from "@themedComponents/ThemedModal";
 import GenericHeader from "@components/headers/GenericHeader";
+import HeaderButton from "@components/headers/HeaderButton";
 import FormField from "@components/FormField";
 import ChipIcon from "@components/ChipIcon";
 import ScheduleChip from "@components/pills/ScheduleChip";
-import { useTheme } from "@hooks/useTheme";
 import { t } from "@i18n/t";
-import AddIcon from "@assets/icons/add.svg";
-import CloseIcon from "@assets/icons/close.svg";
-import TrashIcon from "@assets/icons/trash.svg";
 import { 
   Pill, 
   DosageUnit, 
@@ -26,9 +28,10 @@ import {
   INTAKE_WINDOW_OPTIONS,
   formatIntakeWindow,
 } from "types/pill";
-import HeaderButton from "@components/headers/HeaderButton";
 import { capitalizeFirstLetter } from "@utils/capitalizeFirstLetter";
-import ThemedDatePicker from "@components/themedComponents/ThemedDatePicker";
+import AddIcon from "@assets/icons/add.svg";
+import CloseIcon from "@assets/icons/close.svg";
+import TrashIcon from "@assets/icons/trash.svg";
 
 export default function EditPillScreen() {
   const router = useRouter();
@@ -36,13 +39,20 @@ export default function EditPillScreen() {
   const params = useLocalSearchParams();
   const isEditing = !!params.id;
 
+  const { pills, addPill, updatePill, deletePill, getPillByName } = usePills();
+
   const getUnitLabel = (unit: DosageUnit): string => {
     const label = t(`pill.unit.${unit}`);
     return (unit !== DosageUnit.MG && unit !== DosageUnit.ML) ? capitalizeFirstLetter(label) : label;
   };
 
+  // États pour les modales
+  const [errorModal, setErrorModal] = useState({ visible: false, message: "" });
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [successModal, setSucessModal] = useState({ visible: false, message: "" });
+
   // État du formulaire
-  const [formData, setFormData] = useState<Omit<Pill, "id">>(createDefaultPill());
+  const [formData, setFormData] = useState<Pill>(isEditing ? pills[0] : createDefaultPill());
   const [hasEndDate, setHasEndDate] = useState(false);
 
   const units = Object.values(DosageUnit);
@@ -63,50 +73,117 @@ export default function EditPillScreen() {
     value: minutes,
   }));
 
-  const handleSave = () => {
-    // Validation
-    console.log("handleSave");
-    console.log(formData);
-    
-    if (!formData.name.trim()) {
-      Alert.alert("Erreur", "Veuillez entrer un nom de médicament");
+  const handleSave = async () => {
+    const trimmedName = formData.name.trim();
+    const currentId = isEditing ? Number(params.id) : -1;
+
+    // Validation du nom
+    if (!trimmedName) {
+      setErrorModal({
+        visible: true,
+        message: "Veuillez entrer un nom de médicament",
+      });
       return;
     }
 
+    // Validation des horaires
     if (formData.schedules.length === 0) {
-      Alert.alert("Erreur", "Veuillez ajouter au moins un horaire de prise");
+      setErrorModal({
+        visible: true,
+        message: "Veuillez ajouter au moins un horaire de prise",
+      });
       return;
     }
 
+    // Validation de l'intervalle entre les prises
     if (!validateSchedules(formData.schedules, formData.minHoursBetweenIntakes)) {
-      Alert.alert(
-        "Erreur",
-        `Les horaires ne respectent pas l"intervalle minimal de ${formData.minHoursBetweenIntakes}h`
-      );
+      setErrorModal({
+        visible: true,
+        message: `Les horaires ne respectent pas l'intervalle minimal de ${formData.minHoursBetweenIntakes}h`,
+      });
       return;
     }
 
-    // TODO: Sauvegarder le médicament
-    console.log("Saving pill:", formData);
-    router.back();
+    if (isEditing) {
+      // Look for all pills (except current) where the name is used
+      const existingPills = pills.filter((pill, index) => { pill.name === trimmedName && index !== currentId} );
+      if (existingPills.length > 0) {
+        setErrorModal({
+          visible: true,
+          message: "Un médicament avec ce nom existe déjà",
+        });
+        return;
+      }
+    }
+    else {
+      // new pill
+      const existingPill = getPillByName(formData.name);
+      if (existingPill) {
+        setErrorModal({
+          visible: true,
+          message: "Un médicament avec ce nom existe déjà",
+        });
+        return;
+      }
+    }
+
+    try {
+      if (isEditing) {
+        // Mise à jour d'un médicament existant
+        await updatePill(currentId, {...formData, name: trimmedName});
+        setSucessModal({
+          visible: true,
+          message: "Médicament modifié avec succès",
+        });
+      } 
+      else {
+        // Création d'un nouveau médicament
+        await addPill(formData);
+        setSucessModal({
+          visible: true,
+          message: "Médicament ajouté avec succès",
+        });
+      }
+      
+      // Attendre que la modale se ferme avant de revenir
+      setTimeout(() => {
+        router.back();
+      }, 1500);
+    } 
+    catch (error) {
+      setErrorModal({
+        visible: true,
+        message: "Une erreur est survenue lors de la sauvegarde",
+      });
+      console.error("Error saving pill:", error);
+    }
   };
 
   const handleDelete = () => {
-    Alert.alert(
-      "Supprimer",
-      "Êtes-vous sûr de vouloir supprimer ce médicament ?",
-      [
-        { text: "Annuler", style: "cancel" },
-        {
-          text: "Supprimer",
-          style: "destructive",
-          onPress: () => {
-            // TODO: Supprimer le médicament
-            router.back();
-          },
-        },
-      ]
-    );
+    // Afficher la modale de confirmation
+    setDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!isEditing) {
+      setErrorModal({
+        visible: true,
+        message: "Vous ne pouvez pas supprimer un médicament en cours de création.",
+      });
+      console.error("Error try deleting pill in creating mode");
+    }
+    const currentId = Number(params.id);
+    try {
+      await deletePill(currentId);
+      router.back();
+    } 
+    catch (error) {
+      setErrorModal({
+        visible: true,
+        message: "Une erreur est survenue lors de la suppression",
+      });
+      console.error("Error deleting pill:", error);
+    }
   };
 
   const handleAddSchedule = () => {
@@ -266,6 +343,7 @@ export default function EditPillScreen() {
   };
 
   const today = new Date();
+  today.setHours(0, 0, 0, 0);
   //const maxDate = new Date();
   //maxDate.setFullYear(today.getFullYear() + 1);
 
@@ -512,6 +590,39 @@ export default function EditPillScreen() {
           )}
         </ScrollView>
       </View>
+
+      {/* Modale d'erreur */}
+      <ThemedModal
+        visible={errorModal.visible}
+        onClose={() => setErrorModal({ visible: false, message: "" })}
+        title="Erreur"
+        description={errorModal.message}
+        type="error"
+        confirmText="OK"
+      />
+
+      {/* Modale de confirmation de suppression */}
+      <ThemedModal
+        visible={deleteModal}
+        onClose={() => setDeleteModal(false)}
+        title="Supprimer le médicament"
+        description={`Êtes-vous sûr de vouloir supprimer "${formData.name}" ? Cette action est irréversible.`}
+        type="error"
+        confirmText="Supprimer"
+        cancelText="Annuler"
+        onConfirm={confirmDelete}
+        showCancel={true}
+      />
+
+      {/* Modale de succès */}
+      <ThemedModal
+        visible={successModal.visible}
+        onClose={() => setSucessModal({ visible: false, message: "" })}
+        title="Succès"
+        description={successModal.message}
+        type="info"
+        confirmText="OK"
+      />
     </SafeTopAreaThemedView>
   );
 }

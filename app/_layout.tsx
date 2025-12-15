@@ -2,9 +2,10 @@
 import React from "react";
 import { Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { ThemeProvider, useAppTheme } from "../context/ThemeContext";
+import { ThemeProvider, useAppTheme } from "@context/ThemeContext";
 import { LanguageProvider } from "@context/LanguageContext";
 import { SettingsProvider } from "@context/SettingsContext";
+import { DataProvider } from "@context/DataContext";
 
 const RootLayoutContent = () => {
   const { theme } = useAppTheme();
@@ -19,11 +20,13 @@ const RootLayoutContent = () => {
 export default function RootLayout() {
   return (
     <SettingsProvider>
-      <ThemeProvider>
-        <LanguageProvider>
+      <DataProvider>
+        <ThemeProvider>
+          <LanguageProvider>
             <RootLayoutContent />
-        </LanguageProvider>
-      </ThemeProvider>
+          </LanguageProvider>
+        </ThemeProvider>
+      </DataProvider>
     </SettingsProvider>
   );
 }

@@ -95,7 +95,7 @@ const fr: LanguageSet = {
     // Labels
     schedules: "Horaires de prise",
     stock: "Stock",
-    minInterval: "Intervalle min",
+    minInterval: "Intervalle min.",
     until: "Jusqu'au",
   }
 };

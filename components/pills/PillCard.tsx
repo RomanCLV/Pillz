@@ -52,7 +52,7 @@ export function PillCard({ pill, onPress }: PillCardProps) {
           {/* Stock */}
           <InfoRow label={t("pill.stock")} value={pill.stockQuantity} valueStyle={isLowStock ? {color: theme.text.error} : {}} />
           {/* Durée minimale entre prises */}
-          <InfoRow label={t("pill.minInterval")} value={pill.minHoursBetweenIntakes} />
+          <InfoRow label={t("pill.minInterval")} value={`${pill.minHoursBetweenIntakes}h`} />
           {/* Durée du traitement */}
           {hasEndDate && <InfoRow label={t("pill.until")} value={pill.treatmentDuration.endDate?.toLocaleDateString()} />}
         </View>

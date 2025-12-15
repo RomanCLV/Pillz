@@ -30,7 +30,6 @@ export interface TreatmentDuration {
  * Structure complète d'un médicament
  */
 export interface Pill {
-  id: string;
   name: string;
   dosage: number;
   unit: DosageUnit;
@@ -95,14 +94,16 @@ export function formatSchedule(schedule: PillSchedule): string {
 /**
  * Fonction utilitaire pour créer un nouveau médicament avec valeurs par défaut
  */
-export function createDefaultPill(): Omit<Pill, 'id'> {
+export function createDefaultPill(): Pill {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
   return {
-    name: '',
+    name: "",
     dosage: 1,
     unit: DosageUnit.PILL,
     schedules: [],
     treatmentDuration: {
-      startDate: new Date(),
+      startDate: today,
       endDate: null,
     },
     minHoursBetweenIntakes: 4,
