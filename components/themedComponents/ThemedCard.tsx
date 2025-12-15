@@ -25,7 +25,7 @@ const ThemedCard: React.FC<ThemedCardProps> = ({
   animateScale = true,
   animateOpacity = true,
   pressedScale = 0.97,
-  pressedOpacity = 0.7,
+  pressedOpacity = 0.85,
   children,
   ...props 
 }) => {
