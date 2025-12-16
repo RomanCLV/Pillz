@@ -7,7 +7,7 @@ import Chip from "@components/Chip";
 import InfoRow from "@components/InfoRow";
 import ThemedText from "@themedComponents/ThemedText";
 import ThemedCard from "@themedComponents/ThemedCard";
-import { t } from "@i18n/t";
+import { useT } from "@hooks/useT";
 import { Pill } from "types/pill";
 
 interface PillCardProps {
@@ -17,6 +17,7 @@ interface PillCardProps {
 
 export function PillCard({ pill, onPress }: PillCardProps) {
   const theme = useTheme();
+  const t = useT();
 
   // Vérifier si le stock est bas
   const isLowStock = pill.stockQuantity <= pill.reminderThreshold;

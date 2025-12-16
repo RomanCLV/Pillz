@@ -3,17 +3,17 @@ import React from "react";
 import { Tabs } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useT } from "@hooks/useT";
+import { useTheme } from "@hooks/useTheme";
 import CalendarIcon from "@assets/icons/calendar.svg";
 import PillsIcon from "@assets/icons/pills.svg";
 import SettingsIcon from "@assets/icons/settings.svg";
 import TimeIcon from "@assets/icons/time.svg";
-import { useTheme } from "@hooks/useTheme";
-
-import {t} from "@i18n/t";
 
 export default function TabsLayout() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
+  const t = useT();
   
   return (
     <Tabs

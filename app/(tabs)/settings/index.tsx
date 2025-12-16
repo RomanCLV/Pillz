@@ -3,6 +3,7 @@ import React from "react";
 import { StyleSheet, ScrollView, View, Linking } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import useSafeNavigation from "@hooks/useSafeNavigation";
+import { useT } from "@i18n/useT";
 import { useLanguage } from "@context/LanguageContext";
 import { useSettings } from "@context/SettingsContext";
 import { useAppTheme } from "@context/ThemeContext";
@@ -12,13 +13,13 @@ import Spacer from "@components/Spacer";
 import TitlePage from "@components/TitlePage";
 import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
 import ThemedText from "@themedComponents/ThemedText";
-import { t } from "@i18n/t";
 
 export default function SettingsScreen() {
   const { navigate } = useSafeNavigation();
   const {theme, themePreference} = useAppTheme();
   const {language} = useLanguage();
   const { settings, update, loaded } = useSettings(); 
+  const t = useT();
 
   const handleContactPress = () => {
     Linking.openURL("mailto:roman.clavier.2001@gmail.com");

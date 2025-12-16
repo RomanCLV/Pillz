@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { StyleSheet, ScrollView, View, Alert } from "react-native";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { useTheme } from "@hooks/useTheme";
 import { usePills } from "@hooks/usePills";
+import useSafeNavigation from "@hooks/useSafeNavigation";
+import { useT } from "@i18n/useT";
 import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
 import ThemedButton from "@themedComponents/ThemedButton";
 import ThemedDatePicker from "@themedComponents/ThemedDatePicker";
@@ -18,7 +20,6 @@ import HeaderButton from "@components/headers/HeaderButton";
 import FormField from "@components/FormField";
 import ChipIcon from "@components/ChipIcon";
 import ScheduleChip from "@components/pills/ScheduleChip";
-import { t } from "@i18n/t";
 import { 
   Pill, 
   DosageUnit, 
@@ -32,11 +33,11 @@ import { capitalizeFirstLetter } from "@utils/capitalizeFirstLetter";
 import AddIcon from "@assets/icons/add.svg";
 import CloseIcon from "@assets/icons/close.svg";
 import TrashIcon from "@assets/icons/trash.svg";
-import useSafeNavigation from "@hooks/useSafeNavigation";
 
 export default function EditPillScreen() {
-  const {navigate, goBack} = useSafeNavigation();
+  const {goBack} = useSafeNavigation();
   const theme = useTheme();
+  const t = useT();
   const params = useLocalSearchParams();
   const isEditing = !!params.id;
 
@@ -103,6 +104,7 @@ export default function EditPillScreen() {
         message: `Les horaires ne respectent pas l'intervalle minimal de ${formData.minHoursBetweenIntakes}h`,
       });
       return;
+        const t = useT();
     }
 
     if (isEditing) {

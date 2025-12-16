@@ -1,15 +1,14 @@
 import { translations } from "@i18n/index";
-import { useCurrentLanguage } from "@hooks/useCurrentLanguage";
 
-export const t = (
+export const translate = (
+  lang: string,
   path: string,
   vars: Record<string, string | number> = {},
   pluralize: boolean = false
 ) => {
-  const lang = useCurrentLanguage();
   const parts = path.split(".");
 
-  let value: any = translations[lang];
+  let value: any = translations[lang as keyof typeof translations];
 
   // Navigate to the translation node
   for (const p of parts) {
@@ -40,4 +39,9 @@ export const t = (
   }
 
   return path;
+};
+
+// Deprecated: do not call `t()` directly because it may use hooks. Use `useT()` in components or `translate(lang, ...)`.
+export const t = (_path: string, _vars?: Record<string, string | number>, _pluralize?: boolean) => {
+  throw new Error("Do not call t() directly. Use useT() inside components or translate(lang, path, ...).");
 };

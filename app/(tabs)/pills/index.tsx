@@ -3,13 +3,13 @@ import { View, ScrollView, StyleSheet } from "react-native";
 
 import { useTheme } from "@hooks/useTheme";
 import { usePills } from "@hooks/usePills";
+import { useT } from "@i18n/useT";
 import useSafeNavigation from "@hooks/useSafeNavigation";
 import { PillCard } from "@components/pills/PillCard";
 import TitlePage from "@components/TitlePage";
 import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
 import ThemedButton from "@themedComponents/ThemedButton";
 import ThemedText from "@themedComponents/ThemedText";
-import { t } from "@i18n/t";
 import AddIcon from "@icons/add.svg"
 import NoPillsIcon from "@assets/icons/no-pills.svg"
 
@@ -17,6 +17,7 @@ export default function index () {
   const { navigate } = useSafeNavigation();
   const theme = useTheme();
   const { pills } = usePills();
+  const t = useT();
 
   return (
     <SafeTopAreaThemedView style={styles.container}>

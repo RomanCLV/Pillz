@@ -6,11 +6,12 @@ import SelectionList, { SelectionOption } from "@components/settings/SelectionLi
 import Spacer from "@components/Spacer";
 import ThemedText from "@themedComponents/ThemedText";
 import { useAppTheme, ThemePreference } from "@context/ThemeContext";
-import { t } from "@i18n/t";
+import { useT } from "@i18n/useT";
 import BackHeader from "@components/headers/BackHeader";
 
 export default function ThemeSettingsScreen() {
   const { theme, themePreference, setPreference } = useAppTheme();
+  const t = useT();
 
   const THEME_OPTIONS: SelectionOption<ThemePreference>[] = [
     { value: "system", label: t("settings_theme.system"), icon: "phone-portrait-outline" },
