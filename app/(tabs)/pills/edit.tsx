@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, ScrollView, View, Alert } from "react-native";
+import { StyleSheet, ScrollView, View, Alert, KeyboardAvoidingView, Platform } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -104,7 +104,6 @@ export default function EditPillScreen() {
         message: `Les horaires ne respectent pas l'intervalle minimal de ${formData.minHoursBetweenIntakes}h`,
       });
       return;
-        const t = useT();
     }
 
     if (isEditing) {
@@ -352,248 +351,253 @@ export default function EditPillScreen() {
 
   return (
     <SafeTopAreaThemedView style={styles.container}>
-      <View style={styles.content}>
+      <KeyboardAvoidingView 
+        style={styles.keyboardAvoid}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+      >
+        <View style={styles.content}>
+          {/* Header */}
+          <GenericHeader
+            title={isEditing ? "Modifier le médicament" : "Nouveau médicament"}
+            leftButton={<HeaderButton icon={<CloseIcon width={24} height={24} color={theme.text.primary} onPress={goBack()} />} />}
+            rightButton={<HeaderButton icon={<Ionicons name="checkmark" size={24} color={theme.brand.primary} onPress={handleSave} />} />}
+          />
 
-        {/* Header */}
-        <GenericHeader
-          title={isEditing ? "Modifier le médicament" : "Nouveau médicament"}
-          leftButton={<HeaderButton icon={<CloseIcon width={24} height={24} color={theme.text.primary} onPress={goBack()} />} />}
-          rightButton={<HeaderButton icon={<Ionicons name="checkmark" size={24} color={theme.brand.primary} onPress={handleSave} />} />}
-        />
-
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* Ligne 1: Nom */}
-          <FormField
-            label="Nom du médicament"
-            icon={({ color, size }) => <Ionicons name="medical" size={size} color={color} />}
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
           >
-            <ThemedTextInput
-              value={formData.name}
-              onChangeText={(text) => setFormData({ ...formData, name: text })}
-              placeholder="Ex: Doliprane"
-            />
-          </FormField>
-
-          {/* Ligne 2: Dosage + Unité (2 colonnes) */}
-          <View style={styles.row}>
+            {/* Ligne 1: Nom */}
             <FormField
-              label="Dosage"
-              style={styles.column}
-              icon={({ color, size }) => <MaterialCommunityIcons name="pill-multiple" size={size} color={color} />}
+              label="Nom du médicament"
+              icon={({ color, size }) => <Ionicons name="medical" size={size} color={color} />}
             >
               <ThemedTextInput
-                value={formData.dosage === 0 ? "" : formData.dosage.toString()}
-                onChangeText={(text) => {
-                  if (text === "") {
-                    setFormData({ ...formData, dosage: 0 });
-                  } else {
-                    const num = parseFloat(text);
-                    if (!isNaN(num) && num >= 0) {
-                      setFormData({ ...formData, dosage: num });
+                value={formData.name}
+                onChangeText={(text) => setFormData({ ...formData, name: text })}
+                placeholder="Ex: Doliprane"
+              />
+            </FormField>
+
+            {/* Ligne 2: Dosage + Unité (2 colonnes) */}
+            <View style={styles.row}>
+              <FormField
+                label="Dosage"
+                style={styles.column}
+                icon={({ color, size }) => <MaterialCommunityIcons name="pill-multiple" size={size} color={color} />}
+              >
+                <ThemedTextInput
+                  value={formData.dosage === 0 ? "" : formData.dosage.toString()}
+                  onChangeText={(text) => {
+                    if (text === "") {
+                      setFormData({ ...formData, dosage: 0 });
+                    } else {
+                      const num = parseFloat(text);
+                      if (!isNaN(num) && num >= 0) {
+                        setFormData({ ...formData, dosage: num });
+                      }
                     }
-                  }
-                }}
-                type="number"
-                keyboardType="numeric"
-                placeholder="1"
-              />
-            </FormField>
+                  }}
+                  type="number"
+                  keyboardType="numeric"
+                  placeholder="1"
+                />
+              </FormField>
 
-            <FormField label="Unité" style={styles.column}>
-              <ThemedWheelPicker
-                items={unitItems}
-                selectedValue={formData.unit}
-                onValueChange={(value) => setFormData({ ...formData, unit: value })}
-              />
-            </FormField>
-          </View>
+              <FormField label="Unité" style={styles.column}>
+                <ThemedWheelPicker
+                  items={unitItems}
+                  selectedValue={formData.unit}
+                  onValueChange={(value) => setFormData({ ...formData, unit: value })}
+                />
+              </FormField>
+            </View>
 
-          {/* Ligne 3: Horaires de prise */}
-          <FormField
-            label="Horaires de prise"
-            icon={({ color, size }) => <Ionicons name="time" size={size} color={color} />}
-          >
-            <View style={styles.chipsContainer}>
-              {formData.schedules.map((schedule, index) => (
-                <ScheduleChip
-                  key={index}
-                  schedule={schedule}
+            {/* Ligne 3: Horaires de prise */}
+            <FormField
+              label="Horaires de prise"
+              icon={({ color, size }) => <Ionicons name="time" size={size} color={color} />}
+            >
+              <View style={styles.chipsContainer}>
+                {formData.schedules.map((schedule, index) => (
+                  <ScheduleChip
+                    key={index}
+                    schedule={schedule}
+                    variant="primary"
+                    intensity="light"
+                    isEditable={true}
+                    minSchedule={findMinSchedule(index)}
+                    maxSchedule={findMaxSchedule(index)}
+                    onChange={(schedule) => handleScheduleChanged(index, schedule)}
+                    onClose={() => handleRemoveSchedule(index)}
+                  />
+                ))}
+                <ChipIcon
+                  icon={({ color, size }) => <AddIcon width={size} height={size} color={color} />}
                   variant="primary"
                   intensity="light"
-                  isEditable={true}
-                  minSchedule={findMinSchedule(index)}
-                  maxSchedule={findMaxSchedule(index)}
-                  onChange={(schedule) => handleScheduleChanged(index, schedule)}
-                  onClose={() => handleRemoveSchedule(index)}
+                  size={30}
+                  onPress={handleAddSchedule}
                 />
-              ))}
-              <ChipIcon
-                icon={({ color, size }) => <AddIcon width={size} height={size} color={color} />}
-                variant="primary"
-                intensity="light"
-                size={30}
-                onPress={handleAddSchedule}
-              />
-            </View>
-          </FormField>
-
-          {/* Ligne 4: Fenêtre de prise */}
-          <FormField
-            label="Durée pour prendre le médicament"
-            icon={({ color, size }) => <Ionicons name="hourglass" size={size} color={color} />}
-          >
-            <ThemedWheelPicker
-              items={intakeWindowItems}
-              selectedValue={formData.intakeWindowMinutes}
-              onValueChange={(value) =>
-                setFormData({ ...formData, intakeWindowMinutes: value })
-              }
-            />
-          </FormField>
-
-          {/* Ligne 5: Temps entre deux prises */}
-          <FormField
-            label="Durée minimale entre deux prises"
-            icon={({ color, size }) => <Ionicons name="time-outline" size={size} color={color} />}
-          >
-            <ThemedWheelPicker
-              items={hoursBetweenIntakesItems}
-              selectedValue={formData.minHoursBetweenIntakes}
-              onValueChange={handleMinHoursBetweenIntakes}
-            />
-          </FormField>
-
-          {/* Ligne 6: Durée du traitement */}
-          <FormField
-            label="Durée du traitement"
-            icon={({ color, size }) => <Ionicons name="calendar" size={size} color={color} />}
-          >
-            <View style={styles.switchRow}>
-              <ThemedText style={{ color: theme.text.secondary }}>
-                Traitement à durée limitée
-              </ThemedText>
-              <ThemedSwitch
-                value={hasEndDate}
-                onValueChange={(value) => {
-                  setHasEndDate(value);
-                  setFormData({
-                    ...formData,
-                    treatmentDuration: {
-                      ...formData.treatmentDuration,
-                      endDate: value ? new Date() : null,
-                    },
-                  });
-                }}
-              />
-            </View>
-
-            {hasEndDate && (
-              <ThemedDatePicker
-                value={formData.treatmentDuration.endDate}
-                onChange={(date) => 
-                  setFormData({
-                    ...formData,
-                    treatmentDuration: {
-                      ...formData.treatmentDuration,
-                      endDate: date,
-                    },
-                  })
-                }
-                placeholder="Choisir une date"
-                minDate={today}
-                //maxDate={maxDate}
-              />
-            )}
-          </FormField>
-
-          {/* Ligne 7: Gestion du stock (2 colonnes) */}
-          <FormField
-            label="Gestion du stock"
-            icon={({ color, size }) => <Ionicons name="cube" size={size} color={color} />}
-          >
-            <View style={styles.switchRow}>
-              <ThemedText style={{ color: theme.text.secondary }}>
-                Activer la gestion du stock
-              </ThemedText>
-              <ThemedSwitch
-                value={formData.stockGesture}
-                onValueChange={(value) => {
-                  setFormData({
-                    ...formData,
-                    stockGesture: value,
-                  });
-                }}
-              />
-            </View>
-
-            {formData.stockGesture && (
-              <View style={styles.row}>
-                <FormField
-                  label="Quantité en stock"
-                  style={styles.column}
-                  icon={({ color, size }) => <Ionicons name="cube-outline" size={size} color={color} />}
-                >
-                  <ThemedTextInput
-                    value={formData.stockQuantity === 0 ? "" : formData.stockQuantity.toString()}
-                    onChangeText={(text) => {
-                      if (text === "") {
-                        setFormData({ ...formData, stockQuantity: 0 });
-                      } else {
-                        const num = parseInt(text);
-                        if (!isNaN(num) && num >= 0) {
-                          setFormData({ ...formData, stockQuantity: num });
-                        }
-                      }
-                    }}
-                    type="number"
-                    keyboardType="numeric"
-                    placeholder="0"
-                  />
-                </FormField>
-
-                <FormField
-                  label="Seuil d'alerte"
-                  style={styles.column}
-                  icon={({ color, size }) => <Ionicons name="alert-circle" size={size} color={color} />}
-                >
-                  <ThemedTextInput
-                    value={formData.reminderThreshold === 0 ? "" : formData.reminderThreshold.toString()}
-                    onChangeText={(text) => {
-                      if (text === "") {
-                        setFormData({ ...formData, reminderThreshold: 0 });
-                      } else {
-                        const num = parseInt(text);
-                        if (!isNaN(num) && num >= 0) {
-                          setFormData({ ...formData, reminderThreshold: num });
-                        }
-                      }
-                    }}
-                    type="number"
-                    keyboardType="numeric"
-                    placeholder="5"
-                  />
-                </FormField>
               </View>
-            )}
-          </FormField>
+            </FormField>
 
-          {/* Bouton supprimer (mode édition uniquement) */}
-          {isEditing && (
-            <ThemedButton
-                onPress={handleDelete}
-                containerStyle={styles.deleteButton}
-                variant="error"
-                icon={<TrashIcon width={24} height={24} color={theme.text.onBrand} />}
-              >
-                Supprimer ce médicament
-              </ThemedButton>
-          )}
-        </ScrollView>
-      </View>
+            {/* Ligne 4: Fenêtre de prise */}
+            <FormField
+              label="Durée pour prendre le médicament"
+              icon={({ color, size }) => <Ionicons name="hourglass" size={size} color={color} />}
+            >
+              <ThemedWheelPicker
+                items={intakeWindowItems}
+                selectedValue={formData.intakeWindowMinutes}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, intakeWindowMinutes: value })
+                }
+              />
+            </FormField>
+
+            {/* Ligne 5: Temps entre deux prises */}
+            <FormField
+              label="Durée minimale entre deux prises"
+              icon={({ color, size }) => <Ionicons name="time-outline" size={size} color={color} />}
+            >
+              <ThemedWheelPicker
+                items={hoursBetweenIntakesItems}
+                selectedValue={formData.minHoursBetweenIntakes}
+                onValueChange={handleMinHoursBetweenIntakes}
+              />
+            </FormField>
+
+            {/* Ligne 6: Durée du traitement */}
+            <FormField
+              label="Durée du traitement"
+              icon={({ color, size }) => <Ionicons name="calendar" size={size} color={color} />}
+            >
+              <View style={styles.switchRow}>
+                <ThemedText style={{ color: theme.text.secondary }}>
+                  Traitement à durée limitée
+                </ThemedText>
+                <ThemedSwitch
+                  value={hasEndDate}
+                  onValueChange={(value) => {
+                    setHasEndDate(value);
+                    setFormData({
+                      ...formData,
+                      treatmentDuration: {
+                        ...formData.treatmentDuration,
+                        endDate: value ? new Date() : null,
+                      },
+                    });
+                  }}
+                />
+              </View>
+
+              {hasEndDate && (
+                <ThemedDatePicker
+                  value={formData.treatmentDuration.endDate}
+                  onChange={(date) => 
+                    setFormData({
+                      ...formData,
+                      treatmentDuration: {
+                        ...formData.treatmentDuration,
+                        endDate: date,
+                      },
+                    })
+                  }
+                  placeholder="Choisir une date"
+                  minDate={today}
+                  //maxDate={maxDate}
+                />
+              )}
+            </FormField>
+
+            {/* Ligne 7: Gestion du stock (2 colonnes) */}
+            <FormField
+              label="Gestion du stock"
+              icon={({ color, size }) => <Ionicons name="cube" size={size} color={color} />}
+            >
+              <View style={styles.switchRow}>
+                <ThemedText style={{ color: theme.text.secondary }}>
+                  Activer la gestion du stock
+                </ThemedText>
+                <ThemedSwitch
+                  value={formData.stockGesture}
+                  onValueChange={(value) => {
+                    setFormData({
+                      ...formData,
+                      stockGesture: value,
+                    });
+                  }}
+                />
+              </View>
+
+              {formData.stockGesture && (
+                <View style={styles.row}>
+                  <FormField
+                    label="Quantité en stock"
+                    style={styles.column}
+                    icon={({ color, size }) => <Ionicons name="cube-outline" size={size} color={color} />}
+                  >
+                    <ThemedTextInput
+                      value={formData.stockQuantity === 0 ? "" : formData.stockQuantity.toString()}
+                      onChangeText={(text) => {
+                        if (text === "") {
+                          setFormData({ ...formData, stockQuantity: 0 });
+                        } else {
+                          const num = parseInt(text);
+                          if (!isNaN(num) && num >= 0) {
+                            setFormData({ ...formData, stockQuantity: num });
+                          }
+                        }
+                      }}
+                      type="number"
+                      keyboardType="numeric"
+                      placeholder="0"
+                    />
+                  </FormField>
+
+                  <FormField
+                    label="Seuil d'alerte"
+                    style={styles.column}
+                    icon={({ color, size }) => <Ionicons name="alert-circle" size={size} color={color} />}
+                  >
+                    <ThemedTextInput
+                      value={formData.reminderThreshold === 0 ? "" : formData.reminderThreshold.toString()}
+                      onChangeText={(text) => {
+                        if (text === "") {
+                          setFormData({ ...formData, reminderThreshold: 0 });
+                        } else {
+                          const num = parseInt(text);
+                          if (!isNaN(num) && num >= 0) {
+                            setFormData({ ...formData, reminderThreshold: num });
+                          }
+                        }
+                      }}
+                      type="number"
+                      keyboardType="numeric"
+                      placeholder="5"
+                    />
+                  </FormField>
+                </View>
+              )}
+            </FormField>
+
+            {/* Bouton supprimer (mode édition uniquement) */}
+            {isEditing && (
+              <ThemedButton
+                  onPress={handleDelete}
+                  containerStyle={styles.deleteButton}
+                  variant="error"
+                  icon={<TrashIcon width={24} height={24} color={theme.text.onBrand} />}
+                >
+                  Supprimer ce médicament
+                </ThemedButton>
+            )}
+          </ScrollView>
+        </View>
+      </KeyboardAvoidingView>
 
       {/* Modale d'erreur */}
       <ThemedModal
@@ -633,6 +637,9 @@ export default function EditPillScreen() {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  keyboardAvoid: {
     flex: 1,
   },
   content: {
