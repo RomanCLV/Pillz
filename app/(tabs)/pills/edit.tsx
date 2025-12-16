@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, ScrollView, View, Alert, KeyboardAvoidingView, Platform } from "react-native";
+import { StyleSheet, ScrollView, View, KeyboardAvoidingView, Platform } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -27,7 +27,6 @@ import {
   createDefaultPill,
   validateSchedules,
   INTAKE_WINDOW_OPTIONS,
-  formatIntakeWindow,
 } from "types/pill";
 import { capitalizeFirstLetter } from "@utils/capitalizeFirstLetter";
 import AddIcon from "@assets/icons/add.svg";
@@ -47,6 +46,12 @@ export default function EditPillScreen() {
     const label = t(`pill.unit.${unit}`);
     return (unit !== DosageUnit.MG && unit !== DosageUnit.ML) ? capitalizeFirstLetter(label) : label;
   };
+
+  const formatIntakeWindow = (minutes: number) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return t("hours.hhmm", {h : hours.toString().padStart(2, '0'), m: mins.toString().padStart(2, '0')})
+  }
 
   // États pour les modales
   const [errorModal, setErrorModal] = useState({ visible: false, message: "" });
@@ -83,7 +88,7 @@ export default function EditPillScreen() {
     if (!trimmedName) {
       setErrorModal({
         visible: true,
-        message: "Veuillez entrer un nom de médicament",
+        message: t("pills_edit.pleaseInputName"),
       });
       return;
     }
@@ -92,7 +97,7 @@ export default function EditPillScreen() {
     if (formData.schedules.length === 0) {
       setErrorModal({
         visible: true,
-        message: "Veuillez ajouter au moins un horaire de prise",
+        message: t("pills_edit.pleaseAddSchudule"),
       });
       return;
     }
@@ -101,29 +106,29 @@ export default function EditPillScreen() {
     if (!validateSchedules(formData.schedules, formData.minHoursBetweenIntakes)) {
       setErrorModal({
         visible: true,
-        message: `Les horaires ne respectent pas l'intervalle minimal de ${formData.minHoursBetweenIntakes}h`,
+        message: t("pills_edit.invalidSchedules", {h: formData.minHoursBetweenIntakes}),
       });
       return;
     }
 
     if (isEditing) {
       // Look for all pills (except current) where the name is used
-      const existingPills = pills.filter((pill, index) => { pill.name === trimmedName && index !== currentId} );
+      const existingPills = pills.filter((pill, index) => pill.name === trimmedName && index !== currentId );
       if (existingPills.length > 0) {
         setErrorModal({
           visible: true,
-          message: "Un médicament avec ce nom existe déjà",
+          message: t("pills_edit.pillAlreadyExists"),
         });
         return;
       }
     }
     else {
       // new pill
-      const existingPill = getPillByName(formData.name);
+      const existingPill = getPillByName(trimmedName);
       if (existingPill) {
         setErrorModal({
           visible: true,
-          message: "Un médicament avec ce nom existe déjà",
+          message: t("pills_edit.pillAlreadyExists"),
         });
         return;
       }
@@ -135,7 +140,7 @@ export default function EditPillScreen() {
         await updatePill(currentId, {...formData, name: trimmedName});
         setSucessModal({
           visible: true,
-          message: "Médicament modifié avec succès",
+          message: t("pills_edit.pillUpdatedSuccess"),
         });
       } 
       else {
@@ -143,21 +148,19 @@ export default function EditPillScreen() {
         await addPill(formData);
         setSucessModal({
           visible: true,
-          message: "Médicament ajouté avec succès",
+          message: t("pills_edit.pillCreatedSuccess"),
         });
       }
       
       // Attendre que la modale se ferme avant de revenir
-      setTimeout(() => {
-        goBack()();
-      }, 1500);
+      setTimeout(goBack(), 1500);
     } 
     catch (error) {
       setErrorModal({
         visible: true,
-        message: "Une erreur est survenue lors de la sauvegarde",
+        message: t("pills_edit.errorWhileSaving"),
       });
-      console.error("Error saving pill:", error);
+      //console.error("Error saving pill:", error);
     }
   };
 
@@ -170,9 +173,9 @@ export default function EditPillScreen() {
     if (!isEditing) {
       setErrorModal({
         visible: true,
-        message: "Vous ne pouvez pas supprimer un médicament en cours de création.",
+        message: t("pills_edit.cantDeletePillInCreation"),
       });
-      console.error("Error try deleting pill in creating mode");
+      //console.error("Error try deleting pill in creating mode");
     }
     const currentId = Number(params.id);
     try {
@@ -182,9 +185,9 @@ export default function EditPillScreen() {
     catch (error) {
       setErrorModal({
         visible: true,
-        message: "Une erreur est survenue lors de la suppression",
+        message: t("pills_edit.errorWhileDeleting"),
       });
-      console.error("Error deleting pill:", error);
+      //console.error("Error deleting pill:", error);
     }
   };
 
@@ -230,10 +233,10 @@ export default function EditPillScreen() {
       
       // Si l'écart est insuffisant, on ne peut pas ajouter
       if (gapToFirst < minGapMinutes) {
-        Alert.alert(
-          "Impossible d'ajouter",
-          `Impossible d'ajouter un nouvel horaire. L'intervalle minimal de ${formData.minHoursBetweenIntakes}h n'est pas respecté.`
-        );
+        setErrorModal({
+          visible: true,
+          message: t("pills_edit.canNotAddSchedule", {h: formData.minHoursBetweenIntakes}),
+        });
         return;
       }
     }
@@ -249,10 +252,10 @@ export default function EditPillScreen() {
     );
     
     if (isDuplicate) {
-      Alert.alert(
-        "Horaire existant",
-        "Cet horaire existe déjà."
-      );
+      setErrorModal({
+          visible: true,
+          message: t("pills_edit.scheduleAlreadyExists"),
+        });
       return;
     }
     
@@ -359,7 +362,7 @@ export default function EditPillScreen() {
         <View style={styles.content}>
           {/* Header */}
           <GenericHeader
-            title={isEditing ? "Modifier le médicament" : "Nouveau médicament"}
+            title={t(isEditing ? "pills_edit.titleEdit" : "pills_edit.titleNew")}
             leftButton={<HeaderButton icon={<CloseIcon width={24} height={24} color={theme.text.primary} onPress={goBack()} />} />}
             rightButton={<HeaderButton icon={<Ionicons name="checkmark" size={24} color={theme.brand.primary} onPress={handleSave} />} />}
           />
@@ -371,20 +374,20 @@ export default function EditPillScreen() {
           >
             {/* Ligne 1: Nom */}
             <FormField
-              label="Nom du médicament"
+              label={t("pills_edit.pillName")}
               icon={({ color, size }) => <Ionicons name="medical" size={size} color={color} />}
             >
               <ThemedTextInput
                 value={formData.name}
                 onChangeText={(text) => setFormData({ ...formData, name: text })}
-                placeholder="Ex: Doliprane"
+                placeholder={t("pills_edit.pillNameExample")}
               />
             </FormField>
 
             {/* Ligne 2: Dosage + Unité (2 colonnes) */}
             <View style={styles.row}>
               <FormField
-                label="Dosage"
+                label={t("pills_edit.dosage")}
                 style={styles.column}
                 icon={({ color, size }) => <MaterialCommunityIcons name="pill-multiple" size={size} color={color} />}
               >
@@ -406,7 +409,7 @@ export default function EditPillScreen() {
                 />
               </FormField>
 
-              <FormField label="Unité" style={styles.column}>
+              <FormField label={t("pills_edit.unity")} style={styles.column}>
                 <ThemedWheelPicker
                   items={unitItems}
                   selectedValue={formData.unit}
@@ -417,7 +420,7 @@ export default function EditPillScreen() {
 
             {/* Ligne 3: Horaires de prise */}
             <FormField
-              label="Horaires de prise"
+              label={t("pills_edit.medicationSchedule")}
               icon={({ color, size }) => <Ionicons name="time" size={size} color={color} />}
             >
               <View style={styles.chipsContainer}>
@@ -446,7 +449,7 @@ export default function EditPillScreen() {
 
             {/* Ligne 4: Fenêtre de prise */}
             <FormField
-              label="Durée pour prendre le médicament"
+              label={t("pills_edit.intakeWindow")}
               icon={({ color, size }) => <Ionicons name="hourglass" size={size} color={color} />}
             >
               <ThemedWheelPicker
@@ -460,7 +463,7 @@ export default function EditPillScreen() {
 
             {/* Ligne 5: Temps entre deux prises */}
             <FormField
-              label="Durée minimale entre deux prises"
+              label={t("pills_edit.timeBetweenIntakes")}
               icon={({ color, size }) => <Ionicons name="time-outline" size={size} color={color} />}
             >
               <ThemedWheelPicker
@@ -472,12 +475,12 @@ export default function EditPillScreen() {
 
             {/* Ligne 6: Durée du traitement */}
             <FormField
-              label="Durée du traitement"
+              label={t("pills_edit.treatmentDuration")}
               icon={({ color, size }) => <Ionicons name="calendar" size={size} color={color} />}
             >
               <View style={styles.switchRow}>
                 <ThemedText style={{ color: theme.text.secondary }}>
-                  Traitement à durée limitée
+                  {t("pills_edit.treatmentDurationLimited")}
                 </ThemedText>
                 <ThemedSwitch
                   value={hasEndDate}
@@ -506,7 +509,7 @@ export default function EditPillScreen() {
                       },
                     })
                   }
-                  placeholder="Choisir une date"
+                  placeholder={t("global.chooseDate")}
                   minDate={today}
                   //maxDate={maxDate}
                 />
@@ -515,12 +518,12 @@ export default function EditPillScreen() {
 
             {/* Ligne 7: Gestion du stock (2 colonnes) */}
             <FormField
-              label="Gestion du stock"
+              label={t("pills_edit.stockManagement")}
               icon={({ color, size }) => <Ionicons name="cube" size={size} color={color} />}
             >
               <View style={styles.switchRow}>
                 <ThemedText style={{ color: theme.text.secondary }}>
-                  Activer la gestion du stock
+                  {t("pills_edit.enableStockManagement")}
                 </ThemedText>
                 <ThemedSwitch
                   value={formData.stockGesture}
@@ -536,7 +539,7 @@ export default function EditPillScreen() {
               {formData.stockGesture && (
                 <View style={styles.row}>
                   <FormField
-                    label="Quantité en stock"
+                    label={t("pills_edit.quantityInStock")}
                     style={styles.column}
                     icon={({ color, size }) => <Ionicons name="cube-outline" size={size} color={color} />}
                   >
@@ -559,7 +562,7 @@ export default function EditPillScreen() {
                   </FormField>
 
                   <FormField
-                    label="Seuil d'alerte"
+                    label={t("pills_edit.alertThreshold")}
                     style={styles.column}
                     icon={({ color, size }) => <Ionicons name="alert-circle" size={size} color={color} />}
                   >
@@ -592,7 +595,7 @@ export default function EditPillScreen() {
                   variant="error"
                   icon={<TrashIcon width={24} height={24} color={theme.text.onBrand} />}
                 >
-                  Supprimer ce médicament
+                  {t("pills_edit.deletePill")}
                 </ThemedButton>
             )}
           </ScrollView>
@@ -603,21 +606,21 @@ export default function EditPillScreen() {
       <ThemedModal
         visible={errorModal.visible}
         onClose={() => setErrorModal({ visible: false, message: "" })}
-        title="Erreur"
+        title={t("global.error")}
         description={errorModal.message}
         type="error"
-        confirmText="OK"
+        confirmText={t("global.ok")}
       />
 
       {/* Modale de confirmation de suppression */}
       <ThemedModal
         visible={deleteModal}
         onClose={() => setDeleteModal(false)}
-        title="Supprimer le médicament"
-        description={`Êtes-vous sûr de vouloir supprimer "${formData.name}" ? Cette action est irréversible.`}
+        title={t("pills_edit.deletePill")}
+        description={t("pills_edit.deletePillConfirmation", { name: formData.name })}
         type="error"
-        confirmText="Supprimer"
-        cancelText="Annuler"
+        confirmText={t("global.delete")}
+        cancelText={t("global.cancel")}
         onConfirm={confirmDelete}
         showCancel={true}
       />
@@ -626,10 +629,10 @@ export default function EditPillScreen() {
       <ThemedModal
         visible={successModal.visible}
         onClose={() => setSucessModal({ visible: false, message: "" })}
-        title="Succès"
+        title={t("global.success")}
         description={successModal.message}
         type="info"
-        confirmText="OK"
+        confirmText={t("global.ok")}
       />
     </SafeTopAreaThemedView>
   );

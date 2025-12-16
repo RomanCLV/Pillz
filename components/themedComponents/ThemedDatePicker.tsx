@@ -59,15 +59,14 @@ export default function ThemedDatePicker({
   onChange,
   minDate,
   maxDate,
-  placeholder = "Sélectionner une date",
+  placeholder,
   style,
   headerStyle,
   contentStyle,
 }: ThemedDatePickerProps) {
   // ---------- Hooks ----------
   const theme = useTheme();
-  const language = useCurrentLanguage();
-  const locale = language ?? "en-US";
+  const locale = useCurrentLanguage() ?? "en-US";
 
   const [visible, setVisible] = useState(false);
 
@@ -113,7 +112,7 @@ export default function ThemedDatePicker({
             !value && { color: theme.text.tertiary },
           ]}
         >
-          {value ? value.toLocaleDateString(locale) : placeholder}
+          {value ? value.toLocaleDateString(locale) : (placeholder || "Select a date" )}
         </ThemedText>
 
         <FontAwesome name="angle-down" color={theme.text.tertiary} size={20} />

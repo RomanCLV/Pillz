@@ -122,18 +122,3 @@ export const INTAKE_WINDOW_OPTIONS = Array.from(
   { length: 24 }, // (12 * 60) / 30 = 24 options
   (_, i) => (i + 1) * 30
 );
-
-/**
- * Formater la durée en heures et minutes
- */
-export function formatIntakeWindow(minutes: number): string {
-  const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-  //if (hours === 0) {
-  //  return `${mins}min`;
-  //}
-  //if (mins === 0) {
-  //  return `${hours}h`;
-  //}
-  return `${hours.toString().padStart(2, '0')}h${mins.toString().padStart(2, '0')}`;
-}

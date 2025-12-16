@@ -9,7 +9,7 @@ export default function index () {
   const t = useT();
   return (
     <SafeTopAreaThemedView style={[GlobalStyles.container, {justifyContent: "center", alignItems: "center"}]}>
-      <ThemedText>{t("home.welcome")}</ThemedText>
+      <ThemedText>{t("home.title")}</ThemedText>
     </SafeTopAreaThemedView>
   );
 };

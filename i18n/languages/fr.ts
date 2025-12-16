@@ -12,8 +12,23 @@ const fr: LanguageSet = {
     back: "Retour"
   },
 
+  global: {
+    confirm: "Confirmer",
+    cancel: "Annuler",
+    delete: "Supprimer",
+    success: "Succès",
+    error: "Erreur",
+    ok: "OK",
+    chooseDate: "Choisir une date",
+  },
+
+  hours: {
+    hh: "{h}h",
+    hhmm: "{h}h{m}",
+  },
+
   home: {
-    welcome: "Bienvenue",
+    title: "Bienvenue",
   },
 
   pills: {
@@ -23,11 +38,38 @@ const fr: LanguageSet = {
   },
 
   pills_edit: {
-    welcome: "Modifier le médicament",
+    titleNew: "Nouveau médicament",
+    titleEdit: "Modifier le médicament",
+    pillName: "Nom du médicament",
+    pillNameExample: "Ex: Doliprane",
+    dosage: "Dosage",
+    unity: "Unité",
+    medicationSchedule: "Horaires de prise",
+    intakeWindow: "Durée pour prendre le médicament",
+    timeBetweenIntakes: "Durée minimale entre deux prises",
+    treatmentDuration: "Durée du traitement",
+    treatmentDurationLimited: "Traitement à durée limitée",
+    stockManagement: "Gestion du stock",
+    enableStockManagement: "Activer la gestion du stock",
+    quantityInStock: "Quantité en stock",
+    alertThreshold: "Seuil d'alerte",
+    deletePill: "Supprimer ce médicament",
+    deletePillConfirmation: 'Êtes-vous sûr de vouloir supprimer "{name}" ? Cette action est irréversible.',
+    pleaseInputName: "Veuillez entrer un nom de médicament.",
+    pleaseAddSchudule: "Veuillez ajouter au moins un horaire de prise.",
+    invalidSchedules: "Les horaires ne respectent pas l'intervalle minimal de {h}h.",
+    pillAlreadyExists: "Un médicament avec ce nom existe déjà.",
+    scheduleAlreadyExists: "Cet horaire existe déjà.",
+    pillUpdatedSuccess: "Médicament modifié avec succès.",
+    pillCreatedSuccess: "Médicament ajouté avec succès.",
+    cantDeletePillInCreation: "Vous ne pouvez pas supprimer un médicament en cours de création.",
+    errorWhileSaving: "Une erreur est survenue lors de la sauvegarde.",
+    errorWhileDeleting: "Une erreur est survenue lors de la suppression.",
+    canNotAddSchedule: "Impossible d'ajouter un nouvel horaire. L'intervalle minimal de {h}h n'est pas respecté.",
   },
 
   history: {
-    welcome: "Suivi",
+    title: "Suivi",
   },
 
   settings: {
