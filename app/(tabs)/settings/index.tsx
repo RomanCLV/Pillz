@@ -1,21 +1,21 @@
 // app/(tabs)/settings/index.tsx
 import React from "react";
 import { StyleSheet, ScrollView, View, Linking } from "react-native";
-import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import useSafeNavigation from "@hooks/useSafeNavigation";
 import { useLanguage } from "@context/LanguageContext";
 import { useSettings } from "@context/SettingsContext";
 import { useAppTheme } from "@context/ThemeContext";
-import SafeTopAreaThemedView from "@components/themedComponents/SafeTopAreaThemedView";
 import SettingsSection from "@components/settings/SettingsSection";
 import SettingsItem from "@components/settings/SettingsItem";
 import Spacer from "@components/Spacer";
-import ThemedText from "@themedComponents/ThemedText";
-import { Ionicons } from "@expo/vector-icons";
-import { t } from "@i18n/t";
 import TitlePage from "@components/TitlePage";
+import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
+import ThemedText from "@themedComponents/ThemedText";
+import { t } from "@i18n/t";
 
 export default function SettingsScreen() {
-  const router = useRouter();
+  const { navigate } = useSafeNavigation();
   const {theme, themePreference} = useAppTheme();
   const {language} = useLanguage();
   const { settings, update, loaded } = useSettings(); 
@@ -49,14 +49,14 @@ export default function SettingsScreen() {
             label={t("settings.preferences.theme")}
             rightElement="value"
             value={t(`settings_theme.${themePreference}`)}
-            onPress={() => router.push("settings/theme")}
+            onPress={navigate("settings/theme")}
           />
           <SettingsItem
             icon={({color, size}) => <Ionicons name="language-outline" color={color} size={size} />}
             label={t("settings.preferences.language")}
             rightElement="value"
             value={t(`settings_language.${language}`)}
-            onPress={() => router.push("settings/language")}
+            onPress={navigate("settings/language")}
           />
         </SettingsSection>
         <Spacer height={20}/>

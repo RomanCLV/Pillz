@@ -1,9 +1,9 @@
 // components/settings/SettingsHeader.tsx
 import React from "react";
 import { ViewStyle } from "react-native";
-import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@hooks/useTheme";
+import useSafeNavigation from "@hooks/useSafeNavigation";
 import GenericHeader from "./GenericHeader";
 import HeaderButton from "./HeaderButton";
 
@@ -19,8 +19,8 @@ const BackHeader: React.FC<BackHeaderProps> = ({
   style
 }) => {
   const theme = useTheme();
-  const router = useRouter();
-  const backButton = showBack ? <HeaderButton icon={<Ionicons name="chevron-back" size={24} color={theme.text.primary} />} onPress={router.back} /> : null;
+  const { goBack } = useSafeNavigation();
+  const backButton = showBack ? <HeaderButton icon={<Ionicons name="chevron-back" size={24} color={theme.text.primary} />} onPress={goBack()} /> : null;
   return <GenericHeader title={title} leftButton={backButton} style={style} />
 };
 

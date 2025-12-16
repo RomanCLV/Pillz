@@ -29,7 +29,7 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarShowLabel: true,
       }}
-      safeAreaInsets={{...insets, bottom: insets.bottom * 1.1}}
+      safeAreaInsets={{...insets, bottom: insets.bottom + 8}}
     >
       <Tabs.Screen
         name="home"

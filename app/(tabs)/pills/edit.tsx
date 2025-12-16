@@ -32,9 +32,10 @@ import { capitalizeFirstLetter } from "@utils/capitalizeFirstLetter";
 import AddIcon from "@assets/icons/add.svg";
 import CloseIcon from "@assets/icons/close.svg";
 import TrashIcon from "@assets/icons/trash.svg";
+import useSafeNavigation from "@hooks/useSafeNavigation";
 
 export default function EditPillScreen() {
-  const router = useRouter();
+  const {navigate, goBack} = useSafeNavigation();
   const theme = useTheme();
   const params = useLocalSearchParams();
   const isEditing = !!params.id;
@@ -147,7 +148,7 @@ export default function EditPillScreen() {
       
       // Attendre que la modale se ferme avant de revenir
       setTimeout(() => {
-        router.back();
+        goBack()();
       }, 1500);
     } 
     catch (error) {
@@ -175,7 +176,7 @@ export default function EditPillScreen() {
     const currentId = Number(params.id);
     try {
       await deletePill(currentId);
-      router.back();
+      goBack()();
     } 
     catch (error) {
       setErrorModal({
@@ -354,7 +355,7 @@ export default function EditPillScreen() {
         {/* Header */}
         <GenericHeader
           title={isEditing ? "Modifier le médicament" : "Nouveau médicament"}
-          leftButton={<HeaderButton icon={<CloseIcon width={24} height={24} color={theme.text.primary} onPress={router.back} />} />}
+          leftButton={<HeaderButton icon={<CloseIcon width={24} height={24} color={theme.text.primary} onPress={goBack()} />} />}
           rightButton={<HeaderButton icon={<Ionicons name="checkmark" size={24} color={theme.brand.primary} onPress={handleSave} />} />}
         />
 

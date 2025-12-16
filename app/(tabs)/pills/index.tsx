@@ -1,9 +1,9 @@
 import React from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
 
 import { useTheme } from "@hooks/useTheme";
 import { usePills } from "@hooks/usePills";
+import useSafeNavigation from "@hooks/useSafeNavigation";
 import { PillCard } from "@components/pills/PillCard";
 import TitlePage from "@components/TitlePage";
 import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
@@ -14,17 +14,9 @@ import AddIcon from "@icons/add.svg"
 import NoPillsIcon from "@assets/icons/no-pills.svg"
 
 export default function index () {
-  const router = useRouter();
+  const { navigate } = useSafeNavigation();
   const theme = useTheme();
   const { pills } = usePills();
-
-  const handleAddPill = () => {
-    router.push("/pills/edit");
-  };
-
-  const handlePillPress = (pillId: number) => {
-    router.push(`/pills/edit?id=${pillId}`);
-  };
 
   return (
     <SafeTopAreaThemedView style={styles.container}>
@@ -51,12 +43,12 @@ export default function index () {
             <PillCard
               key={index}
               pill={pill}
-              onPress={() => handlePillPress(index)}
+              onPress={navigate(`/pills/edit?id=${index}`)}
             />
           ))
         )}
         <ThemedButton
-          onPress={handleAddPill}
+          onPress={navigate("/pills/edit")}
           containerStyle={styles.addButton}
           icon={<AddIcon width={24} height={24} color={theme.text.onBrand} />}
         >

@@ -10,7 +10,6 @@ type HeaderButtonProps = {
 
 const HeaderButton: React.FC<HeaderButtonProps> = ({
     icon,
-    style,
     onPress,
 }) => {
   return <ThemedButton
