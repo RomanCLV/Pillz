@@ -2,12 +2,12 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 
 import { useTheme } from "@hooks/useTheme";
+import { useT } from "@i18n/useT";
 import ScheduleChip from "./ScheduleChip";
 import Chip from "@components/Chip";
 import InfoRow from "@components/InfoRow";
 import ThemedText from "@themedComponents/ThemedText";
 import ThemedCard from "@themedComponents/ThemedCard";
-import { useT } from "@hooks/useT";
 import { Pill } from "types/pill";
 
 interface PillCardProps {
