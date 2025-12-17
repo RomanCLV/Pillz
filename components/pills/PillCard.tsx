@@ -1,23 +1,31 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import * as Localization from "expo-localization";
 
+import { useCurrentLanguage } from "@hooks/useCurrentLanguage";
 import { useTheme } from "@hooks/useTheme";
 import { useT } from "@i18n/useT";
+import { LOCALE_MAP } from "@i18n/types";
+import { Pill } from "types/pill";
 import ScheduleChip from "./ScheduleChip";
 import Chip from "@components/Chip";
 import InfoRow from "@components/InfoRow";
 import ThemedText from "@themedComponents/ThemedText";
 import ThemedCard from "@themedComponents/ThemedCard";
-import { Pill } from "types/pill";
 
 interface PillCardProps {
   pill: Pill;
   onPress?: () => void;
 }
 
-export function PillCard({ pill, onPress }: PillCardProps) {
+export default function PillCard({ pill, onPress }: PillCardProps) {
   const theme = useTheme();
   const t = useT();
+  const currentLang = useCurrentLanguage(); // "fr", "en", etc.
+    const userLocale = 
+      (currentLang ? LOCALE_MAP[currentLang] : null) ?? 
+      Localization.getLocales()[0]?.languageTag ?? 
+      "en-US"; // ex: "fr-FR"
 
   // Vérifier si le stock est bas
   const isLowStock = pill.stockQuantity <= pill.reminderThreshold;
@@ -56,7 +64,7 @@ export function PillCard({ pill, onPress }: PillCardProps) {
         {/* Durée minimale entre prises */}
         <InfoRow label={t("pill.minInterval")} value={`${pill.minHoursBetweenIntakes}h`} />
         {/* Durée du traitement */}
-        {hasEndDate && <InfoRow label={t("pill.until")} value={pill.treatmentDuration.endDate?.toLocaleDateString()} />}
+        {hasEndDate && <InfoRow label={t("pill.until")} value={pill.treatmentDuration.endDate?.toLocaleDateString(userLocale)} />}
       </View>
     </ThemedCard>
   );

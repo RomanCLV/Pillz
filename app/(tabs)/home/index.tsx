@@ -1,9 +1,9 @@
 import React from "react";
 
 import { useT } from "@i18n/useT";
-import SafeTopAreaThemedView from "@components/themedComponents/SafeTopAreaThemedView";
-import ThemedText from "@themedComponents/ThemedText";
 import {GlobalStyles} from "@constants/global-styles";
+import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
+import ThemedText from "@themedComponents/ThemedText";
 
 export default function index () {
   const t = useT();

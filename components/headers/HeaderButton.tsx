@@ -1,5 +1,5 @@
 import React from "react"
-import { StyleSheet, ViewStyle } from "react-native"
+import { ViewStyle } from "react-native"
 import ThemedButton from "@themedComponents/ThemedButton"
 
 type HeaderButtonProps = {

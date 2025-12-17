@@ -1,9 +1,10 @@
 // components/settings/SettingsSection.tsx
 import React from "react";
 import { View, StyleSheet } from "react-native";
+
+import { useTheme } from "@hooks/useTheme";
 import ThemedView from "@themedComponents/ThemedView";
 import ThemedText from "@themedComponents/ThemedText";
-import { useTheme } from "@hooks/useTheme";
 
 type SettingsSectionProps = {
   title: string;

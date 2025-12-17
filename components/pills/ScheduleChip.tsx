@@ -1,15 +1,17 @@
 import React, {useState, useEffect, useMemo} from "react";
-import Chip from "@components/Chip";
-import { formatSchedule, PillSchedule } from "types/pill";
+import { View } from "react-native";
 import WheelPicker, {
   type PickerItem,
   usePickerControl,
   withPickerControl,
   useOnPickerValueChangedEffect,
 } from "@quidone/react-native-wheel-picker";
-import ThemedBottomSheetModal from "@themedComponents/ThemedBottomSheetModal"
-import { View } from "react-native";
+
 import { useTheme } from "@hooks/useTheme";
+import { useT } from "@i18n/useT";
+import { PillSchedule } from "types/pill";
+import ThemedBottomSheetModal from "@themedComponents/ThemedBottomSheetModal"
+import Chip from "@components/Chip";
 
 const ControlPicker = withPickerControl(WheelPicker);
 
@@ -65,12 +67,11 @@ export default function ScheduleChip({
   onChange,
   onClose,
 }: ScheduleChipProps) {
-  const [visible, setVisible] = useState(false);
-
-  const [temp, setTemp] = useState<PillSchedule>(schedule);
-
   const theme = useTheme();
-
+  const t = useT();
+  const [visible, setVisible] = useState(false);
+  const [temp, setTemp] = useState<PillSchedule>(schedule);
+  
   const isValid = useMemo(() => isScheduleValid(temp, minSchedule, maxSchedule), [temp, minSchedule, maxSchedule]);
 
   useEffect(() => {
@@ -92,6 +93,8 @@ export default function ScheduleChip({
     setVisible(true);
   };
 
+  const formatSchedule = (schedule: PillSchedule) => t("hours.hh2dmm", { h: schedule.hour.toString().padStart(2, '0'), m: schedule.minute.toString().padStart(2, '0') });
+
   return (
     <>
       <Chip
@@ -108,7 +111,7 @@ export default function ScheduleChip({
         onClose={() => setVisible(false)}
         height={280}
         header={{
-          title: "Modifier l'horaire",
+          title: t("global.modifySchedule"),
           canConfirm: isValid,
           onCancel: () => {
             setTemp(schedule);

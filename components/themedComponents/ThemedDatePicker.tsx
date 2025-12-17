@@ -1,11 +1,15 @@
 import React, { useMemo, useState } from "react";
 import { TouchableOpacity, StyleSheet, ViewStyle } from "react-native";
+import { DatePicker } from "@quidone/react-native-wheel-picker";
+import { FontAwesome } from "@expo/vector-icons";
+import * as Localization from "expo-localization";
+
+import { useCurrentLanguage } from "@hooks/useCurrentLanguage";
+import { useTheme } from "@hooks/useTheme";
+import { useT } from "@i18n/useT";
+import { LOCALE_MAP } from "@i18n/types";
 import ThemedBottomSheetModal from "@themedComponents/ThemedBottomSheetModal";
 import ThemedText from "./ThemedText";
-import { DatePicker } from "@quidone/react-native-wheel-picker";
-import { useTheme } from "@hooks/useTheme";
-import { useCurrentLanguage } from "@hooks/useCurrentLanguage";
-import { FontAwesome } from "@expo/vector-icons";
 
 // Helpers YYYY-MM-DD - CORRIGÉ pour gérer les fuseaux horaires
 const toOnlyDateFormat = (date: Date): string => {
@@ -36,10 +40,8 @@ const isDateValid = (
   maxDate?: Date
 ): boolean => {
   const d = fromOnlyDateFormat(date);
-
   if (minDate && isBeforeDay(d, minDate)) return false;
   if (maxDate && isAfterDay(d, maxDate)) return false;
-
   return true;
 };
 
@@ -66,7 +68,13 @@ export default function ThemedDatePicker({
 }: ThemedDatePickerProps) {
   // ---------- Hooks ----------
   const theme = useTheme();
-  const locale = useCurrentLanguage() ?? "en-US";
+  
+  const currentLang = useCurrentLanguage(); // "fr", "en", etc.
+  const userLocale = 
+    (currentLang ? LOCALE_MAP[currentLang] : null) ?? 
+    Localization.getLocales()[0]?.languageTag ?? 
+    "en-US"; // ex: "fr-FR"
+  const t = useT();
 
   const [visible, setVisible] = useState(false);
 
@@ -112,7 +120,7 @@ export default function ThemedDatePicker({
             !value && { color: theme.text.tertiary },
           ]}
         >
-          {value ? value.toLocaleDateString(locale) : (placeholder || "Select a date" )}
+          {value ? value.toLocaleDateString(userLocale) : (placeholder || t("global.selectDate"))}
         </ThemedText>
 
         <FontAwesome name="angle-down" color={theme.text.tertiary} size={20} />
@@ -123,7 +131,7 @@ export default function ThemedDatePicker({
         onClose={() => setVisible(false)}
         height={300}
         header={{
-          title: "Sélectionner une date",
+          title: t("global.selectDate"),
           canConfirm: canConfirm,
           onCancel: closeModal,
           onConfirm: confirm,
@@ -134,7 +142,7 @@ export default function ThemedDatePicker({
         <DatePicker
           date={tempDate}
           onDateChanged={({ date }) => setTempDate(date)}
-          locale={locale}
+          locale={userLocale}
           //minDate={minDate ? toOnlyDateFormat(minDate) : undefined}
           //maxDate={maxDate ? toOnlyDateFormat(maxDate) : undefined}
           itemHeight={48}

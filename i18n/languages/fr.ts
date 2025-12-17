@@ -19,12 +19,17 @@ const fr: LanguageSet = {
     success: "Succès",
     error: "Erreur",
     ok: "OK",
+    select: "Sélectionner",
+    close: "Fermer",
     chooseDate: "Choisir une date",
+    selectDate: "Sélectionner une date",
+    modifySchedule: "Modifier l'horaire",
   },
 
   hours: {
     hh: "{h}h",
     hhmm: "{h}h{m}",
+    hh2dmm: "{h}:{m}",
   },
 
   home: {
@@ -44,7 +49,7 @@ const fr: LanguageSet = {
     pillNameExample: "Ex: Doliprane",
     dosage: "Dosage",
     unity: "Unité",
-    medicationSchedule: "Horaires de prise",
+    schedules: "Horaires de prise",
     intakeWindow: "Durée pour prendre le médicament",
     timeBetweenIntakes: "Durée minimale entre deux prises",
     treatmentDuration: "Durée du traitement",

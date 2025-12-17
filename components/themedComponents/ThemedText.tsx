@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, TextProps, StyleProp, TextStyle } from "react-native";
-import { useTheme } from "../../hooks/useTheme";
+import { useTheme } from "@hooks/useTheme";
 
 type TextVariant = 
   | "primary"      // Texte principal (défaut)

@@ -84,5 +84,3 @@ export const useSafeNavigation = (delay: number = 500) => {
     replace,
   };
 };
-
-export default useSafeNavigation;

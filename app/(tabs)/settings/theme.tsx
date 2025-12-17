@@ -1,13 +1,14 @@
 // app/(tabs)/settings/theme.tsx
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import SafeTopAreaThemedView from "@components/themedComponents/SafeTopAreaThemedView";
-import SelectionList, { SelectionOption } from "@components/settings/SelectionList";
-import Spacer from "@components/Spacer";
-import ThemedText from "@themedComponents/ThemedText";
-import { useAppTheme, ThemePreference } from "@context/ThemeContext";
+
 import { useT } from "@i18n/useT";
+import { useAppTheme, ThemePreference } from "@context/ThemeContext";
+import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
+import ThemedText from "@themedComponents/ThemedText";
+import SelectionList, { SelectionOption } from "@components/settings/SelectionList";
 import BackHeader from "@components/headers/BackHeader";
+import Spacer from "@components/Spacer";
 
 export default function ThemeSettingsScreen() {
   const { theme, themePreference, setPreference } = useAppTheme();

@@ -1,7 +1,8 @@
 import React from "react";
 import { View, StyleSheet, ViewStyle, TextStyle } from "react-native";
-import ThemedText from "@components/themedComponents/ThemedText";
+
 import { useTheme } from "@hooks/useTheme";
+import ThemedText from "@themedComponents/ThemedText";
 
 interface InfoRowProps {
   label: string;

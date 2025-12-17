@@ -5,7 +5,7 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { useTheme } from "@hooks/useTheme";
 import { usePills } from "@hooks/usePills";
-import useSafeNavigation from "@hooks/useSafeNavigation";
+import { useSafeNavigation } from "@hooks/useSafeNavigation";
 import { useT } from "@i18n/useT";
 import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
 import ThemedButton from "@themedComponents/ThemedButton";
@@ -420,7 +420,7 @@ export default function EditPillScreen() {
 
             {/* Ligne 3: Horaires de prise */}
             <FormField
-              label={t("pills_edit.medicationSchedule")}
+              label={t("pills_edit.schedules")}
               icon={({ color, size }) => <Ionicons name="time" size={size} color={color} />}
             >
               <View style={styles.chipsContainer}>

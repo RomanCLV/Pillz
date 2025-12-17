@@ -41,7 +41,7 @@ export const translate = (
   return path;
 };
 
-// Deprecated: do not call `t()` directly because it may use hooks. Use `useT()` in components or `translate(lang, ...)`.
-export const t = (_path: string, _vars?: Record<string, string | number>, _pluralize?: boolean) => {
-  throw new Error("Do not call t() directly. Use useT() inside components or translate(lang, path, ...).");
-};
+//// Deprecated: do not call `t()` directly because it may use hooks. Use `useT()` in components or `translate(lang, ...)`.
+//export const t = (_path: string, _vars?: Record<string, string | number>, _pluralize?: boolean) => {
+//  throw new Error("Do not call t() directly. Use useT() inside components or translate(lang, path, ...).");
+//};

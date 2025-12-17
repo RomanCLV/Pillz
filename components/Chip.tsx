@@ -1,7 +1,8 @@
 import React, { useRef } from "react";
 import { StyleSheet, View, ViewStyle, Pressable, Animated } from "react-native";
+
 import { useTheme } from "@hooks/useTheme";
-import ThemedText from "@components/themedComponents/ThemedText";
+import ThemedText from "@themedComponents/ThemedText";
 import CloseIcon from "@icons/close.svg"
 
 type ColorVariant = "primary" | "secondary" | "accent" | "error" | "highlight";

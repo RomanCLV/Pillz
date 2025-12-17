@@ -2,9 +2,10 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+
+import { useTheme } from "@hooks/useTheme";
 import ThemedText from "@themedComponents/ThemedText";
 import ThemedButton from "@themedComponents/ThemedButton";
-import { useTheme } from "@hooks/useTheme";
 
 export type SelectionOption<T = string> = {
   value: T;

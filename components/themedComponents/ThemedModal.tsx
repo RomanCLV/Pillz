@@ -1,9 +1,11 @@
 // components/themedComponents/ThemedModal.tsx
 import React from "react";
 import { Modal, StyleSheet, Pressable, View } from "react-native";
+
+import { useTheme } from "@hooks/useTheme";
+import { useT } from "@i18n/useT";
 import ThemedText from "./ThemedText";
 import ThemedButton from "./ThemedButton";
-import { useTheme } from "@hooks/useTheme";
 
 type ThemedModalProps = {
   visible: boolean;
@@ -23,12 +25,13 @@ export default function ThemedModal({
   title,
   description,
   type = "info",
-  confirmText = "OK",
-  cancelText = "Annuler",
+  confirmText,
+  cancelText,
   onConfirm,
   showCancel = false,
 }: ThemedModalProps) {
   const theme = useTheme();
+  const t = useT();
 
   const handleConfirm = () => {
     onConfirm?.();
@@ -76,7 +79,7 @@ export default function ThemedModal({
                 onPress={onClose}
                 containerStyle={[styles.button, { backgroundColor: theme.background.secondary }]}
               >
-                {cancelText}
+                {cancelText || t("global.cancel")}
               </ThemedButton>
             )}
             <ThemedButton
@@ -84,7 +87,7 @@ export default function ThemedModal({
               onPress={handleConfirm}
               containerStyle={styles.button}
             >
-              {confirmText}
+              {confirmText || t("global.ok")}
             </ThemedButton>
           </View>
         </Pressable>

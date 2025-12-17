@@ -1,7 +1,8 @@
 import React from "react";
 import { StyleProp, TextStyle } from "react-native";
 import { Link, LinkProps } from "expo-router";
-import { useTheme } from "../../hooks/useTheme";
+
+import { useTheme } from "@hooks/useTheme";
 
 type ThemedLinkProps = LinkProps & {
   style?: StyleProp<TextStyle>;

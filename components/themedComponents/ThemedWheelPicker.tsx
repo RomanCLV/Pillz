@@ -1,18 +1,14 @@
 // components/themedComponents/ThemedPicker.tsx
 import React, { useState, useEffect } from "react";
-import {
-  TouchableOpacity,
-  StyleSheet,
-  ViewStyle,
-} from "react-native";
-
-import ThemedText from "@components/themedComponents/ThemedText";
-import BottomSheetModal from "@components/themedComponents/ThemedBottomSheetModal";
-import { useTheme } from "@hooks/useTheme";
-
+import { TouchableOpacity, StyleSheet, ViewStyle } from "react-native";
 import WheelPicker from "@quidone/react-native-wheel-picker";
-import { capitalizeFirstLetter } from "@utils/capitalizeFirstLetter";
 import { FontAwesome } from "@expo/vector-icons";
+
+import { useTheme } from "@hooks/useTheme";
+import { useT } from "@i18n/useT";
+import ThemedText from "@themedComponents/ThemedText";
+import ThemedBottomSheetModal from "@themedComponents/ThemedBottomSheetModal";
+import { capitalizeFirstLetter } from "@utils/capitalizeFirstLetter";
 
 export interface PickerItem {
   label: string;
@@ -33,14 +29,15 @@ export default function ThemedPicker({
   items,
   selectedValue,
   onValueChange,
-  placeholder = "Sélectionner",
+  placeholder,
   style,
   headerStyle,
   contentStyle,
 }: ThemedPickerProps) {
   const theme = useTheme();
-  const [modalVisible, setModalVisible] = useState(false);
+  const t = useT();
 
+  const [modalVisible, setModalVisible] = useState(false);
   const [tempValue, setTempValue] = useState(selectedValue);
   useEffect(() => setTempValue(selectedValue), [selectedValue]);
   const selectedItem = items.find((i) => i.value === selectedValue);
@@ -64,17 +61,17 @@ export default function ThemedPicker({
             !selectedItem && { color: theme.text.tertiary },
           ]}
         >
-          {selectedItem ? (selectedItem.label.length > 2 ? capitalizeFirstLetter(selectedItem.label) : selectedItem.label) : placeholder}
+          {selectedItem ? (selectedItem.label.length > 2 ? capitalizeFirstLetter(selectedItem.label) : selectedItem.label) : (placeholder || t("global.select"))}
         </ThemedText>
         <FontAwesome name="angle-down" color={theme.text.tertiary} size={20} />
       </TouchableOpacity>
 
-      <BottomSheetModal
+      <ThemedBottomSheetModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         height={300}
         header={{
-          title: "Sélectionner",
+          title: t("global.select"),
           onCancel: () => {
             setTempValue(selectedValue);
             setModalVisible(false);
@@ -95,7 +92,7 @@ export default function ThemedPicker({
           visibleItemCount={5}
           itemTextStyle={{ color: theme.text.primary, fontSize: 18 }}
         />
-      </BottomSheetModal>
+      </ThemedBottomSheetModal>
     </>
   );
 }

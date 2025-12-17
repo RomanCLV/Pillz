@@ -2,8 +2,9 @@
 import React from "react";
 import { ViewStyle } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+
 import { useTheme } from "@hooks/useTheme";
-import useSafeNavigation from "@hooks/useSafeNavigation";
+import { useSafeNavigation } from "@hooks/useSafeNavigation";
 import GenericHeader from "./GenericHeader";
 import HeaderButton from "./HeaderButton";
 

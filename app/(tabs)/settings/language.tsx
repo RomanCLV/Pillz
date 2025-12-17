@@ -2,15 +2,15 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import SafeTopAreaThemedView from "@components/themedComponents/SafeTopAreaThemedView";
-import SelectionList from "@components/settings/SelectionList";
-import ThemedText from "@themedComponents/ThemedText";
-import { useTheme } from "@hooks/useTheme";
 import { useLanguage } from "@context/LanguageContext";
-import { LANGUAGE_CODES, LANGUAGE_FLAGS } from "@i18n/types";
+import { useTheme } from "@hooks/useTheme";
 import { useT } from "@i18n/useT";
-import Spacer from "@components/Spacer";
+import { LANGUAGE_CODES, LANGUAGE_FLAGS } from "@i18n/types";
+import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
+import ThemedText from "@themedComponents/ThemedText";
+import SelectionList from "@components/settings/SelectionList";
 import BackHeader from "@components/headers/BackHeader";
+import Spacer from "@components/Spacer";
 
 export default function LanguageSettingsScreen() {
   const theme = useTheme();

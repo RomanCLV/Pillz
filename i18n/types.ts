@@ -1,13 +1,21 @@
 //export const LANGUAGE_CODES = ["fr", "en", "es", "de", "it"] as const;
-export const LANGUAGE_CODES = ["fr"] as const;
+export const LANGUAGE_CODES = ["fr", "en"] as const;
 export type LanguageCode = typeof LANGUAGE_CODES[number];
 
 export const LANGUAGE_FLAGS: Record<LanguageCode, string> = {
   fr: "🇫🇷",
-  //en: "🇬🇧",
+  en: "🇬🇧",
   //es: "🇪🇸",
   //de: "🇩🇪",
   //it: "🇮🇹",
+} as const;
+
+export const LOCALE_MAP: Record<LanguageCode, string> = {
+  fr: "fr-FR",
+  en: "en-US",
+  //es: "es-ES",
+  //de: "de-DE",
+  //it: "it-IT",
 } as const;
 
 export type LanguageSet = {
@@ -27,11 +35,16 @@ export type LanguageSet = {
     success: string,
     error: string,
     ok: string,
+    select: string,
+    close: string,
     chooseDate: string,
+    selectDate: string,
+    modifySchedule: string,
   },
   hours: {
     hh: string,
     hhmm: string,
+    hh2dmm: string,
   },
   home: {
     title: string,
@@ -48,7 +61,7 @@ export type LanguageSet = {
     pillNameExample: string,
     dosage: string,
     unity: string,
-    medicationSchedule: string,
+    schedules: string,
     intakeWindow: string,
     timeBetweenIntakes: string,
     treatmentDuration: string,

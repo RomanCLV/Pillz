@@ -3,13 +3,13 @@ import { View, ScrollView, StyleSheet } from "react-native";
 
 import { useTheme } from "@hooks/useTheme";
 import { usePills } from "@hooks/usePills";
+import { useSafeNavigation } from "@hooks/useSafeNavigation";
 import { useT } from "@i18n/useT";
-import useSafeNavigation from "@hooks/useSafeNavigation";
-import { PillCard } from "@components/pills/PillCard";
-import TitlePage from "@components/TitlePage";
 import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
 import ThemedButton from "@themedComponents/ThemedButton";
 import ThemedText from "@themedComponents/ThemedText";
+import PillCard from "@components/pills/PillCard";
+import TitlePage from "@components/TitlePage";
 import AddIcon from "@icons/add.svg"
 import NoPillsIcon from "@assets/icons/no-pills.svg"
 

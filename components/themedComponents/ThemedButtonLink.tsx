@@ -1,5 +1,5 @@
 import React from "react";
-import { useRouter } from "expo-router";
+import { useSafeNavigation } from "@hooks/useSafeNavigation";
 import ThemedButton from "./ThemedButton";
 
 type ThemedButtonLinkProps = React.ComponentProps<typeof ThemedButton> & {
@@ -10,12 +10,12 @@ const ThemedButtonLink: React.FC<ThemedButtonLinkProps> = ({
   href,
   ...props
 }) => {
-  const router = useRouter();
+  const {navigate} = useSafeNavigation();
 
   return (
     <ThemedButton
       {...props}
-      onPress={() => router.push(href)}
+      onPress={navigate(href)}
     />
   );
 };

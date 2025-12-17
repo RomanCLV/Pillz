@@ -83,15 +83,6 @@ export function validateSchedules(
 }
 
 /**
- * Fonction utilitaire pour formater un horaire
- */
-export function formatSchedule(schedule: PillSchedule): string {
-  const h = schedule.hour.toString().padStart(2, '0');
-  const m = schedule.minute.toString().padStart(2, '0');
-  return `${h}:${m}`;
-}
-
-/**
  * Fonction utilitaire pour créer un nouveau médicament avec valeurs par défaut
  */
 export function createDefaultPill(): Pill {
