@@ -9,7 +9,7 @@ import type { LanguageCode, LanguageSet } from "./types";
 export const translations: Record<LanguageCode, LanguageSet> = {
   fr,
   en,
-  //es,
-  //de,
-  //it,
+  es,
+  de,
+  it,
 };
