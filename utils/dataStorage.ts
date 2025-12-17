@@ -1,6 +1,6 @@
 // utils/dataStorage.ts
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Pill } from "types/pill";
+import { Pill, TreatmentDuration } from "types/pill";
 import { DailySummary } from "types/dailySummary";
 
 const PILLS_KEY = "app-pills";
@@ -8,10 +8,26 @@ const SUMMARIES_KEY = "app-daily-summaries";
 
 // ==================== PILLS ====================
 
+// Helper pour transformer les dates
+function reviveTreatmentDuration(obj: any): TreatmentDuration {
+  return {
+    startDate: obj.startDate ? new Date(obj.startDate) : new Date(),
+    endDate: obj.endDate ? new Date(obj.endDate) : null,
+  };
+}
+
 export async function loadPills(): Promise<Pill[]> {
   try {
     const json = await AsyncStorage.getItem(PILLS_KEY);
-    return json ? JSON.parse(json) : [];
+    if (!json) return [];
+
+    const parsed: any[] = JSON.parse(json);
+
+    // On transforme les dates
+    return parsed.map(pill => ({
+      ...pill,
+      treatmentDuration: reviveTreatmentDuration(pill.treatmentDuration),
+    })) as Pill[];
   } 
   catch (error) {
     console.error("Error loading pills:", error);

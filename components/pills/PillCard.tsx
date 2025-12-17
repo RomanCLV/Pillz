@@ -34,13 +34,6 @@ export default function PillCard({ pill, onPress }: PillCardProps) {
   // Vérifier si le traitement est limité dans le temps
   const hasEndDate = pill.treatmentDuration.endDate !== null;
 
-  // Convertir la date en objet Date si nécessaire
-  const endDate = hasEndDate 
-    ? (typeof pill.treatmentDuration.endDate === 'string' 
-        ? new Date(pill.treatmentDuration.endDate) 
-        : pill.treatmentDuration.endDate)
-    : null;
-
   return (
     <ThemedCard 
       pressable={!!onPress} 
@@ -72,7 +65,7 @@ export default function PillCard({ pill, onPress }: PillCardProps) {
         {/* Durée minimale entre prises */}
         <InfoRow label={t("pill.minInterval")} value={t("hours.hh", {h: pill.minHoursBetweenIntakes})} />
         {/* Durée du traitement */}
-        {hasEndDate && endDate && <InfoRow label={t("pill.until")} value={endDate.toLocaleDateString(userLocale)} />}
+        {hasEndDate && <InfoRow label={t("pill.until")} value={pill.treatmentDuration.endDate?.toLocaleDateString(userLocale)} />}
       </View>
     </ThemedCard>
   );

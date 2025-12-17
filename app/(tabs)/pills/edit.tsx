@@ -59,8 +59,8 @@ export default function EditPillScreen() {
   const [successModal, setSucessModal] = useState({ visible: false, message: "" });
 
   // État du formulaire
-  const [formData, setFormData] = useState<Pill>(isEditing ? pills[0] : createDefaultPill());
-  const [hasEndDate, setHasEndDate] = useState(false);
+  const [formData, setFormData] = useState<Pill>(isEditing ? pills[Number(params.id)] : createDefaultPill());
+  const [hasEndDate, setHasEndDate] = useState(formData.treatmentDuration.endDate !== null);
 
   const units = Object.values(DosageUnit);
 
