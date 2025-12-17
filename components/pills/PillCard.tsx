@@ -21,17 +21,25 @@ interface PillCardProps {
 export default function PillCard({ pill, onPress }: PillCardProps) {
   const theme = useTheme();
   const t = useT();
+  
   const currentLang = useCurrentLanguage(); // "fr", "en", etc.
-    const userLocale = 
-      (currentLang ? LOCALE_MAP[currentLang] : null) ?? 
-      Localization.getLocales()[0]?.languageTag ?? 
-      "en-US"; // ex: "fr-FR"
+  const userLocale = 
+    (currentLang ? LOCALE_MAP[currentLang] : null) ?? 
+    Localization.getLocales()[0]?.languageTag ?? 
+    "en-US"; // ex: "fr-FR"
 
   // Vérifier si le stock est bas
   const isLowStock = pill.stockQuantity <= pill.reminderThreshold;
 
   // Vérifier si le traitement est limité dans le temps
   const hasEndDate = pill.treatmentDuration.endDate !== null;
+
+  // Convertir la date en objet Date si nécessaire
+  const endDate = hasEndDate 
+    ? (typeof pill.treatmentDuration.endDate === 'string' 
+        ? new Date(pill.treatmentDuration.endDate) 
+        : pill.treatmentDuration.endDate)
+    : null;
 
   return (
     <ThemedCard 
@@ -62,9 +70,9 @@ export default function PillCard({ pill, onPress }: PillCardProps) {
         {/* Stock */}
         <InfoRow label={t("pill.stock")} value={pill.stockQuantity} valueStyle={isLowStock ? {color: theme.text.error} : {}} />
         {/* Durée minimale entre prises */}
-        <InfoRow label={t("pill.minInterval")} value={`${pill.minHoursBetweenIntakes}h`} />
+        <InfoRow label={t("pill.minInterval")} value={t("hours.hh", {h: pill.minHoursBetweenIntakes})} />
         {/* Durée du traitement */}
-        {hasEndDate && <InfoRow label={t("pill.until")} value={pill.treatmentDuration.endDate?.toLocaleDateString(userLocale)} />}
+        {hasEndDate && endDate && <InfoRow label={t("pill.until")} value={endDate.toLocaleDateString(userLocale)} />}
       </View>
     </ThemedCard>
   );
