@@ -53,13 +53,24 @@ export async function loadDailySummaries(): Promise<DailySummary[]> {
   try {
     const json = await AsyncStorage.getItem(SUMMARIES_KEY);
     const summaries: DailySummary[] = json ? JSON.parse(json) : [];
-    
+
     // Nettoyer automatiquement les données > 7 jours
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const cutoffDate = sevenDaysAgo.toISOString().split("T")[0];
     
-    return summaries.filter(s => s.date >= cutoffDate);
+    console.log("loadDailySummaries:");
+    console.log("summaries");
+    console.log(summaries);
+    
+    const sortedSummaries = summaries
+      .filter(s => s.date >= cutoffDate);
+      //.sort((a, b) => (new Date(a.date)).getTime() - (new Date(b.date)).getTime());
+
+    console.log("sortedSummaries");
+    console.log(sortedSummaries);
+
+    return sortedSummaries;
   } 
   catch (error) {
     console.error("Error loading daily summaries:", error);
@@ -69,6 +80,7 @@ export async function loadDailySummaries(): Promise<DailySummary[]> {
 
 export async function saveDailySummaries(summaries: DailySummary[]): Promise<void> {
   try {
+    console.log("saveDailySummaries")
     await AsyncStorage.setItem(SUMMARIES_KEY, JSON.stringify(summaries));
   }
   catch (error) {

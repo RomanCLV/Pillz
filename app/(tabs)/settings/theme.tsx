@@ -9,6 +9,7 @@ import ThemedText from "@themedComponents/ThemedText";
 import SelectionList, { SelectionOption } from "@components/settings/SelectionList";
 import BackHeader from "@components/headers/BackHeader";
 import Spacer from "@components/Spacer";
+import ThemedView from "@components/themedComponents/ThemedView";
 
 export default function ThemeSettingsScreen() {
   const { theme, themePreference, setPreference } = useAppTheme();
@@ -33,7 +34,7 @@ export default function ThemeSettingsScreen() {
 
   return (
     <SafeTopAreaThemedView style={{ flex: 1 }}>
-      <View style={[styles.container, { backgroundColor: theme.background.primary }]}>
+      <ThemedView style={styles.container}>
         <BackHeader title={t("settings_theme.title")} />
         <Spacer height={24}/>
 
@@ -49,7 +50,7 @@ export default function ThemeSettingsScreen() {
             {getDescription()}
           </ThemedText>
         </View>
-      </View>
+      </ThemedView>
     </SafeTopAreaThemedView>
   );
 }

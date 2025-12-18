@@ -1,7 +1,7 @@
 import React from "react";
 import { Stack } from "expo-router";
 
-export default function PillsLayout() {
+export default function SettingsLayout() {
   return (
     <Stack
       screenOptions={{
@@ -10,6 +10,8 @@ export default function PillsLayout() {
     >
       <Stack.Screen name="index" />
       <Stack.Screen name="theme" />
+      <Stack.Screen name="language" />
+      <Stack.Screen name="history" />
     </Stack>
   );
 }

@@ -7,7 +7,7 @@ import * as Localization from "expo-localization";
 import { useCurrentLanguage } from "@hooks/useCurrentLanguage";
 import { useTheme } from "@hooks/useTheme";
 import { useT } from "@i18n/useT";
-import { LOCALE_MAP } from "@i18n/types";
+import { DEFAULT_LANGUAGE_TAG, LOCALE_MAP } from "@i18n/types";
 import ThemedBottomSheetModal from "@themedComponents/ThemedBottomSheetModal";
 import ThemedText from "./ThemedText";
 
@@ -73,7 +73,7 @@ export default function ThemedDatePicker({
   const userLocale = 
     (currentLang ? LOCALE_MAP[currentLang] : null) ?? 
     Localization.getLocales()[0]?.languageTag ?? 
-    "en-US"; // ex: "fr-FR"
+    DEFAULT_LANGUAGE_TAG; // ex: "fr-FR"
   const t = useT();
 
   const [visible, setVisible] = useState(false);

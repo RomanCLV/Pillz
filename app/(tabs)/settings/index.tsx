@@ -63,6 +63,16 @@ export default function SettingsScreen() {
         </SettingsSection>
         <Spacer height={20}/>
 
+        {/* Data */}
+        <SettingsSection title={t("settings.data.title").toUpperCase()}>
+          <SettingsItem 
+            label={t("settings.data.history")} 
+            rightElement="chevron"
+            onPress={navigate("settings/history")}
+            />
+        </SettingsSection>
+        <Spacer height={20}/>
+
         {/* Section Aide & Support */}
         <SettingsSection title={t("settings.help.title").toUpperCase()}>
           <SettingsItem

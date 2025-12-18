@@ -1,21 +1,24 @@
-export const LANGUAGE_CODES = ["fr", "en", "es", "de", "it"] as const;
-//export const LANGUAGE_CODES = ["fr", "en"] as const;
+//export const LANGUAGE_CODES = ["fr", "en", "es", "de", "it"] as const;
+export const LANGUAGE_CODES = ["fr"] as const;
 export type LanguageCode = typeof LANGUAGE_CODES[number];
+
+export const DEFAULT_LANGUAGE_CODE = "fr";
+export const DEFAULT_LANGUAGE_TAG = "fr-FR";
 
 export const LANGUAGE_FLAGS: Record<LanguageCode, string> = {
   fr: "🇫🇷",
-  en: "🇬🇧",
-  es: "🇪🇸",
-  de: "🇩🇪",
-  it: "🇮🇹",
+  //en: "🇬🇧",
+  //es: "🇪🇸",
+  //de: "🇩🇪",
+  //it: "🇮🇹",
 } as const;
 
 export const LOCALE_MAP: Record<LanguageCode, string> = {
   fr: "fr-FR",
-  en: "en-US",
-  es: "es-ES",
-  de: "de-DE",
-  it: "it-IT",
+  //en: "en-US",
+  //es: "es-ES",
+  //de: "de-DE",
+  //it: "it-IT",
 } as const;
 
 export type LanguageSet = {
@@ -40,6 +43,7 @@ export type LanguageSet = {
     chooseDate: string,
     selectDate: string,
     modifySchedule: string,
+    deleteData: string,
   },
   hours: {
     hh: string,
@@ -98,6 +102,10 @@ export type LanguageSet = {
       theme: string,
       language: string,
     },
+    data: {
+      title: string,
+      history: string,
+    },
     help: {
       title: string,
       contactUs: string,
@@ -121,6 +129,11 @@ export type LanguageSet = {
     es: string,
     de: string,
     it: string,
+  },
+  settings_history: {
+    deleteData: string,
+    deleteDataText: string,
+    deleteDataModal: string,
   },
   pill: {
     // Unités

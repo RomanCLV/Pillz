@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Localization from "expo-localization";
-import { LANGUAGE_CODES, type LanguageCode } from "@i18n/types";
+import { DEFAULT_LANGUAGE_CODE, LANGUAGE_CODES, type LanguageCode } from "@i18n/types";
 
 const STORAGE_KEY = "app-language";
 
@@ -14,7 +14,7 @@ const LanguageContext = createContext<LanguageContextType | null>(null);
 
 const getDeviceLanguage = (): LanguageCode => {
   const locale = Localization.getLocales()?.[0]?.languageCode?.toLowerCase();
-  return (locale && LANGUAGE_CODES.includes(locale as LanguageCode)) ? (locale as LanguageCode) : "fr"; // fallback
+  return (locale && LANGUAGE_CODES.includes(locale as LanguageCode)) ? (locale as LanguageCode) : DEFAULT_LANGUAGE_CODE; // fallback
 };
 
 export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {

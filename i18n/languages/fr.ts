@@ -24,6 +24,7 @@ const fr: LanguageSet = {
     chooseDate: "Choisir une date",
     selectDate: "Sélectionner une date",
     modifySchedule: "Modifier l'horaire",
+    deleteData: "Supprimer les données",
   },
 
   hours: {
@@ -91,6 +92,11 @@ const fr: LanguageSet = {
       language: "Langue",
     },
 
+    data: {
+      title: "Données",
+      history: "Historique",
+    },
+
     help: {
       title: "Aide & Support",
       contactUs: "Nous contacter",
@@ -117,6 +123,12 @@ const fr: LanguageSet = {
     es: "Espagnol",
     de: "Allemand",
     it: "Italien",
+  },
+
+  settings_history: {
+    deleteData: "Supprimer",
+    deleteDataText: "Supprimer les données d'historique.",
+    deleteDataModal: "Êtes-vous certain de vouloir supprimer les données d'historique ? Attention, cette action est irréversible.",
   },
 
   pill: {
