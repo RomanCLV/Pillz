@@ -33,10 +33,15 @@ export const useSummaries = () => {
       const newSummaries = [...summaries];
       newSummaries[index] = summary;
       await setSummaries(newSummaries);
-    } else {
+    } 
+    else {
       await setSummaries([...summaries, summary]);
     }
   };
+
+  const clearSummaries = async () => {
+    await setSummaries([]);
+  }
 
   /**
    * Marque une prise comme effectuée
@@ -142,6 +147,7 @@ export const useSummaries = () => {
     getSummaryByDate,
     getTodaySummary,
     updateSummary,
+    clearSummaries,
     markIntakeAsTaken,
     markIntakeAsSkipped,
     saveAllSummaries,

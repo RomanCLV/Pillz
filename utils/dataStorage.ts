@@ -50,6 +50,8 @@ export async function savePills(pills: Pill[]): Promise<void> {
  * Charge tous les récapitulatifs quotidiens (limité aux 7 derniers jours)
  */
 export async function loadDailySummaries(): Promise<DailySummary[]> {
+  console.log("*****************************");
+  
   try {
     const json = await AsyncStorage.getItem(SUMMARIES_KEY);
     const summaries: DailySummary[] = json ? JSON.parse(json) : [];

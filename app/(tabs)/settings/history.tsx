@@ -11,6 +11,7 @@ import ThemedModal from "@components/themedComponents/ThemedModal";
 import Spacer from "@components/Spacer";
 import BackHeader from "@components/headers/BackHeader";
 import ThemedView from "@components/themedComponents/ThemedView";
+import { useSummaries } from "@hooks/useSummaries";
 
 export default function index () {
   const theme = useTheme();
@@ -34,9 +35,9 @@ export default function index () {
     });
   };
 
-  const handleConfirm = () => {
-    console.log("handleConfirm");
-    closeModal();
+  const handleConfirm = async () => {
+    const {clearSummaries} = useSummaries();
+    await clearSummaries();
   };
 
   return (
@@ -66,7 +67,7 @@ export default function index () {
         onClose={closeModal}
         title={t("global.deleteData")}
         description={confirmModal.message}
-        type="info"
+        type="error"
         confirmText={t("global.delete")}
         onConfirm={handleConfirm}
         showCancel={true}

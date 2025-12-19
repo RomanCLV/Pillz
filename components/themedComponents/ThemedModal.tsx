@@ -12,7 +12,7 @@ type ThemedModalProps = {
   onClose: () => void;
   title: string;
   description?: string;
-  type?: "info" | "error" | "warning" | "confirm";
+  type?: "info" | "error" | "warning";
   confirmText?: string;
   cancelText?: string;
   onConfirm?: () => void;

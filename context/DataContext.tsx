@@ -39,12 +39,13 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
         loadDailySummaries(),
       ]);
 
+      console.log("---------------------");
       setupDailySummaries(loadedSummaries, loadedPills);
       console.log("summaries after setup:")
       console.log(loadedSummaries);
 
       setPillsState(loadedPills);
-      setSummariesState(loadedSummaries);
+      setSummaries(loadedSummaries); // set to state and save
       setLoaded(true);
     })();
   }, []);
