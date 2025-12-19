@@ -1,21 +1,22 @@
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 
+import { useSummaries } from "@hooks/useSummaries";
 import { useTheme } from "@hooks/useTheme";
 import { useT } from "@i18n/useT";
 import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
 import ThemedButton from "@themedComponents/ThemedButton";
 import ThemedText from "@themedComponents/ThemedText";
-import TrashIcon from "@icons/trash.svg"
-import ThemedModal from "@components/themedComponents/ThemedModal";
+import ThemedModal from "@themedComponents/ThemedModal";
+import ThemedView from "@themedComponents/ThemedView";
 import Spacer from "@components/Spacer";
 import BackHeader from "@components/headers/BackHeader";
-import ThemedView from "@components/themedComponents/ThemedView";
-import { useSummaries } from "@hooks/useSummaries";
+import TrashIcon from "@icons/trash.svg"
 
 export default function index () {
   const theme = useTheme();
   const t = useT();
+  const { clearSummaries} = useSummaries();
 
   const [confirmModal, setConfirmModal] = useState({ visible: false, message: "" });
 
@@ -36,7 +37,6 @@ export default function index () {
   };
 
   const handleConfirm = async () => {
-    const {clearSummaries} = useSummaries();
     await clearSummaries();
   };
 

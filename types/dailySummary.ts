@@ -25,6 +25,7 @@ export interface DailyPillSummary {
   name: string;
   dosage: number;
   unit: DosageUnit;
+  intakeWindowMinutes: number; // Fenêtre de prise en minutes
   intakes: ScheduleIntake[]; // Un item par horaire prévu
 }
 
@@ -35,8 +36,3 @@ export interface DailySummary {
   date: string; // Format YYYY-MM-DD pour faciliter les clés
   pills: DailyPillSummary[];
 }
-
-/**
- * Historique des 7 derniers jours
- */
-export type WeeklySummary = DailySummary[];

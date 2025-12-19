@@ -1,8 +1,7 @@
 // context/DataContext.tsx
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Pill } from "types/pill";
-//import { DailySummary } from "types/dailySummary";
-import { DailyPillSummary, DailySummary, IntakeStatus, ScheduleIntake } from "types/dailySummary";
+import { DailySummary } from "types/dailySummary";
 
 import {
   loadPills,
@@ -10,6 +9,7 @@ import {
   loadDailySummaries,
   saveDailySummaries,
 } from "@utils/dataStorage";
+import { useSummaries } from "@hooks/useSummaries";
 
 type DataContextValue = {
   // Pills
@@ -39,11 +39,6 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
         loadDailySummaries(),
       ]);
 
-      console.log("---------------------");
-      setupDailySummaries(loadedSummaries, loadedPills);
-      console.log("summaries after setup:")
-      console.log(loadedSummaries);
-
       setPillsState(loadedPills);
       setSummaries(loadedSummaries); // set to state and save
       setLoaded(true);
@@ -59,34 +54,6 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
   const setSummaries = async (newSummaries: DailySummary[]) => {
     setSummariesState(newSummaries);
     await saveDailySummaries(newSummaries);
-  };
-
-  const setupDailySummaries =  (dailySummaries: DailySummary[], pills: Pill[]) => {
-    const today = new Date().toISOString().split("T")[0];
-    const item = dailySummaries.find(item => item.date == today);
-
-    console.log("setupDailySummaries:");
-    console.log("today:", today);
-    console.log("item found:", item);
-
-    if (item == null)
-    {
-      const newItem: DailySummary = {
-        date: today,
-        pills: pills.map(pill => { return {
-          name: pill.name,
-          dosage: pill.dosage,
-          unit: pill.unit,
-          intakes: pill.schedules.map(pillSchedule => { return {
-                schedule: pillSchedule,
-                status: IntakeStatus.PENDING,
-              } as ScheduleIntake}),
-            } as DailyPillSummary} 
-          ),
-      };
-      console.log("newItem:", newItem);
-      dailySummaries.push(newItem);
-    }
   };
 
   return (

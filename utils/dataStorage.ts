@@ -50,8 +50,6 @@ export async function savePills(pills: Pill[]): Promise<void> {
  * Charge tous les récapitulatifs quotidiens (limité aux 7 derniers jours)
  */
 export async function loadDailySummaries(): Promise<DailySummary[]> {
-  console.log("*****************************");
-  
   try {
     const json = await AsyncStorage.getItem(SUMMARIES_KEY);
     const summaries: DailySummary[] = json ? JSON.parse(json) : [];
@@ -60,19 +58,9 @@ export async function loadDailySummaries(): Promise<DailySummary[]> {
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const cutoffDate = sevenDaysAgo.toISOString().split("T")[0];
-    
-    console.log("loadDailySummaries:");
-    console.log("summaries");
-    console.log(summaries);
-    
-    const sortedSummaries = summaries
-      .filter(s => s.date >= cutoffDate);
-      //.sort((a, b) => (new Date(a.date)).getTime() - (new Date(b.date)).getTime());
-
-    console.log("sortedSummaries");
-    console.log(sortedSummaries);
-
-    return sortedSummaries;
+    return summaries
+      .filter(s => s.date >= cutoffDate)
+      .sort((a, b) => (new Date(a.date)).getTime() - (new Date(b.date)).getTime());
   } 
   catch (error) {
     console.error("Error loading daily summaries:", error);
@@ -82,7 +70,6 @@ export async function loadDailySummaries(): Promise<DailySummary[]> {
 
 export async function saveDailySummaries(summaries: DailySummary[]): Promise<void> {
   try {
-    console.log("saveDailySummaries")
     await AsyncStorage.setItem(SUMMARIES_KEY, JSON.stringify(summaries));
   }
   catch (error) {
