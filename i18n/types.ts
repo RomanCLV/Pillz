@@ -52,6 +52,12 @@ export type LanguageSet = {
   },
   home: {
     title: string,
+    noIntakes: string,
+    intake : {
+      taken: string,
+      skipped: string,
+      take: string,
+    },
   },
   pills: {
     title: string,

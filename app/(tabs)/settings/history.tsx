@@ -21,7 +21,6 @@ export default function index () {
   const [confirmModal, setConfirmModal] = useState({ visible: false, message: "" });
 
   const openModal = () => {
-    console.log("openModal");
     setConfirmModal({
         visible: true,
         message: t("settings_history.deleteDataModal")
@@ -29,7 +28,6 @@ export default function index () {
   };
 
   const closeModal = () => {
-    console.log("close");
     setConfirmModal({
         visible: false,
         message: ""

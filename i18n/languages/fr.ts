@@ -35,6 +35,12 @@ const fr: LanguageSet = {
 
   home: {
     title: "Bienvenue",
+    noIntakes: "Aucune prise prévue aujourd'hui",
+    intake : {
+      taken: "Pris",
+      skipped: "Oublié",
+      take: "À prendre",
+    },
   },
 
   pills: {
