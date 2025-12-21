@@ -29,7 +29,7 @@ export default function index () {
       {/* Liste des médicaments */}
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={[styles.scrollContent]}
+        contentContainerStyle={[styles.scrollContent, pills.length === 0 && {flex: 1}]}
         showsVerticalScrollIndicator={false}
       >
         {pills.length === 0 ? (
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    flex: 1,
+    //flex: 1, <-- anti-scroll !
     padding: 16,
     paddingTop: 0,
     gap: 16,
