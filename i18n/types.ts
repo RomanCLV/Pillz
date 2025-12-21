@@ -96,6 +96,11 @@ export type LanguageSet = {
   },
   history: {
     title: string,
+    taken: string,
+    skipped: string,
+    pending: string,
+    noPills: string,
+    noHistory: string,
   },
   settings: {
     title: string,

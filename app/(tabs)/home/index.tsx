@@ -12,7 +12,7 @@ import ThemedText from "@themedComponents/ThemedText";
 import { DailyIntake } from "types/dailyIntake";
 import { useData } from "@context/DataContext";
 import { useTheme } from "@hooks/useTheme";
-import DailyIntakeCard from "@components/cards/dailyIntakeCard";
+import DailyIntakeCard from "@components/home/DailyIntakeCard";
 
 interface IntakeReference {
   pillIndex: number;

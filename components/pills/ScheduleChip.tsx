@@ -15,7 +15,7 @@ import Chip from "@components/Chip";
 
 const ControlPicker = withPickerControl(WheelPicker);
 
-type ColorVariant = "primary" | "secondary" | "accent" | "highlight";
+type ColorVariant = "primary" | "secondary" | "accent" | "highlight" | "error";
 type IntensityVariant = "light" | "solid";
 
 interface ScheduleChipProps {

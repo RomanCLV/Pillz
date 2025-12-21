@@ -82,6 +82,11 @@ const fr: LanguageSet = {
 
   history: {
     title: "Suivi",
+    taken: "Pris",
+    skipped: "Oubliés",
+    pending: "En attente",
+    noPills: "Aucun médicament ce jour-là",
+    noHistory: "Aucun historique disponible",
   },
 
   settings: {
