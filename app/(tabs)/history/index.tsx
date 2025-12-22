@@ -70,7 +70,7 @@ export default function index() {
             {/* Stats du jour */}
             <View style={styles.statsContainer}>
               <View style={[styles.statCard, { backgroundColor: theme.background.secondary }]}>
-                <ThemedText style={[styles.statValue, { color: theme.brand.primary }]}>
+                <ThemedText style={[styles.statValue, { color: theme.brand.secondary }]}>
                   {stats.taken}
                 </ThemedText>
                 <ThemedText style={[styles.statLabel, { color: theme.text.tertiary }]}>
