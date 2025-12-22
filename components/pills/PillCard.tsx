@@ -5,7 +5,7 @@ import * as Localization from "expo-localization";
 import { useCurrentLanguage } from "@hooks/useCurrentLanguage";
 import { useTheme } from "@hooks/useTheme";
 import { useT } from "@i18n/useT";
-import { LOCALE_MAP } from "@i18n/types";
+import { DEFAULT_LANGUAGE_TAG, LOCALE_MAP } from "@i18n/types";
 import { Pill } from "types/pill";
 import ScheduleChip from "./ScheduleChip";
 import Chip from "@components/Chip";
@@ -26,7 +26,7 @@ export default function PillCard({ pill, onPress }: PillCardProps) {
   const userLocale = 
     (currentLang ? LOCALE_MAP[currentLang] : null) ?? 
     Localization.getLocales()[0]?.languageTag ?? 
-    "en-US"; // ex: "fr-FR"
+    DEFAULT_LANGUAGE_TAG; // ex: "fr-FR"
 
   // Vérifier si le stock est bas
   const isLowStock = pill.stockQuantity <= pill.reminderThreshold;
@@ -61,7 +61,7 @@ export default function PillCard({ pill, onPress }: PillCardProps) {
       {/* Informations supplémentaires */}
       <View style={[styles.footer, { borderTopColor: theme.border.light, borderTopWidth: 1 }]}>
         {/* Stock */}
-        <InfoRow label={t("pill.stock")} value={pill.stockQuantity} valueStyle={isLowStock ? {color: theme.text.error} : {}} />
+        {pill.stockGesture && <InfoRow label={t("pill.stock")} value={pill.stockQuantity} valueStyle={isLowStock ? {color: theme.text.error} : {}} />}
         {/* Durée minimale entre prises */}
         <InfoRow label={t("pill.minInterval")} value={t("hours.hh", {h: pill.minHoursBetweenIntakes})} />
         {/* Durée du traitement */}
