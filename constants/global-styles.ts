@@ -5,7 +5,6 @@ export const GlobalStyles = StyleSheet.create({
         flex: 1,
         justifyContent: "flex-start",
         alignItems: "stretch",
-        padding: 16,
     },
     title: {
         fontSize: 20,

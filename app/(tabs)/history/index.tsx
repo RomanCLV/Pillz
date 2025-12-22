@@ -5,7 +5,7 @@ import * as Localization from "expo-localization";
 import { useCurrentLanguage } from "@hooks/useCurrentLanguage";
 import { useSummaries } from "@hooks/useSummaries";
 import { useT } from "@i18n/useT";
-import { LOCALE_MAP } from "@i18n/types";
+import { DEFAULT_LANGUAGE_TAG, LOCALE_MAP } from "@i18n/types";
 import { useTheme } from "@hooks/useTheme";
 import { GlobalStyles } from "@constants/global-styles";
 import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
@@ -22,22 +22,22 @@ export default function index() {
   const currentLang = useCurrentLanguage();
   const userLocale = 
     (currentLang ? LOCALE_MAP[currentLang] : null) ?? 
-    Localization.getLocales()[0]?.languageTag ?? 
-    "en-US";
+    Localization.getLocales()[0]?.languageTag ?? DEFAULT_LANGUAGE_TAG;
 
   // Créer les onglets pour chaque jour
   const tabScreens: SwipeTabItem[] = useMemo(() => {
-    if (summaries.length === 0) return [];
-
-    // Trier du plus récent au plus ancien
-    //const sortedSummaries = [...summaries].sort((a, b) => 
-    //  b.date.localeCompare(a.date)
-    //);
+    if (summaries.length === 0) 
+      return [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
     return summaries.map((summary: DailySummary) => {
-      const date = new Date(summary.date + "T00:00:00");
+      // summary.date attendu au format "YYYY-MM-DD"
+      const [y, m, d] = summary.date.split("-").map(Number);
+      const date = new Date(y, m - 1, d); // crée minuit local
+      date.setHours(0, 0, 0, 0);
+
       const stats = getDayStats(summary.date);
-      
       // Formater le jour de la semaine (ex: "lun.")
       const dayOfWeek = date.toLocaleDateString(userLocale, { weekday: "short" });
       // Formater la date (ex: "08/12")
@@ -45,6 +45,7 @@ export default function index() {
         day: "2-digit", 
         month: "2-digit" 
       });
+      const isToday = today.getTime() === date.getTime();
 
       // Déterminer la couleur de l'indicateur en fonction des stats
       let indicatorColor: string = theme.brand.secondary;
@@ -86,6 +87,7 @@ export default function index() {
                 </ThemedText>
               </View>
               
+              { isToday &&
               <View style={[styles.statCard, { backgroundColor: theme.background.secondary }]}>
                 <ThemedText style={[styles.statValue, { color: theme.text.secondary }]}>
                   {stats.pending}
@@ -94,6 +96,7 @@ export default function index() {
                   {t("history.pending")}
                 </ThemedText>
               </View>
+              }
             </View>
 
             {/* Liste des médicaments */}
