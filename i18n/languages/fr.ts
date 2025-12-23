@@ -48,6 +48,7 @@ const fr: LanguageSet = {
     title: "Mes médicaments",
     noPills: "Aucun médicament enregistré",
     addPill: "Ajouter un médicament",
+    modificationsWillApply: "Les modifications apportées aux médicaments seront prises en compte dès demain.",
   },
 
   pills_edit: {

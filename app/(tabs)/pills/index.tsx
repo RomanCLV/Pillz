@@ -4,6 +4,7 @@ import { View, ScrollView, StyleSheet } from "react-native";
 import { useTheme } from "@hooks/useTheme";
 import { usePills } from "@hooks/usePills";
 import { useSafeNavigation } from "@hooks/useSafeNavigation";
+import { useData } from "@context/DataContext";
 import { useT } from "@i18n/useT";
 import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
 import ThemedButton from "@themedComponents/ThemedButton";
@@ -17,14 +18,26 @@ export default function index () {
   const { navigate } = useSafeNavigation();
   const theme = useTheme();
   const { pills } = usePills();
+  const {lastPillEditDate} = useData();
   const t = useT();
 
+   // Vérifier si la date existe et si c'est aujourd'hui
+  const isEditedToday = lastPillEditDate !== null && 
+    lastPillEditDate.toISOString().split("T")[0] === new Date().toISOString().split("T")[0];
+  
   return (
     <SafeTopAreaThemedView style={styles.container}>
       {/* En-tête */}
       <View style={styles.header}>
         <TitlePage title={t("pills.title")} />
+      {/* Avertissement de prise en compte des modifications */}
+      {isEditedToday && (
+        <ThemedText variant="secondary" style={styles.modificationWarning}>
+          {t("pills.modificationsWillApply")}
+        </ThemedText>
+      )}
       </View>
+
 
       {/* Liste des médicaments */}
       <ScrollView
@@ -91,4 +104,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
     textAlign: "center",
   },
+  modificationWarning: {
+    marginBottom: 8
+  }
 });

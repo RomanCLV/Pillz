@@ -9,6 +9,7 @@ import {
   loadDailySummaries,
   saveDailySummaries,
   cleanAndSortSummaries,
+  loadLastPillEditDate,
 } from "@utils/dataStorage";
 
 type DataContextValue = {
@@ -20,6 +21,9 @@ type DataContextValue = {
   summaries: DailySummary[];
   setSummaries: (summaries: DailySummary[]) => Promise<void>;
   
+  // Last Pill Edit Date
+  lastPillEditDate: Date | null;
+
   // État de chargement
   loaded: boolean;
 };
@@ -29,14 +33,16 @@ const DataContext = createContext<DataContextValue | undefined>(undefined);
 export const DataProvider = ({ children }: { children: React.ReactNode }) => {
   const [pills, setPillsState] = useState<Pill[]>([]);
   const [summaries, setSummariesState] = useState<DailySummary[]>([]);
+  const [lastPillEditDate, setLastPillEditDateState] = useState<Date | null>(null);
   const [loaded, setLoaded] = useState(false);
 
  // Chargement initial
   useEffect(() => {
     (async () => {
-      const [loadedPills, loadedSummaries] = await Promise.all([
+      const [loadedPills, loadedSummaries, loadedLastPillEditDate] = await Promise.all([
         loadPills(),
         loadDailySummaries(),
+        loadLastPillEditDate(),
       ]);
 
       // Nettoyage et tri une seule fois au démarrage
@@ -46,6 +52,9 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
       
       // Sauvegarder les summaries nettoyés
       await setSummaries(cleanedSummaries);
+
+      // Dernière date de modification des pillules
+      setLastPillEditDateState(loadedLastPillEditDate);
       
       setLoaded(true);
     })();
@@ -55,6 +64,8 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
   const setPills = async (newPills: Pill[]) => {
     setPillsState(newPills);
     await savePills(newPills);
+    // Mettre à jour la date dans le contexte
+    setLastPillEditDateState(new Date());
   };
 
   const setSummaries = async (newSummaries: DailySummary[]) => {
@@ -69,6 +80,7 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
         setPills,
         summaries,
         setSummaries,
+        lastPillEditDate,
         loaded,
       }}
     >

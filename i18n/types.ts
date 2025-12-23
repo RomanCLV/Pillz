@@ -64,6 +64,7 @@ export type LanguageSet = {
     title: string,
     noPills: string,
     addPill: string,
+    modificationsWillApply: string,
   },
   pills_edit: {
     titleNew: string,

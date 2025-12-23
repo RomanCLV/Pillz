@@ -5,6 +5,7 @@ import { DailySummary, IntakeStatus } from "types/dailySummary";
 
 const PILLS_KEY = "app-pills";
 const SUMMARIES_KEY = "app-daily-summaries";
+const LAST_PILL_EDIT_DATE_KEY = "app-last-pill-edit-date";
 
 // ==================== PILLS ====================
 
@@ -38,6 +39,10 @@ export async function loadPills(): Promise<Pill[]> {
 export async function savePills(pills: Pill[]): Promise<void> {
   try {
     await AsyncStorage.setItem(PILLS_KEY, JSON.stringify(pills));
+    
+    // Mettre à jour automatiquement la date de dernière modification
+    const today = new Date().toISOString().split("T")[0];
+    await AsyncStorage.setItem(LAST_PILL_EDIT_DATE_KEY, today);
   }
   catch (error) {
     console.error("Error saving pills:", error);
@@ -97,4 +102,17 @@ export function cleanAndSortSummaries(summaries: DailySummary[]): DailySummary[]
     }
   });
   return sortedSummaries;
+}
+
+// ==================== LAST PILL EDIT DATE ====================
+
+export async function loadLastPillEditDate(): Promise<Date | null> {
+  try {
+    const dateStr = await AsyncStorage.getItem(LAST_PILL_EDIT_DATE_KEY);
+    return dateStr ? new Date(dateStr) : null;
+  } 
+  catch (error) {
+    console.error("Error loading last pill edit date:", error);
+    return null;
+  }
 }
