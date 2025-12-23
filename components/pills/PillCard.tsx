@@ -34,6 +34,12 @@ export default function PillCard({ pill, onPress }: PillCardProps) {
   // Vérifier si le traitement est limité dans le temps
   const hasEndDate = pill.treatmentDuration.endDate !== null;
 
+  const now = new Date();
+  now.setHours(0, 0, 0, 0); // On ne compare que les dates, pas les heures
+  const isTreatmentFinished =
+    pill.treatmentDuration.endDate != null &&
+    pill.treatmentDuration.endDate < now;
+
   return (
     <ThemedCard 
       pressable={!!onPress} 
@@ -42,7 +48,16 @@ export default function PillCard({ pill, onPress }: PillCardProps) {
     >
       {/* En-tête avec nom et dosage */}
       <View style={styles.header}>
-        <ThemedText style={styles.name}>{pill.name}</ThemedText>
+        <ThemedText 
+          style={[
+            styles.name, 
+            isTreatmentFinished && {
+              textDecorationLine: "line-through",
+              color: theme.text.tertiary,
+            }]}
+        >
+          {pill.name}
+        </ThemedText>
         <Chip variant="highlight">{t(`pill.usage.${pill.unit}`, {n: pill.dosage}, true )}</Chip>
       </View>
       {/* Horaires de prise */}
@@ -65,7 +80,7 @@ export default function PillCard({ pill, onPress }: PillCardProps) {
         {/* Durée minimale entre prises */}
         <InfoRow label={t("pill.minInterval")} value={t("hours.hh", {h: pill.minHoursBetweenIntakes})} />
         {/* Durée du traitement */}
-        {hasEndDate && <InfoRow label={t("pill.until")} value={pill.treatmentDuration.endDate?.toLocaleDateString(userLocale)} />}
+        {hasEndDate && <InfoRow label={t("pill.until")} value={pill.treatmentDuration.endDate?.toLocaleDateString(userLocale)} valueStyle={isTreatmentFinished ? { color: theme.text.error } : {}} />}
       </View>
     </ThemedCard>
   );
