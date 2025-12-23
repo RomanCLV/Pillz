@@ -16,9 +16,20 @@ import ThemedCard from "@themedComponents/ThemedCard";
 interface PillCardProps {
   pill: Pill;
   onPress?: () => void;
+  onLongPress?: () => void;
+  canSelect?: boolean;
+  isSelected?: boolean;
+  onSelect?: () => void;
 }
 
-export default function PillCard({ pill, onPress }: PillCardProps) {
+export default function PillCard({
+  pill, 
+  onPress, 
+  onLongPress, 
+  canSelect=false,
+  isSelected=false, 
+  onSelect }: PillCardProps) {
+
   const theme = useTheme();
   const t = useT();
   
@@ -44,6 +55,10 @@ export default function PillCard({ pill, onPress }: PillCardProps) {
     <ThemedCard 
       pressable={!!onPress} 
       onPress={onPress}
+      onLongPress={onLongPress}
+      canSelect={canSelect}
+      isSelected={isSelected}
+      onSelect={onSelect}
       pressedOpacity={0.8}
     >
       {/* En-tête avec nom et dosage */}

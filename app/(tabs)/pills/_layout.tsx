@@ -10,6 +10,7 @@ export default function PillsLayout() {
     >
       <Stack.Screen name="index" />
       <Stack.Screen name="edit" />
+      <Stack.Screen name="select" />
     </Stack>
   );
 }

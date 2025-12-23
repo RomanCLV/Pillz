@@ -47,6 +47,11 @@ export const usePills = () => {
     await setPills(newPills);
   };
 
+  const deletePills = async (index: number[]) => {
+    const newPills = pills.filter((_, i) => !index.includes(i));
+    await setPills(newPills);
+  };
+
   /**
    * Récupère un médicament par son nom
    */
@@ -111,6 +116,7 @@ export const usePills = () => {
     updatePillByName,
     deletePill,
     deletePillByName,
+    deletePills,
     getPillByName,
     saveAllPills,
     updateStock,

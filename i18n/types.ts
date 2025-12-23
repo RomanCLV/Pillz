@@ -45,6 +45,13 @@ export type LanguageSet = {
     modifySchedule: string,
     deleteData: string,
   },
+  itemSelection: {
+    noSelection: string,
+    nSelected: {
+      one: string,
+      other: string,
+    }
+  },
   hours: {
     hh: string,
     hhmm: string,
@@ -95,6 +102,16 @@ export type LanguageSet = {
     errorWhileSaving: string,
     errorWhileDeleting: string,
     canNotAddSchedule: string,
+  },
+  pills_select: {
+    deleteTitle: {
+      one: string,
+      other: string,
+    }
+    deleteConfirm: {
+      one: string,
+      other: string,
+    },
   },
   history: {
     title: string,

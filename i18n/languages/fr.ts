@@ -27,6 +27,14 @@ const fr: LanguageSet = {
     deleteData: "Supprimer les données",
   },
 
+  itemSelection: {
+    noSelection: "Aucune sélection",
+    nSelected: {
+      one: "{n} élément sélectionné",
+      other: "{n} éléments sélectionnés",
+    }
+  },
+
   hours: {
     hh: "{h}h",
     hhmm: "{h}h{m}",
@@ -80,6 +88,17 @@ const fr: LanguageSet = {
     errorWhileSaving: "Une erreur est survenue lors de la sauvegarde.",
     errorWhileDeleting: "Une erreur est survenue lors de la suppression.",
     canNotAddSchedule: "Impossible d'ajouter un nouvel horaire. L'intervalle minimal de {h}h n'est pas respecté.",
+  },
+
+  pills_select: {
+    deleteTitle: {
+      one: "Supprimer ce médicament",
+      other: "Supprimer ces médicaments",
+    },
+    deleteConfirm: {
+      one: "Êtes-vous sûr de vouloir supprimer ce médicament ? Cette action est irréversible.",
+      other: "Êtes-vous sûr de vouloir supprimer ces {n} médicaments ? Cette action est irréversible.",
+    },
   },
 
   history: {

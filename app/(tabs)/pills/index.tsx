@@ -38,7 +38,6 @@ export default function index () {
       )}
       </View>
 
-
       {/* Liste des médicaments */}
       <ScrollView
         style={styles.scrollView}
@@ -58,6 +57,7 @@ export default function index () {
               key={index}
               pill={pill}
               onPress={navigate(`/pills/edit?id=${index}`)}
+              onLongPress={navigate(`/pills/select?selected=${index}`)}
             />
           ))
         )}

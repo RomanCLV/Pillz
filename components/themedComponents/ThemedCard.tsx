@@ -5,9 +5,11 @@ import { useTheme } from "@hooks/useTheme";
 type ThemedCardProps = ViewProps & {
   style?: StyleProp<ViewStyle>;
   /** Rend la card cliquable avec animation */
+
   pressable?: boolean;
   /** Callback appelé lors du clic */
   onPress?: () => void;
+
   /** Active l'animation de scale au press (défaut: true) */
   animateScale?: boolean;
   /** Active l'animation d'opacité au press (défaut: true) */
@@ -16,6 +18,14 @@ type ThemedCardProps = ViewProps & {
   pressedScale?: number;
   /** Valeur de l'opacité en état pressé (défaut: 0.85) */
   pressedOpacity?: number;
+
+    /** Long press */
+  onLongPress?: () => void;
+
+  /** Mode sélection */
+  canSelect?: boolean;
+  isSelected?: boolean;
+  onSelect?: () => void;
 };
 
 const ThemedCard: React.FC<ThemedCardProps> = ({ 
@@ -26,12 +36,18 @@ const ThemedCard: React.FC<ThemedCardProps> = ({
   animateOpacity = true,
   pressedScale = 0.97,
   pressedOpacity = 0.85,
+  onLongPress,
+  canSelect = false,
+  isSelected = false,
+  onSelect,
   children,
   ...props 
 }) => {
   const theme = useTheme();
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const opacityAnim = useRef(new Animated.Value(1)).current;
+
+  const isSelectable = canSelect && onSelect;
 
   const cardStyle = {
     backgroundColor: theme.background.card,
@@ -103,8 +119,46 @@ const ThemedCard: React.FC<ThemedCardProps> = ({
     }
   };
 
+  const Checkbox = ({ checked }: { checked: boolean }) => {
+    const theme = useTheme();
+    return (
+      <View
+        style={{
+          width: 22,
+          height: 22,
+          borderRadius: 6,
+          borderWidth: 2,
+          borderColor: checked ? theme.brand.primary : theme.border.light,
+          backgroundColor: checked ? theme.brand.primary : "transparent",
+          alignItems: "center",
+          justifyContent: "center",
+          marginRight: 12,
+        }}
+      >
+        {checked && (
+          <View
+            style={{
+              width: 10,
+              height: 10,
+              backgroundColor: theme.text.onBrand,
+              borderRadius: 2,
+            }}
+          />
+        )}
+      </View>
+    );
+  };
+
+  const handlePress = () => {
+    if (isSelectable) {
+      onSelect?.();
+      return;
+    }
+    onPress?.();
+  };
+
   // Card non-pressable (comportement par défaut)
-  if (!pressable || !onPress) {
+  if ((!pressable || !onPress) && !isSelectable) {
     return (
       <View
         {...props}
@@ -114,11 +168,13 @@ const ThemedCard: React.FC<ThemedCardProps> = ({
       </View>
     );
   }
-
+  
   // Card pressable avec animations
   return (
     <Pressable 
-      onPress={onPress}
+      onPress={handlePress}
+      onLongPress={onLongPress}
+      delayLongPress={400}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
     >
@@ -133,7 +189,10 @@ const ThemedCard: React.FC<ThemedCardProps> = ({
           style
         ]}
       >
-        {children}
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          {canSelect && <Checkbox checked={!!isSelected} />}
+          <View style={{ flex: 1 }}>{children}</View>
+        </View>
       </Animated.View>
     </Pressable>
   );
