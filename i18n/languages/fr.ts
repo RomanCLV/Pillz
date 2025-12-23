@@ -40,6 +40,7 @@ const fr: LanguageSet = {
       taken: "Pris",
       skipped: "Oublié",
       take: "À prendre",
+      takeSoon: "Bientôt",
     },
   },
 

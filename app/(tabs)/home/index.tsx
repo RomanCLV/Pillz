@@ -121,11 +121,12 @@ export default function index() {
         const timeSinceSchedule = now.getTime() - scheduleTime.getTime();
         const minutesSinceSchedule = timeSinceSchedule / 60000;
 
-        const canTakeNow = minutesSinceSchedule >= 0 &&
-          minutesSinceSchedule <= dailyPillSummary.intakeWindowMinutes;
+        const canTakeNow = minutesSinceSchedule >= 0 && minutesSinceSchedule <= dailyPillSummary.intakeWindowMinutes;
 
         const remainingMinutes = dailyPillSummary.intakeWindowMinutes - minutesSinceSchedule;
         const timeAlmostDue = canTakeNow && remainingMinutes <= 30;
+
+        const canAlmostTake = minutesSinceSchedule >= -30 && minutesSinceSchedule < 0;
 
         const isWindowPassed = minutesSinceSchedule > dailyPillSummary.intakeWindowMinutes;
         const shouldBeSkipped = isWindowPassed && scheduleIntake.status === IntakeStatus.PENDING;
@@ -139,6 +140,7 @@ export default function index() {
           dosage: dailyPillSummary.dosage,
           unit: dailyPillSummary.unit,
           schedule: scheduleIntake,
+          canAlmostTake: canAlmostTake,
           canTakeNow: canTakeNow,
           timeAlmostDue: timeAlmostDue,
         };
@@ -153,7 +155,7 @@ export default function index() {
   const handleTakeIntake = (intake: DailyIntake) => {
     const todaySummary = summaries[summaries.length - 1];
 
-    const pill = pills.find(p => p.name === intake.name);
+    const pill = pills.find(p => p.name === intake.name && p.dosage === intake.dosage && p.unit === intake.unit);
     if (pill && pill.stockGesture) {
       decrementStock(pills.indexOf(pill), 1);
     }

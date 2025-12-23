@@ -84,7 +84,7 @@ export default function DailyIntakeCard({ intake, onTake }: DailyIntakeCardProps
           buttonStyle={styles.takeButton}
           icon={<ClockIcon height={ICON_SIZE} width={ICON_SIZE} color={theme.text.tertiary} />}
         >
-          {t("home.intake.take")}
+          {t(intake.canAlmostTake ? "home.intake.takeSoon" : "home.intake.take")}
         </ThemedButton>
     );
   };

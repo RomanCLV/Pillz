@@ -57,6 +57,7 @@ export type LanguageSet = {
       taken: string,
       skipped: string,
       take: string,
+      takeSoon: string,
     },
   },
   pills: {
