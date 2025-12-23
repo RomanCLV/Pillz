@@ -49,7 +49,7 @@ function sortDailyIntakes(intakes: DailyIntake[]): DailyIntake[] {
 export default function index() {
   const t = useT();
   const theme = useTheme();
-  const { pills } = usePills();
+  const { pills, decrementStock } = usePills();
   const { setSummaries } = useData();
   const { summaries, markIntakeAsSkipped, markIntakeAsTaken } = useSummaries();
   const [dailyIntakes, setDailyIntakes] = useState<DailyIntake[]>([]);
@@ -128,8 +128,7 @@ export default function index() {
         const timeAlmostDue = canTakeNow && remainingMinutes <= 30;
 
         const isWindowPassed = minutesSinceSchedule > dailyPillSummary.intakeWindowMinutes;
-        const shouldBeSkipped = isWindowPassed &&
-          scheduleIntake.status === IntakeStatus.PENDING;
+        const shouldBeSkipped = isWindowPassed && scheduleIntake.status === IntakeStatus.PENDING;
 
         if (shouldBeSkipped) {
           skippedIntakes.push({ pillIndex, intakeIndex });
@@ -153,6 +152,12 @@ export default function index() {
 
   const handleTakeIntake = (intake: DailyIntake) => {
     const todaySummary = summaries[summaries.length - 1];
+
+    const pill = pills.find(p => p.name === intake.name);
+    if (pill && pill.stockGesture) {
+      decrementStock(pills.indexOf(pill), 1);
+    }
+
     markIntakeAsTaken(
       todaySummary.date,
       intake.name,
