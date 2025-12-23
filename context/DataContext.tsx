@@ -43,10 +43,9 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
       const cleanedSummaries = cleanAndSortSummaries(loadedSummaries);
       
       setPillsState(loadedPills);
-      setSummariesState(cleanedSummaries);
       
       // Sauvegarder les summaries nettoyés
-      await saveDailySummaries(cleanedSummaries);
+      await setSummaries(cleanedSummaries);
       
       setLoaded(true);
     })();

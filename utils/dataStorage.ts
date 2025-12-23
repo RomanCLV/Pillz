@@ -98,28 +98,3 @@ export function cleanAndSortSummaries(summaries: DailySummary[]): DailySummary[]
   });
   return sortedSummaries;
 }
-
-/**
- * Récupère le récapitulatif d'une journée spécifique
- */
-export async function getDailySummary(date: string): Promise<DailySummary | null> {
-  const summaries = await loadDailySummaries();
-  return summaries.find(s => s.date === date) || null;
-}
-
-/**
- * Met à jour ou crée le récapitulatif d'une journée
- */
-export async function updateDailySummary(summary: DailySummary): Promise<void> {
-  const summaries = await loadDailySummaries();
-  const index = summaries.findIndex(s => s.date === summary.date);
-  
-  if (index >= 0) {
-    summaries[index] = summary;
-  } 
-  else {
-    summaries.push(summary);
-  }
-  
-  await saveDailySummaries(summaries);
-}
