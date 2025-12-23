@@ -69,7 +69,7 @@ export default function index() {
           >
             {/* Stats du jour */}
             <View style={styles.statsContainer}>
-              <View style={[styles.statCard, { backgroundColor: theme.background.secondary }]}>
+              <View style={[styles.statCard, { backgroundColor: theme.background.card }]}>
                 <ThemedText style={[styles.statValue, { color: theme.brand.secondary }]}>
                   {stats.taken}
                 </ThemedText>
@@ -78,7 +78,7 @@ export default function index() {
                 </ThemedText>
               </View>
               
-              <View style={[styles.statCard, { backgroundColor: theme.background.secondary }]}>
+              <View style={[styles.statCard, { backgroundColor: theme.background.card }]}>
                 <ThemedText style={[styles.statValue, { color: theme.brand.error }]}>
                   {stats.skipped}
                 </ThemedText>
@@ -87,8 +87,8 @@ export default function index() {
                 </ThemedText>
               </View>
               
-              { isToday &&
-              <View style={[styles.statCard, { backgroundColor: theme.background.secondary }]}>
+              { isToday && (stats.pending > 0) &&
+              <View style={[styles.statCard, { backgroundColor: theme.background.card }]}>
                 <ThemedText style={[styles.statValue, { color: theme.text.secondary }]}>
                   {stats.pending}
                 </ThemedText>
