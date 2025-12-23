@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 import { usePills } from "@hooks/usePills";
 import { useSummaries } from "@hooks/useSummaries";
+import { useTheme } from "@hooks/useTheme";
 import { useT } from "@i18n/useT";
 import { GlobalStyles } from "@constants/global-styles";
 import { DailyPillSummary, DailySummary, IntakeStatus, ScheduleIntake } from "types/dailySummary";
 import { Pill } from "types/pill";
-import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
-import ThemedText from "@themedComponents/ThemedText";
 import { DailyIntake } from "types/dailyIntake";
 import { useData } from "@context/DataContext";
-import { useTheme } from "@hooks/useTheme";
+import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
+import ThemedText from "@themedComponents/ThemedText";
 import DailyIntakeCard from "@components/home/DailyIntakeCard";
 
 interface IntakeReference {
@@ -54,11 +54,15 @@ export default function index() {
   const { summaries, markIntakeAsSkipped, markIntakeAsTaken } = useSummaries();
   const [dailyIntakes, setDailyIntakes] = useState<DailyIntake[]>([]);
 
+  // Ref pour éviter les doubles appels
+  const updateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
     async function setup() {
       await setupDailySummaries(summaries, pills);
       const todaySummary = summaries[summaries.length - 1];
       const { intakes, skippedIntakes } = setupIntakesItems(todaySummary.pills);
+      
       skippedIntakes.forEach(({ pillIndex, intakeIndex }) => {
         markIntakeAsSkipped(
           todaySummary.date,
@@ -67,18 +71,31 @@ export default function index() {
           todaySummary.pills[pillIndex].intakes[intakeIndex].schedule.minute
         );
       });
+      
       setDailyIntakes(intakes);
+
+      const msSecsBeforeNextMinute = 60000 - (new Date().getSeconds() * 1000 + new Date().getMilliseconds());
+      updateTimeoutRef.current = setTimeout(updateStatus, msSecsBeforeNextMinute);
     }
+    
     setup();
+
+    return () => {
+      if (updateTimeoutRef.current) {
+        clearTimeout(updateTimeoutRef.current);
+      }
+    };
   }, [summaries]);
 
   const setupDailySummaries = async (dailySummaries: DailySummary[], pills: Pill[]) => {
-    const today = new Date().toISOString().split("T")[0];
-    const item = dailySummaries.find(item => item.date == today);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayStr = today.toISOString().split("T")[0];
+    const item = dailySummaries.find(item => item.date == todayStr);
 
     if (item == null) {
       const newItem: DailySummary = {
-        date: today,
+        date: todayStr,
         pills: pills.map(pill => {
           return {
             name: pill.name,
@@ -126,7 +143,7 @@ export default function index() {
         const remainingMinutes = dailyPillSummary.intakeWindowMinutes - minutesSinceSchedule;
         const timeAlmostDue = canTakeNow && remainingMinutes <= 30;
 
-        const canAlmostTake = minutesSinceSchedule >= -30 && minutesSinceSchedule < 0;
+        const canTakeSoon = minutesSinceSchedule >= -30 && minutesSinceSchedule < 0;
 
         const isWindowPassed = minutesSinceSchedule > dailyPillSummary.intakeWindowMinutes;
         const shouldBeSkipped = isWindowPassed && scheduleIntake.status === IntakeStatus.PENDING;
@@ -140,7 +157,7 @@ export default function index() {
           dosage: dailyPillSummary.dosage,
           unit: dailyPillSummary.unit,
           schedule: scheduleIntake,
-          canAlmostTake: canAlmostTake,
+          canTakeSoon: canTakeSoon,
           canTakeNow: canTakeNow,
           timeAlmostDue: timeAlmostDue,
         };
@@ -150,6 +167,56 @@ export default function index() {
     });
 
     return { intakes: sortDailyIntakes(intakes), skippedIntakes };
+  };
+
+const updateStatus = () => {
+    const todaySummary = summaries[summaries.length - 1];
+    if (!todaySummary) return;
+
+    const { intakes, skippedIntakes } = setupIntakesItems(todaySummary.pills);
+    
+    // Marquer les intakes à skipper
+    skippedIntakes.forEach(({ pillIndex, intakeIndex }) => {
+      markIntakeAsSkipped(
+        todaySummary.date,
+        todaySummary.pills[pillIndex].name,
+        todaySummary.pills[pillIndex].intakes[intakeIndex].schedule.hour,
+        todaySummary.pills[pillIndex].intakes[intakeIndex].schedule.minute
+      );
+    });
+
+    // Comparer avec l'état actuel pour éviter les re-renders inutiles
+    const hasChanged = !areIntakesEqual(dailyIntakes, intakes);
+    
+    if (hasChanged) {
+      setDailyIntakes(intakes);
+    }
+
+    // Programmer la prochaine vérification
+    const msSecsBeforeNextMinute = 60000 - (new Date().getSeconds() * 1000 + new Date().getMilliseconds());
+    updateTimeoutRef.current = setTimeout(updateStatus, msSecsBeforeNextMinute);
+  };
+
+  // Fonction pour comparer deux listes d'intakes
+  const areIntakesEqual = (intakes1: DailyIntake[], intakes2: DailyIntake[]): boolean => {
+    if (intakes1.length !== intakes2.length) return false;
+
+    for (let i = 0; i < intakes1.length; i++) {
+      const intake1 = intakes1[i];
+      const intake2 = intakes2[i];
+
+      // Comparer uniquement les propriétés qui peuvent changer avec le temps
+      if (
+        intake1.canTakeSoon !== intake2.canTakeSoon ||
+        intake1.canTakeNow !== intake2.canTakeNow ||
+        intake1.timeAlmostDue !== intake2.timeAlmostDue ||
+        intake1.schedule.status !== intake2.schedule.status
+      ) {
+        return false;
+      }
+    }
+
+    return true;
   };
 
   const handleTakeIntake = (intake: DailyIntake) => {

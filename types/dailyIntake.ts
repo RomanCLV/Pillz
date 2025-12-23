@@ -6,7 +6,7 @@ export interface DailyIntake {
   dosage: number;
   unit: DosageUnit;
   schedule: ScheduleIntake;
-  canAlmostTake: boolean;
+  canTakeSoon: boolean;
   canTakeNow: boolean;
   timeAlmostDue: boolean;
 }
