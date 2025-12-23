@@ -96,7 +96,19 @@ export default function index() {
     if (item == null) {
       const newItem: DailySummary = {
         date: todayStr,
-        pills: pills.map(pill => {
+        pills: pills
+          .filter(pill => {
+            if (pill.treatmentDuration.endDate != null) {
+              // si la date de fin est passée, ne pas ajouter considérer le médicament
+              const endDate = new Date(pill.treatmentDuration.endDate);
+              endDate.setHours(0, 0, 0, 0);
+            if (today > endDate) {
+              return false;
+            }
+          }
+          return true;
+        })
+        .map(pill => {
           return {
             name: pill.name,
             dosage: pill.dosage,
