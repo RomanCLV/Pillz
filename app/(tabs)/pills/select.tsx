@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 
 import { usePills } from "@hooks/usePills";
 import { useTheme } from "@hooks/useTheme";
@@ -22,18 +22,37 @@ export default function Select() {
   const theme = useTheme();
   const { pills, deletePills } = usePills();
   const {goBack} = useSafeNavigation();
+  const navigation = useNavigation();
   const t = useT();
   const params = useLocalSearchParams();
   
   const [selected, setSelected] = useState<number[]>(params.selected ? [Number(params.selected)] : []);
   const [deleteModal, setDeleteModal] = useState(false);
   
+  useLayoutEffect(() => {
+    const parent = navigation.getParent();
+
+    navigation.getParent()?.setOptions({
+      tabBarStyle: { display: "none" },
+    });
+
+    return () => {
+      parent?.setOptions({
+        tabBarStyle: { 
+          backgroundColor: theme.background.secondary,
+          borderTopWidth: 1,
+          borderColor: theme.border.light + "10",
+        }
+      });
+    };
+  }, [navigation]);
+
   const toggle = (id: number) =>
     setSelected(s =>
       s.includes(id) ? s.filter(i => i !== id) : [...s, id]
     );
 
-const handleDelete = () => {
+  const handleDelete = () => {
     // Afficher la modale de confirmation
     setDeleteModal(true);
   };
@@ -99,7 +118,8 @@ const handleDelete = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    paddingTop: 16,
+    paddingHorizontal: 16,
   },
   header: {
     padding: 16,
@@ -114,6 +134,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     //flex: 1, <-- anti-scroll !
     paddingTop: 0,
+    paddingBottom: 32,
     gap: 16,
   },
 });

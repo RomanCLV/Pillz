@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { StyleSheet, ScrollView, View, KeyboardAvoidingView, Platform } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { useTheme } from "@hooks/useTheme";
@@ -35,12 +35,31 @@ import TrashIcon from "@assets/icons/trash.svg";
 
 export default function EditPillScreen() {
   const {goBack} = useSafeNavigation();
+  const navigation = useNavigation();
   const theme = useTheme();
   const t = useT();
   const params = useLocalSearchParams();
   const isEditing = !!params.id;
 
   const { pills, addPill, updatePill, deletePill, getPillByName } = usePills();
+
+    useLayoutEffect(() => {
+      const parent = navigation.getParent();
+  
+      navigation.getParent()?.setOptions({
+        tabBarStyle: { display: "none" },
+      });
+  
+      return () => {
+        parent?.setOptions({
+          tabBarStyle: { 
+            backgroundColor: theme.background.secondary,
+            borderTopWidth: 1,
+            borderColor: theme.border.light + "10",
+          }
+        });
+      };
+    }, [navigation]);
 
   const getUnitLabel = (unit: DosageUnit): string => {
     const label = t(`pill.unit.${unit}`);
