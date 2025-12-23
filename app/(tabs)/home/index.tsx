@@ -26,22 +26,30 @@ interface SetupIntakesResult {
 
 function sortDailyIntakes(intakes: DailyIntake[]): DailyIntake[] {
   return [...intakes].sort((a, b) => {
-    const timeA =
-      a.schedule.schedule.hour * 60 + a.schedule.schedule.minute;
-    const timeB =
-      b.schedule.schedule.hour * 60 + b.schedule.schedule.minute;
-    // 1. Tri par horaire
+    // 1. Priorité aux médicaments à prendre maintenant
+    if (a.canTakeNow !== b.canTakeNow) {
+      return a.canTakeNow ? -1 : 1;
+    }
+    
+    // 2. Priorité aux médicaments à prendre bientôt
+    if (a.canTakeSoon !== b.canTakeSoon) {
+      return a.canTakeSoon ? -1 : 1;
+    }
+
+    const timeA = a.schedule.schedule.hour * 60 + a.schedule.schedule.minute;
+    const timeB = b.schedule.schedule.hour * 60 + b.schedule.schedule.minute;
+    // 3. Tri par horaire
     if (timeA !== timeB) {
       return timeA - timeB;
     }
-    // 2. Tri par nom (alphabétique)
+    // 4. Tri par nom (alphabétique)
     const nameCompare = a.name.localeCompare(b.name, 'fr', {
       sensitivity: 'base',
     });
     if (nameCompare !== 0) {
       return nameCompare;
     }
-    // 3. Tri par dosage
+    // 5. Tri par dosage
     return a.dosage - b.dosage;
   });
 }
