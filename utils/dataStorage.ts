@@ -1,7 +1,7 @@
 // utils/dataStorage.ts
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Pill, TreatmentDuration } from "types/pill";
-import { DailySummary } from "types/dailySummary";
+import { DailySummary, IntakeStatus } from "types/dailySummary";
 
 const PILLS_KEY = "app-pills";
 const SUMMARIES_KEY = "app-daily-summaries";
@@ -47,20 +47,12 @@ export async function savePills(pills: Pill[]): Promise<void> {
 // ==================== DAILY SUMMARIES ====================
 
 /**
- * Charge tous les récapitulatifs quotidiens (limité aux 7 derniers jours)
+ * Charge les récapitulatifs bruts sans traitement
  */
 export async function loadDailySummaries(): Promise<DailySummary[]> {
   try {
     const json = await AsyncStorage.getItem(SUMMARIES_KEY);
-    const summaries: DailySummary[] = json ? JSON.parse(json) : [];
-
-    // Nettoyer automatiquement les données > 7 jours
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    const cutoffDate = sevenDaysAgo.toISOString().split("T")[0];
-    return summaries
-      .filter(s => s.date >= cutoffDate)
-      .sort((a, b) => (new Date(a.date)).getTime() - (new Date(b.date)).getTime());
+    return json ? JSON.parse(json) : [];
   } 
   catch (error) {
     console.error("Error loading daily summaries:", error);
@@ -75,6 +67,36 @@ export async function saveDailySummaries(summaries: DailySummary[]): Promise<voi
   catch (error) {
     console.error("Error saving daily summaries:", error);
   }
+}
+
+/**
+ * Nettoie les summaries de plus de 7 jours et trie par date
+ * À appeler une seule fois au démarrage
+ */
+export function cleanAndSortSummaries(summaries: DailySummary[]): DailySummary[] {
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const cutoffDate = sevenDaysAgo.toISOString().split("T")[0];
+  
+  const sortedSummaries = summaries
+    .filter(s => s.date >= cutoffDate)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+  // pour tous les summaries avant aujourd'hui
+  const todayStr = new Date().toISOString().split("T")[0];
+  sortedSummaries.forEach(summary => { 
+    if (summary.date < todayStr) {
+      // marquer tous les pills pending en oubliés
+      summary.pills.forEach(pillSummary => {
+        pillSummary.intakes.forEach(intake => {
+          if (intake.status === IntakeStatus.PENDING) {
+            intake.status = IntakeStatus.SKIPPED;
+          }
+        }); 
+      });
+    }
+  });
+  return sortedSummaries;
 }
 
 /**

@@ -8,8 +8,8 @@ import {
   savePills,
   loadDailySummaries,
   saveDailySummaries,
+  cleanAndSortSummaries,
 } from "@utils/dataStorage";
-import { useSummaries } from "@hooks/useSummaries";
 
 type DataContextValue = {
   // Pills
@@ -31,7 +31,7 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
   const [summaries, setSummariesState] = useState<DailySummary[]>([]);
   const [loaded, setLoaded] = useState(false);
 
-  // Chargement initial
+ // Chargement initial
   useEffect(() => {
     (async () => {
       const [loadedPills, loadedSummaries] = await Promise.all([
@@ -39,8 +39,15 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
         loadDailySummaries(),
       ]);
 
+      // Nettoyage et tri une seule fois au démarrage
+      const cleanedSummaries = cleanAndSortSummaries(loadedSummaries);
+      
       setPillsState(loadedPills);
-      setSummaries(loadedSummaries); // set to state and save
+      setSummariesState(cleanedSummaries);
+      
+      // Sauvegarder les summaries nettoyés
+      await saveDailySummaries(cleanedSummaries);
+      
       setLoaded(true);
     })();
   }, []);
