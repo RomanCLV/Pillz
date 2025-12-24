@@ -9,12 +9,12 @@ import { useSafeNavigation } from "@hooks/useSafeNavigation";
 import { useT } from "@i18n/useT";
 import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
 import ThemedButton from "@themedComponents/ThemedButton";
-import ThemedDatePicker from "@themedComponents/ThemedDatePicker";
 import ThemedSwitch from "@themedComponents/ThemedSwitch";
 import ThemedText from "@themedComponents/ThemedText";
 import ThemedTextInput from "@themedComponents/ThemedTextInput";
 import ThemedWheelPicker, { PickerItem } from "@themedComponents/ThemedWheelPicker";
 import ThemedModal from "@themedComponents/ThemedModal";
+import ThemedCalendarPicker, { OnChangePayload, RangePayload, SinglePayload } from "@themedComponents/ThemedCalendarPicker";
 import GenericHeader from "@components/headers/GenericHeader";
 import HeaderButton from "@components/headers/HeaderButton";
 import FormField from "@components/FormField";
@@ -32,6 +32,7 @@ import { capitalizeFirstLetter } from "@utils/capitalizeFirstLetter";
 import AddIcon from "@assets/icons/add.svg";
 import CloseIcon from "@assets/icons/close.svg";
 import TrashIcon from "@assets/icons/trash.svg";
+import { createDateAtMidnight } from "@utils/dateHelper";
 
 export default function EditPillScreen() {
   const {goBack} = useSafeNavigation();
@@ -366,10 +367,10 @@ export default function EditPillScreen() {
     return { hour: next.hour - formData.minHoursBetweenIntakes, minute: next.minute };
   };
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  //const maxDate = new Date();
-  //maxDate.setFullYear(today.getFullYear() + 1);
+  const today = createDateAtMidnight();
+  const minDate = formData.treatmentDuration.startDate ?? today;
+  const maxDate = createDateAtMidnight();
+  maxDate.setFullYear(today.getFullYear() + 1);
 
   return (
     <SafeTopAreaThemedView style={styles.container}>
@@ -430,6 +431,8 @@ export default function EditPillScreen() {
 
               <FormField label={t("pills_edit.unity")} style={styles.column}>
                 <ThemedWheelPicker
+                  modalTitle={t("global.select")}
+                  placeholder={t("global.select")}
                   items={unitItems}
                   selectedValue={formData.unit}
                   onValueChange={(value) => setFormData({ ...formData, unit: value })}
@@ -486,6 +489,8 @@ export default function EditPillScreen() {
               icon={({ color, size }) => <Ionicons name="time-outline" size={size} color={color} />}
             >
               <ThemedWheelPicker
+                modalTitle={t("global.select")}
+                placeholder={t("global.select")}
                 items={hoursBetweenIntakesItems}
                 selectedValue={formData.minHoursBetweenIntakes}
                 onValueChange={handleMinHoursBetweenIntakes}
@@ -509,7 +514,7 @@ export default function EditPillScreen() {
                       ...formData,
                       treatmentDuration: {
                         ...formData.treatmentDuration,
-                        endDate: value ? new Date() : null,
+                        endDate: value ? createDateAtMidnight() : null,
                       },
                     });
                   }}
@@ -517,20 +522,33 @@ export default function EditPillScreen() {
               </View>
 
               {hasEndDate && (
-                <ThemedDatePicker
-                  value={formData.treatmentDuration.endDate}
-                  onChange={(date) => 
-                    setFormData({
-                      ...formData,
-                      treatmentDuration: {
-                        ...formData.treatmentDuration,
-                        endDate: date,
-                      },
-                    })
-                  }
-                  placeholder={t("global.chooseDate")}
-                  minDate={today}
-                  //maxDate={maxDate}
+                <ThemedCalendarPicker
+                  mode="range"
+                  range={{
+                    startDate: formData.treatmentDuration.startDate,
+                    endDate: formData.treatmentDuration.endDate,
+                  }}
+                  minDate={minDate}
+                  maxDate={maxDate}
+                  modalTitle={t("global.chooseDate")}
+                  fromLabel={t("pills_edit.treatmentFrom")}
+                  toLabel={t("pills_edit.treatmentTo")}
+                  onChange={(payload: OnChangePayload) => {
+                    if (payload.mode === "range") {
+                      const rangePayload = (payload as RangePayload);
+                      setFormData({
+                        ...formData,
+                        treatmentDuration: { startDate: rangePayload.range.startDate, endDate: rangePayload.range.endDate}
+                      })
+                    }
+                    else {
+                      const singlePayload = (payload as SinglePayload);
+                      setFormData({
+                        ...formData,
+                        treatmentDuration: { startDate: singlePayload.date as Date, endDate: singlePayload.date as Date}
+                      })
+                    }
+                  }}
                 />
               )}
             </FormField>
@@ -610,7 +628,6 @@ export default function EditPillScreen() {
             {isEditing && (
               <ThemedButton
                   onPress={handleDelete}
-                  containerStyle={styles.deleteButton}
                   variant="error"
                   icon={<TrashIcon width={24} height={24} color={theme.text.onBrand} />}
                 >
@@ -666,14 +683,15 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: 16,
+    paddingTop: 16,
+    paddingHorizontal: 16,
     paddingBottom: 0,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    paddingTop: 16,
+    paddingBottom: 16,
   },
   row: {
     flexDirection: "row",
@@ -696,9 +714,5 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 14,
     marginTop: 8,
-  },
-  deleteButton: {
-    marginTop: 24,
-    marginBottom: 32,
   },
 });
