@@ -14,7 +14,7 @@ import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
 import ThemedText from "@themedComponents/ThemedText";
 import DailyIntakeCard from "@components/home/DailyIntakeCard";
 
-import {toDayKey, normalizeDate, createDateAtNoon} from "utils/dateHelper"
+import {toDayKey, createDateAtNoon} from "utils/dateHelper"
 
 interface IntakeReference {
   pillIndex: number;
@@ -28,20 +28,14 @@ interface SetupIntakesResult {
 
 function sortDailyIntakes(intakes: DailyIntake[]): DailyIntake[] {
   return [...intakes].sort((a, b) => {
-    const priorityDiff =
-      getIntakePriority(a) - getIntakePriority(b);
+    const priorityDiff = getIntakePriority(a) - getIntakePriority(b);
 
-    if (priorityDiff !== 0) return priorityDiff;
+    if (priorityDiff !== 0) 
+      return priorityDiff;
 
-    // même priorité → tri par heure
-    const aTime =
-      a.schedule.schedule.hour * 60 +
-      a.schedule.schedule.minute;
-
-    const bTime =
-      b.schedule.schedule.hour * 60 +
-      b.schedule.schedule.minute;
-
+    // même priorité -> tri par heure
+    const aTime = a.schedule.schedule.hour * 60 + a.schedule.schedule.minute;
+    const bTime = b.schedule.schedule.hour * 60 + b.schedule.schedule.minute;
     return aTime - bTime;
   });
 }
@@ -171,9 +165,9 @@ export default function index() {
           dosage: dailyPillSummary.dosage,
           unit: dailyPillSummary.unit,
           schedule: scheduleIntake,
-          canTakeSoon: canTakeSoon,
-          canTakeNow: canTakeNow,
-          timeAlmostDue: timeAlmostDue,
+          canTakeSoon: canTakeSoon && scheduleIntake.status === IntakeStatus.PENDING,
+          canTakeNow: canTakeNow && scheduleIntake.status === IntakeStatus.PENDING,
+          timeAlmostDue: timeAlmostDue && scheduleIntake.status === IntakeStatus.PENDING,
         };
 
         intakes.push(intake);
@@ -221,6 +215,7 @@ const updateStatus = () => {
 
       // Comparer uniquement les propriétés qui peuvent changer avec le temps
       if (
+        intake1.name !== intake2.name ||
         intake1.canTakeSoon !== intake2.canTakeSoon ||
         intake1.canTakeNow !== intake2.canTakeNow ||
         intake1.timeAlmostDue !== intake2.timeAlmostDue ||
@@ -247,8 +242,6 @@ const updateStatus = () => {
       intake.schedule.schedule.hour,
       intake.schedule.schedule.minute
     );
-
-    setTimeout(updateStatus, 3000);
   };
 
   return (
