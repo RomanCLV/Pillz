@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
+import * as Localization from "expo-localization";
 
 import { usePills } from "@hooks/usePills";
 import { useSummaries } from "@hooks/useSummaries";
@@ -15,6 +16,8 @@ import ThemedText from "@themedComponents/ThemedText";
 import DailyIntakeCard from "@components/home/DailyIntakeCard";
 
 import {toDayKey, createDateAtNoon} from "utils/dateHelper"
+import { useCurrentLanguage } from "@hooks/useCurrentLanguage";
+import { DEFAULT_LANGUAGE_TAG, LOCALE_MAP } from "@i18n/types";
 
 interface IntakeReference {
   pillIndex: number;
@@ -54,6 +57,12 @@ export default function index() {
 
   // Ref pour éviter les doubles appels
   const updateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    const currentLang = useCurrentLanguage();
+    const userLocale =
+      (currentLang ? LOCALE_MAP[currentLang] : null) ??
+      Localization.getLocales()[0]?.languageTag ??
+      DEFAULT_LANGUAGE_TAG;
 
   useEffect(() => {
     async function setup() {
@@ -255,7 +264,7 @@ const updateStatus = () => {
         <View style={styles.header}>
           <ThemedText style={styles.title}>{t("home.title")}</ThemedText>
           <ThemedText style={[styles.subtitle, { color: theme.text.secondary }]}>
-            {new Date().toLocaleDateString(undefined, { 
+            {new Date().toLocaleDateString(userLocale, { 
               weekday: 'long', 
               year: 'numeric', 
               month: 'long', 

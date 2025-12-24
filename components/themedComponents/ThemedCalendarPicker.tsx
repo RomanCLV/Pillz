@@ -6,7 +6,6 @@ import { FontAwesome } from "@expo/vector-icons";
 
 import { useCurrentLanguage } from "@hooks/useCurrentLanguage";
 import { useTheme } from "@hooks/useTheme";
-import { useT } from "@i18n/useT";
 import { DEFAULT_LANGUAGE_TAG, LOCALE_MAP } from "@i18n/types";
 import ThemedBottomSheetModal from "@themedComponents/ThemedBottomSheetModal";
 import ThemedText from "@themedComponents/ThemedText";
@@ -81,7 +80,6 @@ export default function ThemedCalendarPicker({
   placeholder = "—",
 }: ThemedCalendarPickerProps) {
   const theme = useTheme();
-  const t = useT();
 
   const [visible, setVisible] = useState(false);
   const [activeField, setActiveField] = useState<"start" | "end" | null>(null);
