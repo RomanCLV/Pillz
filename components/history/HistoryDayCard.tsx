@@ -3,14 +3,24 @@ import { StyleSheet, View } from "react-native";
 
 import { useTheme } from "@hooks/useTheme";
 import { useT } from "@i18n/useT";
-import { DailyPillSummary, IntakeStatus } from "types/dailySummary";
+import { DailyPillSummary, IntakeStatus, ScheduleIntake } from "types/dailySummary";
 import Chip from "@components/Chip";
 import ThemedText from "@themedComponents/ThemedText";
 import ThemedCard from "@themedComponents/ThemedCard";
 import ScheduleChip from "@components/pills/ScheduleChip";
+import { PillSchedule } from "types/pill";
 
 interface HistoryDayCardProps {
   pill: DailyPillSummary;
+}
+
+function recoverPillSchedule(takenAt: string, fallback: PillSchedule): PillSchedule {
+  const date = new Date(takenAt);
+  return date ? {hour: date.getHours(), minute: date.getMinutes()} : fallback;
+}
+
+function getPillSchedule(scheduleIntake: ScheduleIntake): PillSchedule {
+  return (scheduleIntake.status === IntakeStatus.TAKEN && scheduleIntake.takenAt) ? recoverPillSchedule(scheduleIntake.takenAt, scheduleIntake.schedule) : scheduleIntake.schedule;
 }
 
 export default function HistoryDayCard({ pill }: HistoryDayCardProps) {
@@ -52,7 +62,7 @@ export default function HistoryDayCard({ pill }: HistoryDayCardProps) {
               key={index}
               variant={getScheduleChipVariant(intake.status)}
               intensity="light"
-              schedule={intake.schedule}
+              schedule={getPillSchedule(intake)}
               />
             )}
           </View>

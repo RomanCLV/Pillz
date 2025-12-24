@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@hooks/useTheme";
 import { useT } from "@i18n/useT";
 import { DailyIntake } from "types/dailyIntake";
-import { IntakeStatus } from "types/dailySummary";
+import { IntakeStatus, ScheduleIntake } from "types/dailySummary";
 import ThemedText from "@themedComponents/ThemedText";
 import ThemedCard from "@themedComponents/ThemedCard";
 import ThemedButton from "@themedComponents/ThemedButton";
@@ -14,6 +14,7 @@ import ClockIcon from "@icons/time.svg";
 import CloseIcon from "@icons/close.svg";
 import ScheduleChip from "@components/pills/ScheduleChip";
 import Spacer from "@components/Spacer";
+import { PillSchedule } from "types/pill";
 
 interface DailyIntakeCardProps {
   intake: DailyIntake;
@@ -21,6 +22,15 @@ interface DailyIntakeCardProps {
 }
 
 const ICON_SIZE = 18;
+
+function recoverPillSchedule(takenAt: string, fallback: PillSchedule): PillSchedule {
+  const date = new Date(takenAt);
+  return date ? {hour: date.getHours(), minute: date.getMinutes()} : fallback;
+}
+
+function getPillSchedule(scheduleIntake: ScheduleIntake): PillSchedule {
+  return (scheduleIntake.status === IntakeStatus.TAKEN && scheduleIntake.takenAt) ? recoverPillSchedule(scheduleIntake.takenAt, scheduleIntake.schedule) : scheduleIntake.schedule;
+}
 
 export default function DailyIntakeCard({ intake, onTake }: DailyIntakeCardProps) {
   const theme = useTheme();
@@ -89,54 +99,18 @@ export default function DailyIntakeCard({ intake, onTake }: DailyIntakeCardProps
     );
   };
 
-  const version: number = 2;
-
-  return version === 1 ?  
-  (
-    <ThemedCard>
+  return <ThemedCard>
       {/* En-tête avec nom et dosage */}
       <View style={styles.row}>
         <ThemedText style={styles.name}>{intake.name}</ThemedText>
-        <Chip variant="highlight">{t(`pill.usage.${intake.unit}`, {n: intake.dosage}, true )}</Chip>
-      </View>
-      <Spacer height={12} />
-      <View style={styles.row}>
-        <ScheduleChip schedule={intake.schedule.schedule} variant="primary" intensity="light" />
-        {getButtonOrChip()}
-      </View>
-    </ThemedCard>
-  )
-  :
-  version === 2 ?
-    (
-    <ThemedCard>
-      {/* En-tête avec nom et dosage */}
-      <View style={styles.row}>
-        <ThemedText style={styles.name}>{intake.name}</ThemedText>
-        <ScheduleChip schedule={intake.schedule.schedule} variant="primary" intensity="light" />
+        <ScheduleChip schedule={getPillSchedule(intake.schedule)} variant="primary" intensity="light" />
       </View>
       <Spacer height={12} />
       <View style={styles.row}>
         <Chip variant="highlight">{t(`pill.usage.${intake.unit}`, {n: intake.dosage}, true )}</Chip>
         {getButtonOrChip()}
       </View>
-    </ThemedCard>
-  )
-  :
-    (
-    <ThemedCard>
-      {/* En-tête avec nom et dosage */}
-      <View style={styles.row}>
-        <ThemedText style={styles.name}>{intake.name}</ThemedText>
-        <ScheduleChip schedule={intake.schedule.schedule} variant="primary" intensity="light" />
-      </View>
-      <Spacer height={12} />
-      <View style={styles.row}>
-        <ThemedText style={{color: theme.text.tertiary}}>{t(`pill.usage.${intake.unit}`, {n: intake.dosage}, true )}</ThemedText>
-        {getButtonOrChip()}
-      </View>
-    </ThemedCard>
-  );
+    </ThemedCard>;
 }
 
 const styles = StyleSheet.create({
