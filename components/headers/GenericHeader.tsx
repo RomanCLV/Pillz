@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    height: 40
+    minHeight: 40
   },
   iconContainer: {
     alignItems: "center",
