@@ -14,6 +14,8 @@ import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
 import ThemedText from "@themedComponents/ThemedText";
 import DailyIntakeCard from "@components/home/DailyIntakeCard";
 
+import {toDayKey, normalizeDate, createDateAtNoon} from "utils/dateHelper"
+
 interface IntakeReference {
   pillIndex: number;
   intakeIndex: number;
@@ -26,32 +28,26 @@ interface SetupIntakesResult {
 
 function sortDailyIntakes(intakes: DailyIntake[]): DailyIntake[] {
   return [...intakes].sort((a, b) => {
-    // 1. Priorité aux médicaments à prendre maintenant
-    if (a.canTakeNow !== b.canTakeNow) {
-      return a.canTakeNow ? -1 : 1;
-    }
-    
-    // 2. Priorité aux médicaments à prendre bientôt
-    if (a.canTakeSoon !== b.canTakeSoon) {
-      return a.canTakeSoon ? -1 : 1;
-    }
+    const priorityDiff =
+      getIntakePriority(a) - getIntakePriority(b);
 
-    const timeA = a.schedule.schedule.hour * 60 + a.schedule.schedule.minute;
-    const timeB = b.schedule.schedule.hour * 60 + b.schedule.schedule.minute;
-    // 3. Tri par horaire
-    if (timeA !== timeB) {
-      return timeA - timeB;
-    }
-    // 4. Tri par nom (alphabétique)
-    const nameCompare = a.name.localeCompare(b.name, 'fr', {
-      sensitivity: 'base',
-    });
-    if (nameCompare !== 0) {
-      return nameCompare;
-    }
-    // 5. Tri par dosage
-    return a.dosage - b.dosage;
+    if (priorityDiff !== 0) return priorityDiff;
+
+    // même priorité → tri par heure
+    const aTime =
+      a.schedule.schedule.hour * 60 +
+      a.schedule.schedule.minute;
+
+    const bTime =
+      b.schedule.schedule.hour * 60 +
+      b.schedule.schedule.minute;
+
+    return aTime - bTime;
   });
+}
+
+function getIntakePriority(intake: DailyIntake): number {
+  return intake.canTakeNow ? 0 : (intake.canTakeSoon ? 1 : 2);
 }
 
 export default function index() {
@@ -96,9 +92,8 @@ export default function index() {
   }, [summaries]);
 
   const setupDailySummaries = async (dailySummaries: DailySummary[], pills: Pill[]) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayStr = today.toISOString().split("T")[0];
+    const today = createDateAtNoon();
+    const todayStr = toDayKey(today);
     const item = dailySummaries.find(item => item.date == todayStr);
 
     if (item == null) {
@@ -108,28 +103,27 @@ export default function index() {
           .filter(pill => {
             if (pill.treatmentDuration.endDate != null) {
               // si la date de fin est passée, ne pas ajouter considérer le médicament
-              const endDate = new Date(pill.treatmentDuration.endDate);
-              endDate.setHours(0, 0, 0, 0);
-            if (today > endDate) {
-              return false;
+              const endDate = createDateAtNoon(pill.treatmentDuration.endDate);
+              if (today > endDate) {
+                return false;
+              }
             }
-          }
           return true;
-        })
-        .map(pill => {
-          return {
-            name: pill.name,
-            dosage: pill.dosage,
-            unit: pill.unit,
-            intakeWindowMinutes: pill.intakeWindowMinutes,
-            intakes: pill.schedules.map((pillSchedule) => {
-              return {
-                schedule: pillSchedule,
-                status: IntakeStatus.PENDING,
-              } as ScheduleIntake;
-            }),
-          } as DailyPillSummary;
-        }),
+          })
+          .map(pill => {
+            return {
+              name: pill.name,
+              dosage: pill.dosage,
+              unit: pill.unit,
+              intakeWindowMinutes: pill.intakeWindowMinutes,
+              intakes: pill.schedules.map((pillSchedule) => {
+                return {
+                  schedule: pillSchedule,
+                  status: IntakeStatus.PENDING,
+                } as ScheduleIntake;
+              }),
+            } as DailyPillSummary;
+          }),
       };
       dailySummaries.push(newItem);
       await setSummaries(dailySummaries);
@@ -253,6 +247,8 @@ const updateStatus = () => {
       intake.schedule.schedule.hour,
       intake.schedule.schedule.minute
     );
+
+    setTimeout(updateStatus, 3000);
   };
 
   return (
