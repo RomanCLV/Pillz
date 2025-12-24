@@ -63,16 +63,30 @@ export default function PillCard({
     >
       {/* En-tête avec nom et dosage */}
       <View style={styles.header}>
-        <ThemedText 
-          style={[
-            styles.name, 
-            isTreatmentFinished && {
-              textDecorationLine: "line-through",
-              color: theme.text.tertiary,
-            }]}
-        >
-          {pill.name}
-        </ThemedText>
+        <View style={{ position: "relative", alignSelf: "flex-start" }}>
+          <ThemedText
+            style={[
+              styles.name,
+              isTreatmentFinished && { color: theme.text.tertiary },
+            ]}
+          >
+            {pill.name}
+          </ThemedText>
+
+          {isTreatmentFinished && (
+            <View
+              pointerEvents="none"
+              style={{
+                position: "absolute",
+                left: 0,
+                right: 0,
+                top: "45%",
+                height: 2,
+                backgroundColor: theme.text.tertiary,
+              }}
+            />
+          )}
+        </View>
         <Chip variant="highlight">{t(`pill.usage.${pill.unit}`, {n: pill.dosage}, true )}</Chip>
       </View>
       {/* Horaires de prise */}
