@@ -5,7 +5,6 @@ import WheelPicker from "@quidone/react-native-wheel-picker";
 import { FontAwesome } from "@expo/vector-icons";
 
 import { useTheme } from "@hooks/useTheme";
-import { useT } from "@i18n/useT";
 import ThemedText from "@themedComponents/ThemedText";
 import ThemedBottomSheetModal from "@themedComponents/ThemedBottomSheetModal";
 import { capitalizeFirstLetter } from "@utils/capitalizeFirstLetter";
@@ -19,6 +18,7 @@ interface ThemedPickerProps {
   items: PickerItem[];
   selectedValue: any;
   onValueChange: (value: any) => void;
+  modalTitle?: string;
   placeholder?: string;
   style?: ViewStyle;
   headerStyle?: ViewStyle;
@@ -29,13 +29,13 @@ export default function ThemedPicker({
   items,
   selectedValue,
   onValueChange,
-  placeholder,
+  modalTitle = "Sélectionner",
+  placeholder = "Sélectionner",
   style,
   headerStyle,
   contentStyle,
 }: ThemedPickerProps) {
   const theme = useTheme();
-  const t = useT();
 
   const [modalVisible, setModalVisible] = useState(false);
   const [tempValue, setTempValue] = useState(selectedValue);
@@ -61,7 +61,7 @@ export default function ThemedPicker({
             !selectedItem && { color: theme.text.tertiary },
           ]}
         >
-          {selectedItem ? (selectedItem.label.length > 2 ? capitalizeFirstLetter(selectedItem.label) : selectedItem.label) : (placeholder || t("global.select"))}
+          {selectedItem ? (selectedItem.label.length > 2 ? capitalizeFirstLetter(selectedItem.label) : selectedItem.label) : placeholder}
         </ThemedText>
         <FontAwesome name="angle-down" color={theme.text.tertiary} size={20} />
       </TouchableOpacity>
@@ -71,7 +71,7 @@ export default function ThemedPicker({
         onClose={() => setModalVisible(false)}
         height={300}
         header={{
-          title: t("global.select"),
+          title: modalTitle,
           onCancel: () => {
             setTempValue(selectedValue);
             setModalVisible(false);

@@ -12,6 +12,7 @@ import Chip from "@components/Chip";
 import InfoRow from "@components/InfoRow";
 import ThemedText from "@themedComponents/ThemedText";
 import ThemedCard from "@themedComponents/ThemedCard";
+import { createDateAtMidnight } from "@utils/dateHelper";
 
 interface PillCardProps {
   pill: Pill;
@@ -43,13 +44,11 @@ export default function PillCard({
   const isLowStock = pill.stockQuantity <= pill.reminderThreshold;
 
   // Vérifier si le traitement est limité dans le temps
-  const hasEndDate = pill.treatmentDuration.endDate !== null;
+  const hasEndDate = pill.treatmentDuration.endDate != null;
 
-  const now = new Date();
-  now.setHours(0, 0, 0, 0); // On ne compare que les dates, pas les heures
-  const isTreatmentFinished =
-    pill.treatmentDuration.endDate != null &&
-    pill.treatmentDuration.endDate < now;
+  const now = createDateAtMidnight();
+  const isTreatmentStarted = pill.treatmentDuration.startDate <= now;
+  const isTreatmentFinished = hasEndDate && pill.treatmentDuration.endDate!! < now;
 
   return (
     <ThemedCard 
@@ -67,13 +66,13 @@ export default function PillCard({
           <ThemedText
             style={[
               styles.name,
-              isTreatmentFinished && { color: theme.text.tertiary },
+              (!isTreatmentStarted || isTreatmentFinished) && { color: theme.text.tertiary },
             ]}
           >
             {pill.name}
           </ThemedText>
 
-          {isTreatmentFinished && (
+          {(!isTreatmentStarted || isTreatmentFinished) && (
             <View
               pointerEvents="none"
               style={{
@@ -107,9 +106,23 @@ export default function PillCard({
         {/* Stock */}
         {pill.stockGesture && <InfoRow label={t("pill.stock")} value={pill.stockQuantity} valueStyle={isLowStock ? {color: theme.text.error} : {}} />}
         {/* Durée minimale entre prises */}
-        <InfoRow label={t("pill.minInterval")} value={t("hours.hh", {h: pill.minHoursBetweenIntakes})} />
+        <InfoRow label={t("pill.minInterval")} value={t("hours.hh", {h: pill.minHoursBetweenIntakes})} />        
         {/* Durée du traitement */}
-        {hasEndDate && <InfoRow label={t("pill.until")} value={pill.treatmentDuration.endDate?.toLocaleDateString(userLocale)} valueStyle={isTreatmentFinished ? { color: theme.text.error } : {}} />}
+        {!isTreatmentStarted && (
+          <InfoRow
+            label={t("pill.from")}
+            value={pill.treatmentDuration.startDate?.toLocaleDateString(userLocale)}
+            valueStyle={{ color: theme.text.warning }}
+          />
+        )}
+        {hasEndDate && isTreatmentStarted && (
+          <InfoRow
+            label={t("pill.until")}
+            value={pill.treatmentDuration.endDate?.toLocaleDateString(userLocale)}
+            valueStyle={isTreatmentFinished ? { color: theme.text.warning } : {}}
+          />
+        )}
+
       </View>
     </ThemedCard>
   );

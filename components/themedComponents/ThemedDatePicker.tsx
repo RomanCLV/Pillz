@@ -6,7 +6,6 @@ import * as Localization from "expo-localization";
 
 import { useCurrentLanguage } from "@hooks/useCurrentLanguage";
 import { useTheme } from "@hooks/useTheme";
-import { useT } from "@i18n/useT";
 import { DEFAULT_LANGUAGE_TAG, LOCALE_MAP } from "@i18n/types";
 import ThemedBottomSheetModal from "@themedComponents/ThemedBottomSheetModal";
 import ThemedText from "./ThemedText";
@@ -51,6 +50,7 @@ export interface ThemedDatePickerProps {
   minDate?: Date;
   maxDate?: Date;
   placeholder?: string;
+  modalTitle?: string;
   style?: ViewStyle;
   headerStyle?: ViewStyle;
   contentStyle?: ViewStyle;
@@ -61,7 +61,8 @@ export default function ThemedDatePicker({
   onChange,
   minDate,
   maxDate,
-  placeholder,
+  placeholder = "Sélectionner une date",
+  modalTitle = "Sélectionner une date",
   style,
   headerStyle,
   contentStyle,
@@ -74,7 +75,6 @@ export default function ThemedDatePicker({
     (currentLang ? LOCALE_MAP[currentLang] : null) ?? 
     Localization.getLocales()[0]?.languageTag ?? 
     DEFAULT_LANGUAGE_TAG; // ex: "fr-FR"
-  const t = useT();
 
   const [visible, setVisible] = useState(false);
 
@@ -120,7 +120,7 @@ export default function ThemedDatePicker({
             !value && { color: theme.text.tertiary },
           ]}
         >
-          {value ? value.toLocaleDateString(userLocale) : (placeholder || t("global.selectDate"))}
+          {value ? value.toLocaleDateString(userLocale) : placeholder}
         </ThemedText>
 
         <FontAwesome name="angle-down" color={theme.text.tertiary} size={20} />
@@ -131,7 +131,7 @@ export default function ThemedDatePicker({
         onClose={() => setVisible(false)}
         height={300}
         header={{
-          title: t("global.selectDate"),
+          title: modalTitle,
           canConfirm: canConfirm,
           onCancel: closeModal,
           onConfirm: confirm,

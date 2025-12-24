@@ -41,6 +41,56 @@ const fr: LanguageSet = {
     hh2dmm: "{h}:{m}",
   },
 
+  calendar: {
+    monthNames: {
+      january: "Janvier",
+      february: "Février",
+      march: "Mars",
+      april: "Avril",
+      may: "Mai",
+      june: "Juin",
+      july: "Juillet",
+      august: "Août",
+      september: "Septembre",
+      octember: "Octobre",
+      november: "Novembre",
+      december: "Décembre",
+    },
+    monthShortNames: {
+      january: "Janv.",
+      february: "Févr.",
+      march: "Mars",
+      april: "Avr.",
+      may: "Mai",
+      june: "Juin",
+      july: "Juil.",
+      august: "Août",
+      september: "Sept.",
+      octember: "Oct.",
+      november: "Nov.",
+      december: "Déc.",
+    },
+    dayNames: {
+      sunday: "Dimanche",
+      monday: "Lundi",
+      tueday: "Mardi",
+      wednesday: "Mercredi",
+      thursday: "Jeudi",
+      friday: "Vendredi",
+      saturday: "Samedi",
+    },
+    dayShortNames: {
+      sunday: "Dim.",
+      monday: "Lun.",
+      tueday: "Mar.",
+      wednesday: "Mer.",
+      thursday: "Jeu.",
+      friday: "Ven.",
+      saturday: "Sam.",
+    },
+    today: "Aujourd'hui",
+  },
+
   home: {
     title: "Bienvenue",
     noIntakes: "Aucune prise prévue aujourd'hui",
@@ -190,6 +240,7 @@ const fr: LanguageSet = {
     stock: "Stock",
     minInterval: "Intervalle min.",
     until: "Jusqu'au",
+    from: "À partir du",
   }
 };
 

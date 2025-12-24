@@ -1,6 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Localization from "expo-localization";
+import { LocaleConfig } from "react-native-calendars";
+
+import "@i18n/calendarLocale";
 import { DEFAULT_LANGUAGE_CODE, LANGUAGE_CODES, type LanguageCode } from "@i18n/types";
 
 const STORAGE_KEY = "app-language";
@@ -31,6 +34,11 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
       setIsReady(true);
     })();
   }, []);
+
+  useEffect(() => {
+    // react-native-calendars attend une clé simple ("fr")
+    LocaleConfig.defaultLocale = language;
+  }, [language]);
 
   // --- Change language ---
   const setLanguage = async (lang: LanguageCode) => {
