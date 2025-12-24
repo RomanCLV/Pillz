@@ -69,6 +69,7 @@ export default function Select() {
         <GenericHeader
           title={selected.length === 0 ? t("itemSelection.noSelection") : t("itemSelection.nSelected", { n: selected.length }, true)}
           leftButton={<HeaderButton onPress={goBack()} icon={<CloseIcon width={24} height={24} color={theme.text.primary} />} />}
+          style={{height: 50}}
         />
         <Spacer height={24} />
 
@@ -110,6 +111,7 @@ export default function Select() {
         confirmText={t("global.delete")}
         cancelText={t("global.cancel")}
         onConfirm={confirmDelete}
+        showCancel={true}
       />
     </SafeTopAreaThemedView>
   );
