@@ -85,6 +85,8 @@ export type LanguageSet = {
     timeBetweenIntakes: string,
     treatmentDuration: string,
     treatmentDurationLimited: string,
+    treatmentFrom: string,
+    treatmentTo: string,
     stockManagement: string,
     enableStockManagement: string,
     quantityInStock: string,

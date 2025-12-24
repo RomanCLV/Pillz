@@ -71,6 +71,8 @@ const fr: LanguageSet = {
     timeBetweenIntakes: "Durée minimale entre deux prises",
     treatmentDuration: "Durée du traitement",
     treatmentDurationLimited: "Traitement à durée limitée",
+    treatmentFrom: "Du",
+    treatmentTo: "Au",
     stockManagement: "Gestion du stock",
     enableStockManagement: "Activer la gestion du stock",
     quantityInStock: "Quantité en stock",
