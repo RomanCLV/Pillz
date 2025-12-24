@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { TextInput, TextInputProps, StyleSheet } from "react-native";
 import { useTheme } from "@hooks/useTheme";
 
-interface ThemedTextInputProps extends Omit<TextInputProps, "onChangeText"> {
+interface ThemedTextInputProps extends Omit<TextInputProps, "onChange"> {
   value: string;
   onChangeText: (text: string) => void;
   type?: "text" | "number";
@@ -16,57 +16,53 @@ export default function ThemedTextInput({
   ...props
 }: ThemedTextInputProps) {
   const theme = useTheme();
-  const [localValue, setLocalValue] = useState(value);
+  const [hasError, setHasError] = useState(false);
 
-  // Gestion locale pour éviter les re-renders du parent
   const handleChangeText = (text: string) => {
-    setLocalValue(text);
-  };
-
-  // Mise à jour du parent uniquement sur blur
-  const handleBlur = () => {
+    setHasError(false);
+    
     if (type === "number") {
-      // Pour les nombres, on accepte la chaîne vide
-      if (localValue === "") {
-        onChangeText("");
-      } 
-      else {
-        const num = parseFloat(localValue);
-        if (!isNaN(num) && num >= 0) {
-          onChangeText(localValue);
-        } 
-        else {
-          // Si invalide, on restaure la valeur précédente
-          setLocalValue(value);
-        }
+      // Accepte vide, nombres entiers et décimaux en cours de saisie
+      if (text === "" || text === "." || /^\d*\.?\d*$/.test(text)) {
+        onChangeText(text);
       }
-    } 
-    else {
-      onChangeText(localValue);
+    } else {
+      onChangeText(text);
     }
   };
 
-  // Synchroniser localValue avec value (changement externe)
-  React.useEffect(() => {
-    setLocalValue(value);
-  }, [value]);
+  const handleBlur = () => {
+    if (type === "number" && value !== "") {
+      const num = parseFloat(value);
+      if (isNaN(num) || num < 0) {
+        setHasError(true);
+        // Optionnel : réinitialiser à une valeur par défaut
+        onChangeText("");
+      } 
+      else if (value.endsWith(".")) {
+        // Nettoie le point final
+        onChangeText(value.slice(0, -1));
+      }
+    }
+  };
 
   return (
     <TextInput
-      {...props}
-      value={localValue}
+      value={value}
       onChangeText={handleChangeText}
       onBlur={handleBlur}
+      keyboardType={type === "number" ? "numeric" : "default"}
       style={[
         styles.input,
         {
-          backgroundColor: theme.background.surface,
+          backgroundColor: theme.background.secondary,
+          borderColor: hasError ? theme.brand.error : theme.border.light,
           color: theme.text.primary,
-          borderColor: theme.border.light,
         },
         style,
       ]}
       placeholderTextColor={theme.text.tertiary}
+      {...props}
     />
   );
 }

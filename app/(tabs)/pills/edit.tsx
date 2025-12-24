@@ -581,11 +581,12 @@ export default function EditPillScreen() {
                     icon={({ color, size }) => <Ionicons name="cube-outline" size={size} color={color} />}
                   >
                     <ThemedTextInput
-                      value={formData.stockQuantity === 0 ? "" : formData.stockQuantity.toString()}
+                      value={formData.stockQuantity ? formData.stockQuantity.toString() : ""}
                       onChangeText={(text) => {
                         if (text === "") {
                           setFormData({ ...formData, stockQuantity: 0 });
-                        } else {
+                        } 
+                        else {
                           const num = parseInt(text);
                           if (!isNaN(num) && num >= 0) {
                             setFormData({ ...formData, stockQuantity: num });
