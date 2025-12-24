@@ -73,7 +73,7 @@ const fr: LanguageSet = {
     dayNames: {
       sunday: "Dimanche",
       monday: "Lundi",
-      tueday: "Mardi",
+      tuesday: "Mardi",
       wednesday: "Mercredi",
       thursday: "Jeudi",
       friday: "Vendredi",
@@ -82,7 +82,7 @@ const fr: LanguageSet = {
     dayShortNames: {
       sunday: "Dim.",
       monday: "Lun.",
-      tueday: "Mar.",
+      tuesday: "Mar.",
       wednesday: "Mer.",
       thursday: "Jeu.",
       friday: "Ven.",

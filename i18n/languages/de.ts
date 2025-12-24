@@ -24,57 +24,142 @@ const de: LanguageSet = {
     chooseDate: "Datum wählen",
     selectDate: "Datum auswählen",
     modifySchedule: "Zeitplan ändern",
+    deleteData: "Daten löschen",
+  },
+
+  itemSelection: {
+    noSelection: "Keine Auswahl",
+    nSelected: {
+      one: "{n} Element ausgewählt",
+      other: "{n} Elemente ausgewählt",
+    }
   },
 
   hours: {
-    hh: "{h}h",
-    hhmm: "{h}h{m}",
+    hh: "{h} Uhr",
+    hhmm: "{h}:{m}",
     hh2dmm: "{h}:{m}",
+  },
+
+  calendar: {
+    monthNames: {
+      january: "Januar",
+      february: "Februar",
+      march: "März",
+      april: "April",
+      may: "Mai",
+      june: "Juni",
+      july: "Juli",
+      august: "August",
+      september: "September",
+      octember: "Oktober",
+      november: "November",
+      december: "Dezember",
+    },
+    monthShortNames: {
+      january: "Jan.",
+      february: "Feb.",
+      march: "Mär.",
+      april: "Apr.",
+      may: "Mai",
+      june: "Jun.",
+      july: "Jul.",
+      august: "Aug.",
+      september: "Sep.",
+      octember: "Okt.",
+      november: "Nov.",
+      december: "Dez.",
+    },
+    dayNames: {
+      sunday: "Sonntag",
+      monday: "Montag",
+      tuesday: "Dienstag",
+      wednesday: "Mittwoch",
+      thursday: "Donnerstag",
+      friday: "Freitag",
+      saturday: "Samstag",
+    },
+    dayShortNames: {
+      sunday: "So.",
+      monday: "Mo.",
+      tuesday: "Di.",
+      wednesday: "Mi.",
+      thursday: "Do.",
+      friday: "Fr.",
+      saturday: "Sa.",
+    },
+    today: "Heute",
   },
 
   home: {
     title: "Willkommen",
+    noIntakes: "Keine Einnahme heute geplant",
+    intake : {
+      taken: "Eingenommen",
+      skipped: "Vergessen",
+      take: "Einzunehmen",
+      takeSoon: "Bald",
+    },
   },
 
   pills: {
     title: "Meine Medikamente",
-    noPills: "Keine Medikamente erfasst",
+    noPills: "Kein Medikament registriert",
     addPill: "Medikament hinzufügen",
+    modificationsWillApply: "Änderungen an Medikamenten werden ab morgen wirksam.",
   },
 
   pills_edit: {
     titleNew: "Neues Medikament",
     titleEdit: "Medikament bearbeiten",
     pillName: "Medikamentenname",
-    pillNameExample: "Bsp: Ibuprofen",
+    pillNameExample: "Z.B.: Aspirin",
     dosage: "Dosierung",
     unity: "Einheit",
-    schedules: "Einnahmezeiten",
-    intakeWindow: "Zeitfenster für die Medikamenteneinnahme",
+    schedules: "Einnahmezeitpunkte",
+    intakeWindow: "Zeit zur Einnahme des Medikaments",
     timeBetweenIntakes: "Mindestzeit zwischen Einnahmen",
     treatmentDuration: "Behandlungsdauer",
     treatmentDurationLimited: "Behandlung mit begrenzter Dauer",
+    treatmentFrom: "Von",
+    treatmentTo: "Bis",
     stockManagement: "Bestandsverwaltung",
     enableStockManagement: "Bestandsverwaltung aktivieren",
     quantityInStock: "Menge auf Lager",
-    alertThreshold: "Warnschwelle",
+    alertThreshold: "Alarmschwelle",
     deletePill: "Dieses Medikament löschen",
     deletePillConfirmation: 'Sind Sie sicher, dass Sie "{name}" löschen möchten? Diese Aktion ist unwiderruflich.',
     pleaseInputName: "Bitte geben Sie einen Medikamentennamen ein.",
-    pleaseAddSchudule: "Bitte fügen Sie mindestens eine Einnahmezeit hinzu.",
-    invalidSchedules: "Die Zeitpläne entsprechen nicht dem Mindestintervall von {h}h.",
+    pleaseAddSchudule: "Bitte fügen Sie mindestens einen Einnahmezeitpunkt hinzu.",
+    invalidSchedules: "Die Zeitpunkte entsprechen nicht dem Mindestintervall von {h}h.",
     pillAlreadyExists: "Ein Medikament mit diesem Namen existiert bereits.",
-    scheduleAlreadyExists: "Dieser Zeitplan existiert bereits.",
+    scheduleAlreadyExists: "Dieser Zeitpunkt existiert bereits.",
     pillUpdatedSuccess: "Medikament erfolgreich aktualisiert.",
     pillCreatedSuccess: "Medikament erfolgreich hinzugefügt.",
-    cantDeletePillInCreation: "Sie können ein Medikament, das gerade erstellt wird, nicht löschen.",
+    cantDeletePillInCreation: "Sie können ein Medikament in Erstellung nicht löschen.",
     errorWhileSaving: "Beim Speichern ist ein Fehler aufgetreten.",
     errorWhileDeleting: "Beim Löschen ist ein Fehler aufgetreten.",
-    canNotAddSchedule: "Neuer Zeitplan kann nicht hinzugefügt werden. Das Mindestintervall von {h}h wird nicht eingehalten.",
+    canNotAddSchedule: "Neuer Zeitpunkt kann nicht hinzugefügt werden. Das Mindestintervall von {h}h wird nicht eingehalten.",
+  },
+
+  pills_select: {
+    deleteTitle: {
+      one: "Dieses Medikament löschen",
+      other: "Diese Medikamente löschen",
+    },
+    deleteConfirm: {
+      one: "Sind Sie sicher, dass Sie dieses Medikament löschen möchten? Diese Aktion ist unwiderruflich.",
+      other: "Sind Sie sicher, dass Sie diese {n} Medikamente löschen möchten? Diese Aktion ist unwiderruflich.",
+    },
   },
 
   history: {
     title: "Verfolgung",
+    taken: "Eingenommen",
+    skipped: "Vergessen",
+    pending: "Ausstehend",
+    noPills: "Kein Medikament an diesem Tag",
+    noHistory: "Kein Verlauf verfügbar",
   },
 
   settings: {
@@ -86,9 +171,14 @@ const de: LanguageSet = {
     },
 
     preferences: {
-      title: "Präferenzen",
-      theme: "Design",
+      title: "Einstellungen",
+      theme: "Thema",
       language: "Sprache",
+    },
+
+    data: {
+      title: "Daten",
+      history: "Verlauf",
     },
 
     help: {
@@ -100,18 +190,18 @@ const de: LanguageSet = {
   },
 
   settings_theme: {
-    title: "Design wählen",
+    title: "Thema wählen",
     system: "System",
     light: "Hell",
     dark: "Dunkel",
-    systemDescription: "Passt sich automatisch an das Systemdesign an.",
-    lightDescription: "Die App wird immer das helle Design verwenden.",
-    darkDescription: "Die App wird immer das dunkle Design verwenden.",
+    systemDescription: "Passt sich automatisch dem Systemthema an.",
+    lightDescription: "Die App verwendet immer das helle Thema.",
+    darkDescription: "Die App verwendet immer das dunkle Thema.",
   },
 
   settings_language: {
     title: "Sprache wählen",
-    description: "Die ausgewählte Sprache wird auf die gesamte Anwendung angewendet.",
+    description: "Die gewählte Sprache wird in der gesamten App angewendet.",
     fr: "Französisch",
     en: "Englisch",
     es: "Spanisch",
@@ -119,8 +209,14 @@ const de: LanguageSet = {
     it: "Italienisch",
   },
 
+  settings_history: {
+    deleteData: "Löschen",
+    deleteDataText: "Verlaufsdaten löschen.",
+    deleteDataModal: "Sind Sie sicher, dass Sie die Verlaufsdaten löschen möchten? Achtung, diese Aktion ist unwiderruflich.",
+  },
+
   pill: {
-    // Einheiten
+    // Units
     unit: {
       mg: "mg",
       ml: "ml",
@@ -129,7 +225,7 @@ const de: LanguageSet = {
       pill: "Tablette",
       sachet: "Beutel",
     },
-    // Verwendung
+    // Usage
     usage: {
       mg: { one: "{n} mg", other: "{n} mg" },
       ml: { one: "{n} ml", other: "{n} ml" },
@@ -139,11 +235,12 @@ const de: LanguageSet = {
       sachet: { one: "{n} Beutel", other: "{n} Beutel" },
     },
     
-    // Beschriftungen
-    schedules: "Einnahmezeiten",
+    // Labels
+    schedules: "Einnahmezeitpunkte",
     stock: "Bestand",
     minInterval: "Min. Intervall",
     until: "Bis zum",
+    from: "Ab dem",
   }
 };
 

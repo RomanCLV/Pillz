@@ -39,7 +39,7 @@ Object.entries(translations).forEach(([lang, languageSet]) => {
     dayNames: [
       cal.dayNames.sunday,
       cal.dayNames.monday,
-      cal.dayNames.tueday,
+      cal.dayNames.tuesday,
       cal.dayNames.wednesday,
       cal.dayNames.thursday,
       cal.dayNames.friday,
@@ -48,7 +48,7 @@ Object.entries(translations).forEach(([lang, languageSet]) => {
     dayNamesShort: [
       cal.dayShortNames.sunday,
       cal.dayShortNames.monday,
-      cal.dayShortNames.tueday,
+      cal.dayShortNames.tuesday,
       cal.dayShortNames.wednesday,
       cal.dayShortNames.thursday,
       cal.dayShortNames.friday,

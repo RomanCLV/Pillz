@@ -1,24 +1,24 @@
-//export const LANGUAGE_CODES = ["fr", "en", "es", "de", "it"] as const;
-export const LANGUAGE_CODES = ["fr"] as const;
+export const LANGUAGE_CODES = ["fr", "en", "es", "de", "it"] as const;
+//export const LANGUAGE_CODES = ["fr"] as const;
 export type LanguageCode = typeof LANGUAGE_CODES[number];
 
-export const DEFAULT_LANGUAGE_CODE = "fr";
-export const DEFAULT_LANGUAGE_TAG = "fr-FR";
+export const DEFAULT_LANGUAGE_CODE = "en";
+export const DEFAULT_LANGUAGE_TAG = "en-EN";
 
 export const LANGUAGE_FLAGS: Record<LanguageCode, string> = {
   fr: "🇫🇷",
-  //en: "🇬🇧",
-  //es: "🇪🇸",
-  //de: "🇩🇪",
-  //it: "🇮🇹",
+  en: "🇬🇧",
+  es: "🇪🇸",
+  de: "🇩🇪",
+  it: "🇮🇹",
 } as const;
 
 export const LOCALE_MAP: Record<LanguageCode, string> = {
   fr: "fr-FR",
-  //en: "en-US",
-  //es: "es-ES",
-  //de: "de-DE",
-  //it: "it-IT",
+  en: "en-US",
+  es: "es-ES",
+  de: "de-DE",
+  it: "it-IT",
 } as const;
 
 export type LanguageSet = {
@@ -89,7 +89,7 @@ export type LanguageSet = {
     dayNames: {
       sunday: string,
       monday: string,
-      tueday: string,
+      tuesday: string,
       wednesday: string,
       thursday: string,
       friday: string,
@@ -98,7 +98,7 @@ export type LanguageSet = {
     dayShortNames: {
       sunday: string,
       monday: string,
-      tueday: string,
+      tuesday: string,
       wednesday: string,
       thursday: string,
       friday: string,

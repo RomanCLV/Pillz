@@ -24,6 +24,15 @@ const en: LanguageSet = {
     chooseDate: "Choose a date",
     selectDate: "Select a date",
     modifySchedule: "Modify schedule",
+    deleteData: "Delete data",
+  },
+
+  itemSelection: {
+    noSelection: "No selection",
+    nSelected: {
+      one: "{n} item selected",
+      other: "{n} items selected",
+    }
   },
 
   hours: {
@@ -32,29 +41,89 @@ const en: LanguageSet = {
     hh2dmm: "{h}:{m}",
   },
 
+  calendar: {
+    monthNames: {
+      january: "January",
+      february: "February",
+      march: "March",
+      april: "April",
+      may: "May",
+      june: "June",
+      july: "July",
+      august: "August",
+      september: "September",
+      octember: "October",
+      november: "November",
+      december: "December",
+    },
+    monthShortNames: {
+      january: "Jan.",
+      february: "Feb.",
+      march: "Mar.",
+      april: "Apr.",
+      may: "May",
+      june: "Jun.",
+      july: "Jul.",
+      august: "Aug.",
+      september: "Sep.",
+      octember: "Oct.",
+      november: "Nov.",
+      december: "Dec.",
+    },
+    dayNames: {
+      sunday: "Sunday",
+      monday: "Monday",
+      tuesday: "Tuesday",
+      wednesday: "Wednesday",
+      thursday: "Thursday",
+      friday: "Friday",
+      saturday: "Saturday",
+    },
+    dayShortNames: {
+      sunday: "Sun.",
+      monday: "Mon.",
+      tuesday: "Tue.",
+      wednesday: "Wed.",
+      thursday: "Thu.",
+      friday: "Fri.",
+      saturday: "Sat.",
+    },
+    today: "Today",
+  },
+
   home: {
     title: "Welcome",
+    noIntakes: "No intake scheduled today",
+    intake : {
+      taken: "Taken",
+      skipped: "Skipped",
+      take: "To take",
+      takeSoon: "Soon",
+    },
   },
 
   pills: {
-    title: "My Medications",
-    noPills: "No medications recorded",
+    title: "My medications",
+    noPills: "No medication registered",
     addPill: "Add a medication",
+    modificationsWillApply: "Changes to medications will take effect tomorrow.",
   },
 
   pills_edit: {
-    titleNew: "New Medication",
-    titleEdit: "Edit Medication",
-    pillName: "Medication Name",
-    pillNameExample: "Ex: Tylenol",
+    titleNew: "New medication",
+    titleEdit: "Edit medication",
+    pillName: "Medication name",
+    pillNameExample: "E.g.: Aspirin",
     dosage: "Dosage",
     unity: "Unit",
-    schedules: "Intake Schedule",
-    intakeWindow: "Time window to take the medication",
-    timeBetweenIntakes: "Minimum time between doses",
-    treatmentDuration: "Treatment Duration",
+    schedules: "Intake schedules",
+    intakeWindow: "Time to take the medication",
+    timeBetweenIntakes: "Minimum time between intakes",
+    treatmentDuration: "Treatment duration",
     treatmentDurationLimited: "Limited duration treatment",
-    stockManagement: "Stock Management",
+    treatmentFrom: "From",
+    treatmentTo: "To",
+    stockManagement: "Stock management",
     enableStockManagement: "Enable stock management",
     quantityInStock: "Quantity in stock",
     alertThreshold: "Alert threshold",
@@ -70,11 +139,27 @@ const en: LanguageSet = {
     cantDeletePillInCreation: "You cannot delete a medication being created.",
     errorWhileSaving: "An error occurred while saving.",
     errorWhileDeleting: "An error occurred while deleting.",
-    canNotAddSchedule: "Cannot add a new schedule. The minimum interval of {h}h is not respected.",
+    canNotAddSchedule: "Unable to add a new schedule. The minimum interval of {h}h is not respected.",
+  },
+
+  pills_select: {
+    deleteTitle: {
+      one: "Delete this medication",
+      other: "Delete these medications",
+    },
+    deleteConfirm: {
+      one: "Are you sure you want to delete this medication? This action is irreversible.",
+      other: "Are you sure you want to delete these {n} medications? This action is irreversible.",
+    },
   },
 
   history: {
     title: "Tracking",
+    taken: "Taken",
+    skipped: "Skipped",
+    pending: "Pending",
+    noPills: "No medication on that day",
+    noHistory: "No history available",
   },
 
   settings: {
@@ -91,16 +176,21 @@ const en: LanguageSet = {
       language: "Language",
     },
 
+    data: {
+      title: "Data",
+      history: "History",
+    },
+
     help: {
       title: "Help & Support",
-      contactUs: "Contact Us",
+      contactUs: "Contact us",
     },
 
     version: "Version {version}",
   },
 
   settings_theme: {
-    title: "Choose Theme",
+    title: "Choose theme",
     system: "System",
     light: "Light",
     dark: "Dark",
@@ -110,13 +200,19 @@ const en: LanguageSet = {
   },
 
   settings_language: {
-    title: "Choose Language",
-    description: "The selected language will be applied to the entire application.",
+    title: "Choose language",
+    description: "The selected language will be applied throughout the app.",
     fr: "French",
     en: "English",
     es: "Spanish",
     de: "German",
     it: "Italian",
+  },
+
+  settings_history: {
+    deleteData: "Delete",
+    deleteDataText: "Delete history data.",
+    deleteDataModal: "Are you sure you want to delete history data? Warning, this action is irreversible.",
   },
 
   pill: {
@@ -140,10 +236,11 @@ const en: LanguageSet = {
     },
     
     // Labels
-    schedules: "Intake Schedule",
+    schedules: "Intake schedules",
     stock: "Stock",
     minInterval: "Min. interval",
     until: "Until",
+    from: "From",
   }
 };
 
