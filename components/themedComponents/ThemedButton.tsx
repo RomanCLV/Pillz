@@ -35,6 +35,10 @@ type ThemedButtonProps = Omit<PressableProps, "children" | "style"> & {
 
   containerStyle?: StyleProp<ViewStyle>; // layout (flex, margin, width)
   buttonStyle?: StyleProp<ViewStyle>;    // visuel (background, border)
+  textStyle?: StyleProp<TextStyle>;
+
+  numberOfLines?: number;
+  ellipsizeMode?: 'head' | 'middle' | 'tail' | 'clip' | undefined;
 };
 
 const ThemedButton: React.FC<ThemedButtonProps> = ({
@@ -45,12 +49,15 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
   disabled = false,
   containerStyle,
   buttonStyle,
+  textStyle,
   icon,
   children,
   animateScale = true,
   animateOpacity = true,
   pressedScale = 0.97,
   pressedOpacity = 0.85,
+  numberOfLines,
+  ellipsizeMode,
   ...props
 }) => {
   const theme = useTheme();
@@ -289,7 +296,15 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
           ) : (
             <>
               {icon}
-              <Text style={[variantStyles.text, sizeStyles.text]}>
+              <Text
+                style={[
+                  variantStyles.text,
+                  sizeStyles.text,
+                  textStyle,
+                ]}
+                numberOfLines={numberOfLines}
+                ellipsizeMode={ellipsizeMode}
+              >
                 {children}
               </Text>
             </>
@@ -314,7 +329,7 @@ const styles = StyleSheet.create({
   },
   disabledGhost: {
     backgroundColor: "transparent"
-  }
+  },
 });
 
 export default ThemedButton;

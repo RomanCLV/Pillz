@@ -77,7 +77,6 @@ export default function ThemedModal({
               <ThemedButton
                 variant="ghost"
                 onPress={onClose}
-                containerStyle={[styles.button, { backgroundColor: theme.background.secondary }]}
               >
                 {cancelText || t("global.cancel")}
               </ThemedButton>
@@ -85,7 +84,6 @@ export default function ThemedModal({
             <ThemedButton
               variant={getButtonVariant()}
               onPress={handleConfirm}
-              containerStyle={styles.button}
             >
               {confirmText || t("global.ok")}
             </ThemedButton>
@@ -127,10 +125,8 @@ const styles = StyleSheet.create({
   },
   buttons: {
     flexDirection: "row",
+    justifyContent: "center",
     gap: 12,
     marginTop: 8,
-  },
-  button: {
-    flex: 1,
   },
 });
