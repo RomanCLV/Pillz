@@ -102,6 +102,13 @@ const es: LanguageSet = {
     },
   },
 
+  notifications: {
+    timeToTake: "💊 Hora de tomar",
+    pillDetails: "{{name}} - {{dosage}}{{unit}}",
+    reminder: "⏰ Recordatorio",
+    pillIn15Minutes: "{{name}} en 15 minutos",
+  },
+
   pills: {
     title: "Mis medicamentos",
     noPills: "Ningún medicamento registrado",

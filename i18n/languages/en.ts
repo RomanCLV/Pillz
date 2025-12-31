@@ -91,6 +91,13 @@ const en: LanguageSet = {
     today: "Today",
   },
 
+  notifications: {
+    timeToTake: "💊 Time to take",
+    pillDetails: "{{name}} - {{dosage}}{{unit}}",
+    reminder: "⏰ Reminder",
+    pillIn15Minutes: "{{name}} in 15 minutes",
+  },
+
   home: {
     title: "Welcome",
     noIntakes: "No intake scheduled today",

@@ -105,7 +105,13 @@ export type LanguageSet = {
       saturday: string,
     },
     today: string,
-  }
+  },
+  notifications: {
+    timeToTake: string,
+    pillDetails: string,
+    reminder: string,
+    pillIn15Minutes: string,
+  },
   home: {
     title: string,
     noIntakes: string,
