@@ -15,6 +15,7 @@ import CloseIcon from "@icons/close.svg";
 import ScheduleChip from "@components/pills/ScheduleChip";
 import Spacer from "@components/Spacer";
 import { PillSchedule } from "types/pill";
+import DualScheduleChip from "@components/DualScheduleChip";
 
 interface DailyIntakeCardProps {
   intake: DailyIntake;
@@ -40,6 +41,11 @@ export default function DailyIntakeCard({ intake, onTake }: DailyIntakeCardProps
   const isPending = intake.schedule.status === IntakeStatus.PENDING;
   const isTaken = intake.schedule.status === IntakeStatus.TAKEN;
   const isSkipped = intake.schedule.status === IntakeStatus.SKIPPED;
+
+  // Déterminer les horaires à afficher
+  const theoreticalSchedule = intake.schedule.schedule;
+  const actualSchedule = getPillSchedule(intake.schedule);
+  const hasDifferentSchedules = isTaken && intake.schedule.takenAt;
 
   // Afficher le chip de statut ou le bouton
   const getButtonOrChip = () => {
@@ -103,7 +109,22 @@ export default function DailyIntakeCard({ intake, onTake }: DailyIntakeCardProps
       {/* En-tête avec nom et dosage */}
       <View style={styles.row}>
         <ThemedText style={styles.name}>{intake.name}</ThemedText>
-        <ScheduleChip schedule={getPillSchedule(intake.schedule)} variant="primary" intensity="light" />
+        
+        {hasDifferentSchedules ? (
+          <DualScheduleChip
+            schedules={[theoreticalSchedule, actualSchedule]}
+            activeIndex={1} // Affiche l'horaire réel par défaut
+            variant="primary"
+            intensity="light"
+          />
+        ) : (
+          <ScheduleChip 
+            schedule={actualSchedule} 
+            variant="primary" 
+            intensity="light" 
+          />
+        )}
+
       </View>
       <Spacer height={12} />
       <View style={styles.row}>
