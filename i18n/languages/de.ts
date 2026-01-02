@@ -106,7 +106,7 @@ const de: LanguageSet = {
     title: "Einnahme von Medikamenten",
     timeToTake: "💊 Aufnahmezeitpunkt",
     reminder: "⏰ Erinnerung",
-    pillIn15Minutes: "{{name}} in 15 Minuten",
+    pillIn15Minutes: "{name} in 15 Minuten.",
     pillSoonExpired: "⏰ Nur noch 30 Minuten, bis Sie Ihr {name} einnehmen müssen.",
   },
 

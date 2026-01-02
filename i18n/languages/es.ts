@@ -106,7 +106,7 @@ const es: LanguageSet = {
     title: "Toma de medicamentos",
     timeToTake: "💊 Hora de tomar",
     reminder: "⏰ Recordatorio",
-    pillIn15Minutes: "{{name}} en 15 minutos",
+    pillIn15Minutes: "{name} en 15 minutos.",
     pillSoonExpired: "⏰ Solo quedan 30 minutos para tomar su {name}.",
   },
 

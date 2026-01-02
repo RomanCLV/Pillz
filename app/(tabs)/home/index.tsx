@@ -72,6 +72,8 @@ export default function index() {
       const { intakes, skippedIntakes } = setupIntakesItems(todaySummary.pills);
       
       skippedIntakes.forEach(({ pillIndex, intakeIndex }) => {
+        console.log("mark as skipped:", todaySummary.pills[pillIndex].name, " - ", todaySummary.pills[pillIndex].intakes[intakeIndex].schedule.hour);
+        
         markIntakeAsSkipped(
           todaySummary.date,
           todaySummary.pills[pillIndex].name,
@@ -95,14 +97,18 @@ export default function index() {
         clearTimeout(updateTimeoutRef.current);
       }
     };
-  }, [summaries]);
+  }, [summaries, pills]);
 
   const setupDailySummaries = async (dailySummaries: DailySummary[], pills: Pill[]) => {
     const today = createDateAtNoon();
     const todayStr = toDayKey(today);
     const item = dailySummaries.find(item => item.date == todayStr);
 
-    if (item == null) {
+    dailySummaries.forEach(ds => { console.log(ds.date,  "pills:", ds.pills.length); });
+
+    if (item == null || item.pills.length === 0) {
+      console.log("new");
+      
       const newItem: DailySummary = {
         date: todayStr,
         pills: pills
@@ -131,7 +137,13 @@ export default function index() {
             } as DailyPillSummary;
           }),
       };
-      dailySummaries.push(newItem);
+      if (item) {
+        const index = dailySummaries.indexOf(item);
+        dailySummaries[index] = newItem;
+      }
+      else
+        dailySummaries.push(newItem);
+
       await setSummaries(dailySummaries);
     }
   };
@@ -146,6 +158,7 @@ export default function index() {
     now.setSeconds(0, 0);
 
     dailyPillSummaries.forEach((dailyPillSummary, pillIndex) => {
+
       dailyPillSummary.intakes.forEach((scheduleIntake, intakeIndex) => {
         const scheduleTime = new Date();
         scheduleTime.setHours(
@@ -169,6 +182,7 @@ export default function index() {
         const shouldBeSkipped = isWindowPassed && scheduleIntake.status === IntakeStatus.PENDING;
 
         if (shouldBeSkipped) {
+          console.log("should be skipped:", intakeIndex);
           skippedIntakes.push({ pillIndex, intakeIndex });
         }
 

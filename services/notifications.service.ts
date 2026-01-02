@@ -78,6 +78,7 @@ export async function scheduleTestNotifications() {
 }
 
 export async function cancelAllNotifications() {
+  console.log("cancel All Notifications");
   await Notifications.cancelAllScheduledNotificationsAsync();
 }
 
@@ -91,6 +92,9 @@ function scheduleIfFuture(date: Date, content: Notifications.NotificationContent
     channelId: NOTIFICATIONS_CHANNEL,
   };
 
+  console.log("notifications planned:");
+  console.log(content);
+  
   return Notifications.scheduleNotificationAsync({
     content,
     trigger: trig,
@@ -105,7 +109,8 @@ export async function scheduleDailyNotifications(
 
   for (const pill of pills) {
     for (const intake of pill.intakes) {
-      if (intake.status !== IntakeStatus.PENDING) continue;
+      if (intake.status !== IntakeStatus.PENDING) 
+        continue;
 
       const base = new Date();
       base.setHours(
@@ -124,7 +129,7 @@ export async function scheduleDailyNotifications(
       // heure H
       scheduleIfFuture(base, {
         title: translate(language, "notifications.timeToTake"),
-        body: pill.name + " - " + translate(language, "pills.usage." + pill.unit, { n: pill.dosage.toString() }),
+        body: pill.name + " - " + translate(language, "pill.usage." + pill.unit, { n: pill.dosage.toString() }, true),
       });
 
       // fin de fenêtre

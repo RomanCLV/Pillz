@@ -134,6 +134,10 @@ export default function SwipeTabs(props: Props) {
 
   // Créer l'interpolation de couleur
   const interpolateColor = () => {
+    if (screens.length === 1) {
+      return getIndicatorColor(0);
+    }
+
     const inputRange: number[] = [];
     const outputRange: string[] = [];
 
