@@ -102,6 +102,14 @@ const de: LanguageSet = {
     },
   },
 
+  notifications: {
+    title: "Einnahme von Medikamenten",
+    timeToTake: "💊 Aufnahmezeitpunkt",
+    reminder: "⏰ Erinnerung",
+    pillIn15Minutes: "{{name}} in 15 Minuten",
+    pillSoonExpired: "⏰ Nur noch 30 Minuten, bis Sie Ihr {name} einnehmen müssen.",
+  },
+
   pills: {
     title: "Meine Medikamente",
     noPills: "Kein Medikament registriert",

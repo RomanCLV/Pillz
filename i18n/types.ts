@@ -107,10 +107,11 @@ export type LanguageSet = {
     today: string,
   },
   notifications: {
+    title: string,
     timeToTake: string,
-    pillDetails: string,
     reminder: string,
     pillIn15Minutes: string,
+    pillSoonExpired: string,
   },
   home: {
     title: string,

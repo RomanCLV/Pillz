@@ -92,10 +92,11 @@ const en: LanguageSet = {
   },
 
   notifications: {
+    title: "Taking medication",
     timeToTake: "💊 Time to take",
-    pillDetails: "{{name}} - {{dosage}}{{unit}}",
     reminder: "⏰ Reminder",
     pillIn15Minutes: "{{name}} in 15 minutes",
+    pillSoonExpired: "⏰ ",
   },
 
   home: {

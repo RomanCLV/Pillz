@@ -103,10 +103,11 @@ const es: LanguageSet = {
   },
 
   notifications: {
+    title: "Toma de medicamentos",
     timeToTake: "💊 Hora de tomar",
-    pillDetails: "{{name}} - {{dosage}}{{unit}}",
     reminder: "⏰ Recordatorio",
     pillIn15Minutes: "{{name}} en 15 minutos",
+    pillSoonExpired: "⏰ Solo quedan 30 minutos para tomar su {name}.",
   },
 
   pills: {

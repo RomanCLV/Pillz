@@ -18,6 +18,7 @@ import DailyIntakeCard from "@components/home/DailyIntakeCard";
 import {toDayKey, createDateAtNoon} from "utils/dateHelper"
 import { useCurrentLanguage } from "@hooks/useCurrentLanguage";
 import { DEFAULT_LANGUAGE_TAG, LOCALE_MAP } from "@i18n/types";
+import { scheduleDailyNotifications } from "services/notifications.service";
 
 interface IntakeReference {
   pillIndex: number;
@@ -83,6 +84,8 @@ export default function index() {
 
       const msSecsBeforeNextMinute = 60000 - (new Date().getSeconds() * 1000 + new Date().getMilliseconds());
       updateTimeoutRef.current = setTimeout(updateStatus, msSecsBeforeNextMinute);
+
+      await scheduleDailyNotifications(todaySummary.pills, currentLang);
     }
     
     setup();
@@ -237,20 +240,22 @@ const updateStatus = () => {
     return true;
   };
 
-  const handleTakeIntake = (intake: DailyIntake) => {
+  const handleTakeIntake = async (intake: DailyIntake) => {
     const todaySummary = summaries[summaries.length - 1];
 
     const pill = pills.find(p => p.name === intake.name && p.dosage === intake.dosage && p.unit === intake.unit);
     if (pill && pill.stockGesture) {
-      decrementStock(pills.indexOf(pill), 1);
+      await decrementStock(pills.indexOf(pill), 1);
     }
 
-    markIntakeAsTaken(
+    await markIntakeAsTaken(
       todaySummary.date,
       intake.name,
       intake.schedule.schedule.hour,
       intake.schedule.schedule.minute
     );
+
+    await scheduleDailyNotifications(todaySummary.pills, currentLang);
   };
 
   return (

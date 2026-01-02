@@ -92,10 +92,11 @@ const fr: LanguageSet = {
   },
 
   notifications: {
+    title: "Prises de médicaments",
     timeToTake: "💊 Heure de prise",
-    pillDetails: "{{name}} - {{dosage}}{{unit}}",
     reminder: "⏰ Rappel",
     pillIn15Minutes: "{{name}} dans 15 minutes",
+    pillSoonExpired: "⏰ Plus que 30 minutes pour prendre votre ${name}.",
   },
 
   home: {

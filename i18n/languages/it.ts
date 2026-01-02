@@ -92,10 +92,11 @@ const it: LanguageSet = {
   },
 
   notifications: {
+    title: "Assunzione di farmaci",
     timeToTake: "💊 Ora di assumere",
-    pillDetails: "{{name}} - {{dosage}}{{unit}}",
     reminder: "⏰ Promemoria",
-    pillIn15Minutes: "{{name}} tra 15 minuti",
+    pillIn15Minutes: "{name} tra 15 minuti",
+    pillSoonExpired: "⏰ Hai solo 30 minuti per prendere il {name}.",
   },
 
   home: {

@@ -4,17 +4,25 @@ import { StyleSheet, View } from "react-native";
 
 import { useLanguage } from "@context/LanguageContext";
 import { useT } from "@i18n/useT";
-import { LANGUAGE_CODES, LANGUAGE_FLAGS } from "@i18n/types";
+import { LANGUAGE_CODES, LANGUAGE_FLAGS, LanguageCode } from "@i18n/types";
 import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
 import ThemedText from "@themedComponents/ThemedText";
 import SelectionList from "@components/settings/SelectionList";
 import BackHeader from "@components/headers/BackHeader";
 import Spacer from "@components/Spacer";
 import ThemedView from "@components/themedComponents/ThemedView";
+import { scheduleDailyNotifications } from "services/notifications.service";
+import { useSummaries } from "@hooks/useSummaries";
+import { createDateAtNoon, toDayKey } from "@utils/dateHelper";
 
 export default function LanguageSettingsScreen() {
   const {language, setLanguage} = useLanguage();
+  const {summaries} = useSummaries();
   const t = useT();
+
+  const today = createDateAtNoon();
+  const todayStr = toDayKey(today);
+  const todaySummary = summaries.find(item => item.date == todayStr);
 
   const languagesOptions = LANGUAGE_CODES.map((langCode) => ({
     value: langCode,
@@ -26,6 +34,12 @@ export default function LanguageSettingsScreen() {
     ),
   }));
 
+  const _handleOnSelect = async (lang: LanguageCode) => {
+    setLanguage(lang);
+    if (todaySummary)
+      scheduleDailyNotifications(todaySummary.pills, lang);
+  }
+
   return (
     <SafeTopAreaThemedView style={{ flex: 1 }}>
       <ThemedView style={styles.container}>
@@ -35,7 +49,7 @@ export default function LanguageSettingsScreen() {
         <SelectionList
           options={languagesOptions}
           selectedValue={language}
-          onSelect={setLanguage}
+          onSelect={_handleOnSelect}
           showSelectedIcon={false}
         />
 
