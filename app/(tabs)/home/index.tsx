@@ -5,20 +5,21 @@ import * as Localization from "expo-localization";
 import { usePills } from "@hooks/usePills";
 import { useSummaries } from "@hooks/useSummaries";
 import { useTheme } from "@hooks/useTheme";
+import { useCurrentLanguage } from "@hooks/useCurrentLanguage";
 import { useT } from "@i18n/useT";
-import { GlobalStyles } from "@constants/global-styles";
+import { DEFAULT_LANGUAGE_TAG, LOCALE_MAP } from "@i18n/types";
 import { DailyPillSummary, DailySummary, IntakeStatus, ScheduleIntake } from "types/dailySummary";
 import { Pill } from "types/pill";
 import { DailyIntake } from "types/dailyIntake";
+import { scheduleDailyNotifications } from "services/notifications.service";
 import { useData } from "@context/DataContext";
 import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
 import ThemedText from "@themedComponents/ThemedText";
 import DailyIntakeCard from "@components/home/DailyIntakeCard";
 
 import {toDayKey, createDateAtNoon} from "utils/dateHelper"
-import { useCurrentLanguage } from "@hooks/useCurrentLanguage";
-import { DEFAULT_LANGUAGE_TAG, LOCALE_MAP } from "@i18n/types";
-import { scheduleDailyNotifications } from "services/notifications.service";
+
+import NoIntakesIcon from "@icons/no-intakes.svg"
 
 interface IntakeReference {
   pillIndex: number;
@@ -177,7 +178,6 @@ export default function index() {
         const shouldBeSkipped = isWindowPassed && scheduleIntake.status === IntakeStatus.PENDING;
 
         if (shouldBeSkipped) {
-          console.log("should be skipped:", intakeIndex);
           skippedIntakes.push({ pillIndex, intakeIndex });
         }
 
@@ -268,10 +268,10 @@ const updateStatus = () => {
   };
 
   return (
-    <SafeTopAreaThemedView style={GlobalStyles.container}>
+    <SafeTopAreaThemedView style={styles.container}>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={styles.contentContainer}
+        contentContainerStyle={[styles.contentContainer, dailyIntakes.length === 0 && { flex: 1 }]}
         showsVerticalScrollIndicator={false}
       >
         {/* En-tête */}
@@ -290,6 +290,7 @@ const updateStatus = () => {
         {/* Liste des prises */}
         {dailyIntakes.length === 0 ? (
           <View style={styles.emptyState}>
+            <NoIntakesIcon width={128} height={128} color={theme.text.tertiary} opacity={0.5} />
             <ThemedText style={[styles.emptyText, { color: theme.text.tertiary }]}>
               {t("home.noIntakes")}
             </ThemedText>
@@ -311,10 +312,16 @@ const updateStatus = () => {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "stretch",
+  },
   scrollView: {
     flex: 1,
   },
   contentContainer: {
+    // flex: 1, // Empeche la scrollview de scroller
     padding: 16,
   },
   header: {

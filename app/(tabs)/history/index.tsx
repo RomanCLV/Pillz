@@ -7,12 +7,13 @@ import { useSummaries } from "@hooks/useSummaries";
 import { useT } from "@i18n/useT";
 import { DEFAULT_LANGUAGE_TAG, LOCALE_MAP } from "@i18n/types";
 import { useTheme } from "@hooks/useTheme";
-import { GlobalStyles } from "@constants/global-styles";
+import { DailySummary } from "types/dailySummary";
 import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
 import ThemedText from "@themedComponents/ThemedText";
 import SwipeTabs, { SwipeTabItem } from "@components/SwipeTabs";
 import HistoryDayCard from "@components/history/HistoryDayCard";
-import { DailySummary } from "types/dailySummary";
+
+import NoIntakesIcon from "@icons/no-intakes.svg"
 
 export default function index() {
   const t = useT();
@@ -64,7 +65,7 @@ export default function index() {
         component: (
           <ScrollView
             style={styles.scrollView}
-            contentContainerStyle={styles.contentContainer}
+            contentContainerStyle={[styles.contentContainer, summary.pills.length === 0 && { flex: 1 }]}
             showsVerticalScrollIndicator={false}
           >
             {/* Stats du jour */}
@@ -108,6 +109,7 @@ export default function index() {
 
             {summary.pills.length === 0 && (
               <View style={styles.emptyState}>
+                <NoIntakesIcon width={128} height={128} color={theme.text.tertiary} opacity={0.5} />
                 <ThemedText style={[styles.emptyText, { color: theme.text.tertiary }]}>
                   {t("history.noPills")}
                 </ThemedText>
@@ -121,7 +123,7 @@ export default function index() {
 
   if (summaries.length === 0) {
     return (
-      <SafeTopAreaThemedView style={[GlobalStyles.container, styles.emptyContainer]}>
+      <SafeTopAreaThemedView style={[styles.container, styles.emptyContainer]}>
         <ThemedText style={[styles.emptyText, { color: theme.text.tertiary }]}>
           {t("history.noHistory")}
         </ThemedText>
@@ -130,7 +132,7 @@ export default function index() {
   }
 
   return (
-    <SafeTopAreaThemedView style={GlobalStyles.container}>
+    <SafeTopAreaThemedView style={styles.container}>
       <View style={styles.header}>
         <ThemedText style={styles.title}>{t("history.title")}</ThemedText>
       </View>
@@ -152,6 +154,11 @@ export default function index() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "stretch",
+  },
   header: {
     paddingHorizontal: 16,
     paddingTop: 16,
@@ -196,7 +203,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   emptyState: {
+    flex: 1,
     paddingVertical: 48,
+    justifyContent: "center",
     alignItems: "center",
   },
   emptyText: {

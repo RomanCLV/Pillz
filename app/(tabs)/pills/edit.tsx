@@ -46,11 +46,9 @@ export default function EditPillScreen() {
 
     useLayoutEffect(() => {
       const parent = navigation.getParent();
-  
       navigation.getParent()?.setOptions({
         tabBarStyle: { display: "none" },
       });
-  
       return () => {
         parent?.setOptions({
           tabBarStyle: { 
@@ -374,19 +372,19 @@ export default function EditPillScreen() {
 
   return (
     <SafeTopAreaThemedView style={styles.container}>
-      <KeyboardAvoidingView 
-        style={styles.keyboardAvoid}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
-      >
-        <View style={styles.content}>
-          {/* Header */}
-          <GenericHeader
-            title={t(isEditing ? "pills_edit.titleEdit" : "pills_edit.titleNew")}
-            leftButton={<HeaderButton icon={<CloseIcon width={24} height={24} color={theme.text.primary} onPress={goBack()} />} />}
-            rightButton={<HeaderButton icon={<Ionicons name="checkmark" size={24} color={theme.brand.primary} onPress={handleSave} />} />}
-          />
-
+      <View style={styles.content}>
+        {/* Header */}
+        <GenericHeader
+          title={t(isEditing ? "pills_edit.titleEdit" : "pills_edit.titleNew")}
+          leftButton={<HeaderButton icon={<CloseIcon width={24} height={24} color={theme.text.primary} onPress={goBack()} />} />}
+          rightButton={<HeaderButton icon={<Ionicons name="checkmark" size={24} color={theme.brand.primary} onPress={handleSave} />} />}
+        />
+        <KeyboardAvoidingView 
+          style={styles.keyboardAvoid}
+          behavior="padding"
+          keyboardVerticalOffset={0}
+          
+        >
           <ScrollView
             style={styles.scrollView}
             contentContainerStyle={styles.scrollContent}
@@ -626,18 +624,19 @@ export default function EditPillScreen() {
             </FormField>
 
             {/* Bouton supprimer (mode édition uniquement) */}
-            {isEditing && (
+            {isEditing && 
               <ThemedButton
-                  onPress={handleDelete}
-                  variant="error"
-                  icon={<TrashIcon width={24} height={24} color={theme.text.onBrand} />}
-                >
-                  {t("pills_edit.deletePill")}
-                </ThemedButton>
-            )}
+                onPress={handleDelete}
+                variant="error"
+                icon={<TrashIcon width={24} height={24} color={theme.text.onBrand} />}
+                containerStyle={{marginBottom: 32}}
+              >
+                {t("pills_edit.deletePill")}
+              </ThemedButton>
+            }
           </ScrollView>
-        </View>
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+      </View>
 
       {/* Modale d'erreur */}
       <ThemedModal
@@ -692,7 +691,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 32,
+    paddingBottom: 0,
   },
   row: {
     flexDirection: "row",
