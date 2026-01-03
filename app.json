@@ -14,7 +14,9 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "buildNumber": 1,
+      "bundleIdentifier": "com.romanclv.pillz"
     },
     "android": {
       "versionCode": 1,
@@ -36,9 +38,6 @@
       "eas": {
         "projectId": "4ee129da-64b4-42f1-bbbe-d4f7f5303b3d"
       }
-    },
-    "cli": {
-      "appVersionSource": "app.json"
     },
     "owner": "romanclv"
   }

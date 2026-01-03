@@ -1,4 +1,8 @@
 {
+  "cli": {
+    "version": "1.0.0",
+    "appVersionSource": "app.json"
+  },
   "build": {
     "production": {
       "android": {
