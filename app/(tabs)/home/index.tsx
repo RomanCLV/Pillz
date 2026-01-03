@@ -72,8 +72,6 @@ export default function index() {
       const { intakes, skippedIntakes } = setupIntakesItems(todaySummary.pills);
       
       skippedIntakes.forEach(({ pillIndex, intakeIndex }) => {
-        console.log("mark as skipped:", todaySummary.pills[pillIndex].name, " - ", todaySummary.pills[pillIndex].intakes[intakeIndex].schedule.hour);
-        
         markIntakeAsSkipped(
           todaySummary.date,
           todaySummary.pills[pillIndex].name,
@@ -104,10 +102,7 @@ export default function index() {
     const todayStr = toDayKey(today);
     const item = dailySummaries.find(item => item.date == todayStr);
 
-    dailySummaries.forEach(ds => { console.log(ds.date,  "pills:", ds.pills.length); });
-
     if (item == null || item.pills.length === 0) {
-      console.log("new");
       
       const newItem: DailySummary = {
         date: todayStr,

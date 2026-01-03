@@ -24,7 +24,7 @@
       "@constants/*": ["constants/*"],
       "@i18n/*": ["i18n/*"],
       "@hooks/*": ["hooks/*"],
-      "@services/*": ["services/"],
+      "@services/*": ["services/*"],
       "@themedComponents/*": ["components/themedComponents/*"],
       "@utils/*": ["utils/*"],
     }

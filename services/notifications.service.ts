@@ -1,8 +1,4 @@
-// services/notificationService.ts
-
-// Désactive l'auto enregistrement des push tokens (Expo Go SDK >=53)
-(globalThis as any).__expo_push_token_auto_registration_disabled = true;
-
+// services/notifications.service.ts
 import * as Notifications from 'expo-notifications';
 import { DailyPillSummary, IntakeStatus } from '../types/dailySummary';
 import { translate } from '@i18n/t';
@@ -78,7 +74,6 @@ export async function scheduleTestNotifications() {
 }
 
 export async function cancelAllNotifications() {
-  console.log("cancel All Notifications");
   await Notifications.cancelAllScheduledNotificationsAsync();
 }
 
@@ -92,9 +87,6 @@ function scheduleIfFuture(date: Date, content: Notifications.NotificationContent
     channelId: NOTIFICATIONS_CHANNEL,
   };
 
-  console.log("notifications planned:");
-  console.log(content);
-  
   return Notifications.scheduleNotificationAsync({
     content,
     trigger: trig,
