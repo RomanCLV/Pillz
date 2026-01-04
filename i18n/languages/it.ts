@@ -93,10 +93,10 @@ const it: LanguageSet = {
 
   notifications: {
     title: "Assunzione di farmaci",
-    timeToTake: "💊 Ora di assumere",
-    reminder: "⏰ Promemoria",
+    timeToTake: "Ora di assumere",
+    reminder: "Promemoria",
     pillIn15Minutes: "{name} tra 15 minuti.",
-    pillSoonExpired: "⏰ Hai solo 30 minuti per prendere il {name}.",
+    pillSoonExpired: "Hai solo 30 minuti per prendere il {name}.",
   },
 
   home: {
@@ -115,6 +115,10 @@ const it: LanguageSet = {
     noPills: "Nessun farmaco registrato",
     addPill: "Aggiungi un farmaco",
     modificationsWillApply: "Le modifiche ai farmaci saranno applicate da domani.",
+    stockWarning: {
+      fewMorePill: "Ti rimangono solo {n} {name}.",
+      noMorePill: "Non hai più {name}.",
+    },
   },
 
   pills_edit: {

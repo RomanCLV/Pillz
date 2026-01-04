@@ -16,6 +16,7 @@ import { useData } from "@context/DataContext";
 import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
 import ThemedText from "@themedComponents/ThemedText";
 import DailyIntakeCard from "@components/home/DailyIntakeCard";
+import StockWarningCard from "@components/home/StockWarningCard";
 
 import {toDayKey, createDateAtNoon} from "utils/dateHelper"
 
@@ -29,6 +30,12 @@ interface IntakeReference {
 interface SetupIntakesResult {
   intakes: DailyIntake[];
   skippedIntakes: IntakeReference[];
+}
+
+interface StockWarning {
+  id: string;
+  message: string;
+  type: "warning" | "error";
 }
 
 function sortDailyIntakes(intakes: DailyIntake[]): DailyIntake[] {
@@ -50,12 +57,15 @@ function getIntakePriority(intake: DailyIntake): number {
 }
 
 export default function index() {
+  const lang = useCurrentLanguage();
   const t = useT();
   const theme = useTheme();
   const { pills, decrementStock } = usePills();
   const { setSummaries } = useData();
   const { summaries, markIntakeAsSkipped, markIntakeAsTaken } = useSummaries();
   const [dailyIntakes, setDailyIntakes] = useState<DailyIntake[]>([]);
+  const [stockWarnings, setStockWarnings] = useState<StockWarning[]>([]);
+  const [dismissedWarnings, setDismissedWarnings] = useState<Set<string>>(new Set());
 
   // Ref pour éviter les doubles appels
   const updateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -97,6 +107,41 @@ export default function index() {
       }
     };
   }, [summaries, pills]);
+
+  // Générer les avertissements de stock
+  useEffect(() => {
+    const warnings: StockWarning[] = [];
+    
+    pills.forEach(pill => {
+      if (pill.stockGesture) {
+        const warningId = `stock-${pill.name}`;
+        
+        // Ne pas afficher si déjà dismissé
+        if (dismissedWarnings.has(warningId)) {
+          return;
+        }
+
+        if (pill.stockQuantity === 0) {
+          warnings.push({
+            id: warningId,
+            message: t("pills.stockWarning.noMorePill", { name: pill.name }),
+            type: "error"
+          });
+        } else if (pill.stockQuantity <= pill.reminderThreshold) {
+          warnings.push({
+            id: warningId,
+            message: t("pills.stockWarning.fewMorePill", { 
+              name: pill.name, 
+              n: pill.stockQuantity 
+            }),
+            type: "warning"
+          });
+        }
+      }
+    });
+
+    setStockWarnings(warnings);
+  }, [pills, dismissedWarnings, lang]);
 
   const setupDailySummaries = async (dailySummaries: DailySummary[], pills: Pill[]) => {
     const today = createDateAtNoon();
@@ -267,6 +312,10 @@ const updateStatus = () => {
     await scheduleDailyNotifications(todaySummary.pills, currentLang);
   };
 
+  const handleDismissWarning = (warningId: string) => {
+    setDismissedWarnings(prev => new Set([...prev, warningId]));
+  };
+
   return (
     <SafeTopAreaThemedView style={styles.container}>
       <ScrollView
@@ -286,6 +335,16 @@ const updateStatus = () => {
             })}
           </ThemedText>
         </View>
+
+        {/* Avertissements de stock */}
+        {stockWarnings.map(warning => (
+          <StockWarningCard
+            key={warning.id}
+            message={warning.message}
+            type={warning.type}
+            onDismiss={() => handleDismissWarning(warning.id)}
+          />
+        ))}
 
         {/* Liste des prises */}
         {dailyIntakes.length === 0 ? (

@@ -104,10 +104,10 @@ const es: LanguageSet = {
 
   notifications: {
     title: "Toma de medicamentos",
-    timeToTake: "💊 Hora de tomar",
-    reminder: "⏰ Recordatorio",
+    timeToTake: "Hora de tomar",
+    reminder: "Recordatorio",
     pillIn15Minutes: "{name} en 15 minutos.",
-    pillSoonExpired: "⏰ Solo quedan 30 minutos para tomar su {name}.",
+    pillSoonExpired: "Solo quedan 30 minutos para tomar su {name}.",
   },
 
   pills: {
@@ -115,6 +115,10 @@ const es: LanguageSet = {
     noPills: "Ningún medicamento registrado",
     addPill: "Añadir un medicamento",
     modificationsWillApply: "Las modificaciones a los medicamentos se aplicarán a partir de mañana.",
+    stockWarning: {
+      fewMorePill: "Solo te quedan {n} {name}.",
+      noMorePill: "Ya no te queda {name}.",
+    },
   },
 
   pills_edit: {

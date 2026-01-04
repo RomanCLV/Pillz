@@ -128,6 +128,11 @@ export type LanguageSet = {
     noPills: string,
     addPill: string,
     modificationsWillApply: string,
+    // Stock warning
+    stockWarning: {
+      fewMorePill: string,
+      noMorePill: string,
+    },
   },
   pills_edit: {
     titleNew: string,

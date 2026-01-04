@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
+import { useNavigation } from "expo-router";
 
 import { useTheme } from "@hooks/useTheme";
 import { usePills } from "@hooks/usePills";
@@ -20,6 +21,19 @@ export default function index () {
   const { pills } = usePills();
   const {lastPillEditDate} = useData();
   const t = useT();
+
+  const navigation = useNavigation();
+
+  useLayoutEffect(() => {
+    const parent = navigation.getParent();
+    parent?.setOptions({
+        tabBarStyle: { 
+          backgroundColor: theme.background.secondary,
+          borderTopWidth: 1,
+          borderColor: theme.border.light + "10",
+        }
+      });
+  }, [navigation, theme]);
 
    // Vérifier si la date existe et si c'est aujourd'hui
   const isEditedToday = lastPillEditDate !== null && 

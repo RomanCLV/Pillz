@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useState } from "react";
-import { StyleSheet, ScrollView, View, KeyboardAvoidingView, Platform } from "react-native";
+import { StyleSheet, ScrollView, View, KeyboardAvoidingView } from "react-native";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -58,7 +58,7 @@ export default function EditPillScreen() {
           }
         });
       };
-    }, [navigation]);
+    }, [navigation, theme]);
 
   const getUnitLabel = (unit: DosageUnit): string => {
     const label = t(`pill.unit.${unit}`);
