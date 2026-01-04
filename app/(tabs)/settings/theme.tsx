@@ -6,10 +6,10 @@ import { useT } from "@i18n/useT";
 import { useAppTheme, ThemePreference } from "@context/ThemeContext";
 import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
 import ThemedText from "@themedComponents/ThemedText";
+import ThemedView from "@themedComponents/ThemedView";
 import SelectionList, { SelectionOption } from "@components/settings/SelectionList";
 import BackHeader from "@components/headers/BackHeader";
 import Spacer from "@components/Spacer";
-import ThemedView from "@components/themedComponents/ThemedView";
 
 export default function ThemeSettingsScreen() {
   const { theme, themePreference, setPreference } = useAppTheme();

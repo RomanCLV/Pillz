@@ -8,19 +8,27 @@ import { useSettings } from "@context/SettingsContext";
 import { useAppTheme } from "@context/ThemeContext";
 import { useT } from "@i18n/useT";
 import { useSafeNavigation } from "@hooks/useSafeNavigation";
+import { useSummaries } from "@hooks/useSummaries";
+import { cancelAllNotifications, scheduleDailyNotifications } from "@services/notifications.service";
 import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
 import ThemedText from "@themedComponents/ThemedText";
 import SettingsSection from "@components/settings/SettingsSection";
 import SettingsItem from "@components/settings/SettingsItem";
 import Spacer from "@components/Spacer";
 import TitlePage from "@components/TitlePage";
+import { createDateAtNoon, toDayKey } from "@utils/dateHelper";
 
 export default function SettingsScreen() {
   const { navigate } = useSafeNavigation();
   const {theme, themePreference} = useAppTheme();
   const {language} = useLanguage();
+  const {summaries} = useSummaries();
   const { settings, update, loaded } = useSettings(); 
   const t = useT();
+
+  const today = createDateAtNoon();
+  const todayStr = toDayKey(today);
+  const todaySummary = summaries.find(item => item.date == todayStr);
 
   const handleContactPress = () => {
     Linking.openURL("mailto:roman.clavier.2001@gmail.com");
@@ -39,7 +47,16 @@ export default function SettingsScreen() {
             label={t("settings.notifications.pushNotifications")}
             rightElement="switch"
             switchValue={settings?.pushNotifications}
-            onSwitchChange={(v) => update("pushNotifications", v)}
+            onSwitchChange={async (v) => {
+              update("pushNotifications", v);
+              if (v) {
+                if (todaySummary)
+                  await scheduleDailyNotifications(todaySummary.pills, language);
+              }
+              else {
+                await cancelAllNotifications();
+              }
+            }}
           />
         </SettingsSection>
         <Spacer height={20}/>

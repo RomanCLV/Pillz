@@ -86,7 +86,8 @@ function scheduleIfFuture(date: Date, content: Notifications.NotificationContent
     date: date,
     channelId: NOTIFICATIONS_CHANNEL,
   };
-
+  console.log("notif:", date, "|", content.title, "|", content.body);
+  
   return Notifications.scheduleNotificationAsync({
     content,
     trigger: trig,
@@ -113,20 +114,20 @@ export async function scheduleDailyNotifications(
       );
 
       // -15 min
-      scheduleIfFuture(new Date(base.getTime() - 15 * 60000), {
+      await scheduleIfFuture(new Date(base.getTime() - 15 * 60000), {
         title: translate(language, "notifications.reminder"),
         body: translate(language, "notifications.pillIn15Minutes", { name: pill.name }),
       });
 
       // heure H
-      scheduleIfFuture(base, {
+      await scheduleIfFuture(base, {
         title: translate(language, "notifications.timeToTake"),
         body: pill.name + " - " + translate(language, "pill.usage." + pill.unit, { n: pill.dosage.toString() }, true),
       });
 
       // fin de fenêtre
       if (pill.intakeWindowMinutes >= 30) {
-        scheduleIfFuture(
+        await scheduleIfFuture(
           new Date(base.getTime() + (pill.intakeWindowMinutes - 30) * 60000),
           {
             title: translate(language, "notifications.reminder"),

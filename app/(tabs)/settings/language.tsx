@@ -2,22 +2,24 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { useLanguage } from "@context/LanguageContext";
+import { useSummaries } from "@hooks/useSummaries";
 import { useT } from "@i18n/useT";
 import { LANGUAGE_CODES, LANGUAGE_FLAGS, LanguageCode } from "@i18n/types";
+import { useLanguage } from "@context/LanguageContext";
+import { useSettings } from "@context/SettingsContext";
+import { scheduleDailyNotifications } from "services/notifications.service";
 import SafeTopAreaThemedView from "@themedComponents/SafeTopAreaThemedView";
 import ThemedText from "@themedComponents/ThemedText";
 import SelectionList from "@components/settings/SelectionList";
 import BackHeader from "@components/headers/BackHeader";
 import Spacer from "@components/Spacer";
 import ThemedView from "@components/themedComponents/ThemedView";
-import { scheduleDailyNotifications } from "services/notifications.service";
-import { useSummaries } from "@hooks/useSummaries";
 import { createDateAtNoon, toDayKey } from "@utils/dateHelper";
 
 export default function LanguageSettingsScreen() {
   const {language, setLanguage} = useLanguage();
   const {summaries} = useSummaries();
+  const {settings} = useSettings(); 
   const t = useT();
 
   const today = createDateAtNoon();
@@ -36,8 +38,8 @@ export default function LanguageSettingsScreen() {
 
   const _handleOnSelect = async (lang: LanguageCode) => {
     setLanguage(lang);
-    if (todaySummary)
-      scheduleDailyNotifications(todaySummary.pills, lang);
+    if (todaySummary && settings?.pushNotifications)
+      await scheduleDailyNotifications(todaySummary.pills, language);
   }
 
   return (

@@ -21,6 +21,7 @@ import StockWarningCard from "@components/home/StockWarningCard";
 import {toDayKey, createDateAtNoon} from "utils/dateHelper"
 
 import NoIntakesIcon from "@icons/no-intakes.svg"
+import { useSettings } from "@context/SettingsContext";
 
 interface IntakeReference {
   pillIndex: number;
@@ -66,6 +67,7 @@ export default function index() {
   const [dailyIntakes, setDailyIntakes] = useState<DailyIntake[]>([]);
   const [stockWarnings, setStockWarnings] = useState<StockWarning[]>([]);
   const [dismissedWarnings, setDismissedWarnings] = useState<Set<string>>(new Set());
+  const { settings } = useSettings(); 
 
   // Ref pour éviter les doubles appels
   const updateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -78,6 +80,8 @@ export default function index() {
 
   useEffect(() => {
     async function setup() {
+      console.log("********* HOME SETUP *********");
+      
       await setupDailySummaries(summaries, pills);
       const todaySummary = summaries[summaries.length - 1];
       const { intakes, skippedIntakes } = setupIntakesItems(todaySummary.pills);
@@ -96,7 +100,10 @@ export default function index() {
       const msSecsBeforeNextMinute = 60000 - (new Date().getSeconds() * 1000 + new Date().getMilliseconds());
       updateTimeoutRef.current = setTimeout(updateStatus, msSecsBeforeNextMinute);
 
-      await scheduleDailyNotifications(todaySummary.pills, currentLang);
+      console.log("********* HOME SETUP - NOTIFS *********");
+      if (settings?.pushNotifications)
+        await scheduleDailyNotifications(todaySummary.pills, currentLang);
+      console.log("********* HOME SETUP - END *********");
     }
     
     setup();
@@ -309,7 +316,7 @@ const updateStatus = () => {
       intake.schedule.schedule.minute
     );
 
-    await scheduleDailyNotifications(todaySummary.pills, currentLang);
+    //await scheduleDailyNotifications(todaySummary.pills, currentLang);
   };
 
   const handleDismissWarning = (warningId: string) => {
