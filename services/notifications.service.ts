@@ -86,7 +86,7 @@ function scheduleIfFuture(date: Date, content: Notifications.NotificationContent
     date: date,
     channelId: NOTIFICATIONS_CHANNEL,
   };
-  console.log("notif:", date, "|", content.title, "|", content.body);
+  //console.log("notif:", date, "|", content.title, "|", content.body);
   
   return Notifications.scheduleNotificationAsync({
     content,
